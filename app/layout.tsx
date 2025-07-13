@@ -6,6 +6,7 @@ import { UserProvider } from '@/hooks/useUser';
 import { TooltipProvider } from '@/components/ui/tooltip';
 import Head from 'next/head';
 import localFont from 'next/font/local';
+import RouteLoaderProvider from '@/components/ui/RouteLoaderProvider';
 
 const inter = localFont({
   src: [
@@ -62,13 +63,15 @@ export default function RootLayout({
       </Head>
       <html lang="en">
         <body className={`${inter.variable} ${playfair.variable} font-sans`}>
-          <TooltipProvider>
-            <UserProvider>
-              <CartProvider>
-                {children}
-              </CartProvider>
-            </UserProvider>
-          </TooltipProvider>
+          <RouteLoaderProvider>
+            <TooltipProvider>
+              <UserProvider>
+                <CartProvider>
+                  {children}
+                </CartProvider>
+              </UserProvider>
+            </TooltipProvider>
+          </RouteLoaderProvider>
         </body>
       </html>
     </>

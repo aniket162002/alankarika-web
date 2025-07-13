@@ -55,7 +55,7 @@ export default function AboutPage() {
             transition={{ duration: 0.8 }}
           >
             <h1 className="text-5xl md:text-6xl font-bold text-gray-900 mb-6 font-playfair">
-              About <span className="bg-gradient-to-r from-amber-600 to-orange-600 bg-clip-text text-transparent">cccccc</span>
+              About <span className="bg-gradient-to-r from-amber-600 to-orange-600 bg-clip-text text-transparent">अलंकारिका</span>
             </h1>
             <p className="text-xl text-gray-600 mb-8 leading-relaxed">
               Welcome to Alankarika! We are a new jewelry brand with a big dream: to make every moment shine with unique, beautiful pieces designed just for you.

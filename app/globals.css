@@ -229,3 +229,35 @@
     display: none !important;
   }
 }
+
+@keyframes spin-slow {
+  100% {
+    transform: rotate(360deg);
+  }
+}
+.animate-spin-slow {
+  animation: spin-slow 1.5s linear infinite;
+}
+
+@keyframes spin-slower {
+  100% {
+    transform: rotate(360deg);
+  }
+}
+.animate-spin-slower {
+  animation: spin-slower 2.5s cubic-bezier(.4,0,.2,1) infinite;
+}
+
+@keyframes logo-pulse {
+  0%, 100% {
+    transform: scale(1);
+    box-shadow: 0 2px 12px 0 #e0e7ff55, 0 0 0 0 #fbbf2440;
+  }
+  50% {
+    transform: scale(1.07);
+    box-shadow: 0 4px 24px 0 #6366f155, 0 0 12px 4px #fbbf2440;
+  }
+}
+.animate-logo-pulse {
+  animation: logo-pulse 1.8s cubic-bezier(.4,0,.2,1) infinite;
+}
