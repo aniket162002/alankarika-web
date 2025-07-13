@@ -7,38 +7,35 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import Image from 'next/image';
-import { CartIcon } from '@/components/ui/CartIcon';
 import Header from '@/components/ui/Header';
 
 const milestones = [
-  { year: '1985', event: 'Founded by Master Craftsman Rajesh Kumar', icon: Crown },
-  { year: '1995', event: 'Expanded to traditional Kundan jewelry', icon: Sparkles },
-  { year: '2005', event: 'Introduced Meenakari collections', icon: Heart },
-  { year: '2015', event: 'Launched online presence', icon: Globe },
-  { year: '2020', event: 'Reached 10,000+ happy customers', icon: Users },
-  { year: '2025', event: 'Leading traditional jewelry brand', icon: Award }
+  { year: '2024', event: 'Alankarika is founded with a dream to bring unique jewelry to everyone', icon: Crown },
+  { year: '2024', event: 'First collection launched online', icon: Sparkles },
+  { year: '2024', event: 'Welcomed our first happy customers', icon: Heart },
+  { year: '2024', event: 'Started building our jewelry community', icon: Users }
 ];
 
 const values = [
   {
-    title: 'Authenticity',
-    description: 'Every piece reflects genuine Indian craftsmanship and traditional techniques passed down through generations.',
-    icon: Crown
+    title: 'Passion',
+    description: 'We are driven by a love for jewelry and a desire to create something truly special for every customer.',
+    icon: Heart
   },
   {
     title: 'Quality',
-    description: 'We use only the finest materials - pure gold, sterling silver, and authentic gemstones.',
+    description: 'Every piece is crafted with care, using only trusted materials and attention to detail.',
     icon: Award
   },
   {
-    title: 'Heritage',
-    description: 'Our designs are inspired by the rich cultural heritage of India, from Mughal courts to Rajasthani palaces.',
+    title: 'Originality',
+    description: 'We believe in fresh, unique designs that help you express your individuality.',
     icon: Sparkles
   },
   {
-    title: 'Customer Love',
-    description: 'Every customer is part of our family. We ensure each piece brings joy and confidence.',
-    icon: Heart
+    title: 'Customer Focus',
+    description: 'Your satisfaction is our top priority. We are here to make your jewelry experience joyful and memorable.',
+    icon: Users
   }
 ];
 
@@ -58,14 +55,13 @@ export default function AboutPage() {
             transition={{ duration: 0.8 }}
           >
             <h1 className="text-5xl md:text-6xl font-bold text-gray-900 mb-6 font-playfair">
-              About <span className="bg-gradient-to-r from-amber-600 to-orange-600 bg-clip-text text-transparent">अलंकारिका</span>
+              About <span className="bg-gradient-to-r from-amber-600 to-orange-600 bg-clip-text text-transparent">cccccc</span>
             </h1>
             <p className="text-xl text-gray-600 mb-8 leading-relaxed">
-              For over four decades, अलंकारिका has been the custodian of India&apos;s rich jewelry heritage,
-              creating timeless pieces that celebrate the beauty of traditional craftsmanship.
+              Welcome to Alankarika! We are a new jewelry brand with a big dream: to make every moment shine with unique, beautiful pieces designed just for you.
             </p>
             <Badge className="bg-gradient-to-r from-amber-600 to-orange-600 text-white text-lg px-6 py-2">
-              Where Tradition Meets Elegance
+              Where New Traditions Begin
             </Badge>
           </motion.div>
         </div>
@@ -83,19 +79,13 @@ export default function AboutPage() {
               <h2 className="text-4xl font-bold text-gray-900 mb-6 font-playfair">Our Story</h2>
               <div className="space-y-4 text-gray-600 leading-relaxed">
                 <p>
-                  अलंकारिका was born from a passion for preserving India&apos;s magnificent jewelry traditions.
-                  Founded in 1985 by Master Craftsman Rajesh Kumar, our journey began in the bustling lanes 
-                  of Old Delhi, where generations of artisans have perfected their craft.
+                  Alankarika was born in 2024 from a passion for jewelry and a vision to bring fresh, original designs to everyone. We are a small, dedicated team of creators, dreamers, and jewelry lovers based in Mumbai.
                 </p>
                 <p>
-                  What started as a small workshop has grown into a celebrated brand, but our commitment 
-                  remains unchanged - to create jewelry that tells stories, celebrates heritage, and 
-                  makes every woman feel like royalty.
+                  Our journey is just beginning, but our commitment is strong: to offer jewelry that is as unique as you are, crafted with care and attention to detail.
                 </p>
                 <p>
-                  Each piece in our collection is a testament to the skill of our master craftsmen, 
-                  who have inherited techniques from the Mughal era and the royal courts of Rajasthan. 
-                  We don&apos;t just make jewelry; we create heirlooms.
+                  We believe every piece should tell a story—your story. Whether it’s a gift, a celebration, or just because, we want to make your moments sparkle.
                 </p>
               </div>
             </motion.div>
@@ -107,7 +97,7 @@ export default function AboutPage() {
             >
               <Image
                 src="https://images.pexels.com/photos/1190298/pexels-photo-1190298.jpeg?auto=compress&cs=tinysrgb&w=800"
-                alt="Traditional Jewelry Crafting"
+                alt="Jewelry Crafting"
                 width={800}
                 height={384}
                 className="w-full h-96 object-cover rounded-lg shadow-lg"
@@ -128,13 +118,12 @@ export default function AboutPage() {
             transition={{ duration: 0.6 }}
           >
             <h2 className="text-4xl font-bold text-gray-900 mb-4 font-playfair">Our Journey</h2>
-            <p className="text-xl text-gray-600">Four decades of excellence and tradition</p>
+            <p className="text-xl text-gray-600">A new chapter in jewelry begins</p>
           </motion.div>
-          
           <div className="max-w-4xl mx-auto">
             {milestones.map((milestone, index) => (
               <motion.div
-                key={milestone.year}
+                key={milestone.year + milestone.event}
                 className="flex items-center gap-6 mb-8 last:mb-0"
                 initial={{ opacity: 0, x: index % 2 === 0 ? -30 : 30 }}
                 whileInView={{ opacity: 1, x: 0 }}
@@ -173,9 +162,8 @@ export default function AboutPage() {
             transition={{ duration: 0.6 }}
           >
             <h2 className="text-4xl font-bold text-gray-900 mb-4 font-playfair">Our Values</h2>
-            <p className="text-xl text-gray-600">The principles that guide everything we do</p>
+            <p className="text-xl text-gray-600">What makes us different</p>
           </motion.div>
-          
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             {values.map((value, index) => (
               <motion.div
@@ -208,17 +196,17 @@ export default function AboutPage() {
             transition={{ duration: 0.8 }}
           >
             <h2 className="text-4xl font-bold text-white mb-6 font-playfair">
-              Experience the अलंकारिका Difference
+              Join Our Journey
             </h2>
             <p className="text-xl text-white/90 mb-8 max-w-2xl mx-auto">
-              Join thousands of satisfied customers who have made अलंकारिका their trusted jewelry partner
+              Be part of our story from the very beginning. Discover jewelry that’s made with heart, for you.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button asChild size="lg" className="bg-white text-amber-600 hover:bg-gray-100">
                 <Link href="/collections">Explore Collections</Link>
               </Button>
               <Button asChild size="lg" variant="outline" className="border-white text-white hover:bg-white hover:text-amber-600">
-                <Link href="/contact">Visit Our Store</Link>
+                <Link href="/contact">Contact Us</Link>
               </Button>
             </div>
           </motion.div>

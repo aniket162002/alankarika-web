@@ -36,7 +36,7 @@ export const getEmailTemplate = (type: string, data: any) => {
         <body>
           <div class="container">
             <div class="header">
-              <img src="${process.env.NEXT_PUBLIC_BASE_URL || 'https://alankarika.com'}/alankarika-logo.png" alt="Alankarika Logo" class="logo" />
+              <img src="/alankarika-logo.png" alt="Alankarika Logo" class="logo" />
               <h1>✨ ${companyName} ✨</h1>
               <h2>Order Confirmation</h2>
             </div>
@@ -95,7 +95,7 @@ export const getEmailTemplate = (type: string, data: any) => {
         <body>
           <div class="container">
             <div class="header">
-              <img src="${process.env.NEXT_PUBLIC_BASE_URL || 'https://alankarika.com'}/alankarika-logo.png" alt="Alankarika Logo" class="logo" />
+              <img src="/alankarika-logo.png" alt="Alankarika Logo" class="logo" />
               <h1>✨ ${companyName} ✨</h1>
               <h2>Order Confirmed! 🎉</h2>
             </div>
@@ -137,7 +137,7 @@ export const getEmailTemplate = (type: string, data: any) => {
         <body>
           <div class="container">
             <div class="header">
-              <img src="${process.env.NEXT_PUBLIC_BASE_URL || 'https://alankarika.com'}/alankarika-logo.png" alt="Alankarika Logo" class="logo" />
+              <img src="/alankarika-logo.png" alt="Alankarika Logo" class="logo" />
               <h1>✨ ${companyName} ✨</h1>
               <h2>Your Order is On Its Way! 🚚</h2>
             </div>
@@ -181,7 +181,7 @@ export const getEmailTemplate = (type: string, data: any) => {
         <body>
           <div class="container">
             <div class="header">
-              <img src="${process.env.NEXT_PUBLIC_BASE_URL || 'https://alankarika.com'}/alankarika-logo.png" alt="Alankarika Logo" class="logo" />
+              <img src="/alankarika-logo.png" alt="Alankarika Logo" class="logo" />
               <h1>✨ ${companyName} ✨</h1>
               <h2>Your Order Has Been Delivered! 🎁</h2>
             </div>
@@ -225,7 +225,7 @@ export const getEmailTemplate = (type: string, data: any) => {
         <body>
           <div class="container">
             <div class="header">
-              <img src="${process.env.NEXT_PUBLIC_BASE_URL || 'https://alankarika.com'}/alankarika-logo.png" alt="Alankarika Logo" class="logo" />
+              <img src="/alankarika-logo.png" alt="Alankarika Logo" class="logo" />
               <h1>✨ ${companyName} Admin ✨</h1>
               <h2>New Order Received! 🛍️</h2>
             </div>
@@ -281,7 +281,7 @@ export const getEmailTemplate = (type: string, data: any) => {
         <body>
           <div class="container">
             <div class="header">
-              <img src="${process.env.NEXT_PUBLIC_BASE_URL || 'https://alankarika.com'}/alankarika-logo.png" alt="Alankarika Logo" class="logo" />
+              <img src="/alankarika-logo.png" alt="Alankarika Logo" class="logo" />
               <h1>✨ ${companyName} ✨</h1>
               <h2>New Jewelry Collection Alert! 💎</h2>
             </div>
@@ -324,7 +324,7 @@ export const getEmailTemplate = (type: string, data: any) => {
         <body>
           <div class="container">
             <div class="header">
-              <img src="${process.env.NEXT_PUBLIC_BASE_URL || 'https://alankarika.com'}/alankarika-logo.png" alt="Alankarika Logo" class="logo" />
+              <img src="/alankarika-logo.png" alt="Alankarika Logo" class="logo" />
               <h1>✨ ${companyName} ✨</h1>
               <h2>Notification</h2>
             </div>

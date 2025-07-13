@@ -23,7 +23,7 @@ import { createClient } from '@supabase/supabase-js'
 import { useSupabaseRealtime } from '@/hooks/useSupabaseRealtime';
 import { useUser } from '@/hooks/useUser';
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from '@/components/ui/dropdown-menu';
-import Header from '@/components/ui/Header';
+import Header from '@/components/ui/Header';  
 
 // Update Product type to match Supabase schema
 // Fetch product data from Supabase
@@ -566,7 +566,8 @@ const [loading, setLoading] = useState(true);
             />
           ))}
         </div>
-        <div className="absolute inset-0 bg-gradient-to-r from-purple-900/70 via-pink-900/50 to-orange-900/70 z-10" />
+        {/* In the carousel overlay, set z-0 and pointer-events-none to ensure it does not block clicks */}
+        <div className="absolute inset-0 bg-gradient-to-r from-purple-900/70 via-pink-900/50 to-orange-900/70 z-0 pointer-events-none" />
         {/* Carousel Background */}
         <div className="absolute inset-0">
           <AnimatePresence mode="wait">
@@ -582,6 +583,13 @@ const [loading, setLoading] = useState(true);
                 transition={{ duration: 0.7, ease: 'easeInOut' }}
                 style={{ x: dragDelta * 0.2 }}
                 draggable={false}
+                onTouchStart={handleDragStart}
+                onTouchMove={handleDragMove}
+                onTouchEnd={handleDragEnd}
+                onMouseDown={handleDragStart}
+                onMouseMove={dragStartX !== null ? handleDragMove : undefined}
+                onMouseUp={handleDragEnd}
+                onMouseLeave={handleDragEnd}
               />
             )}
           </AnimatePresence>
@@ -820,10 +828,11 @@ const [loading, setLoading] = useState(true);
       >
         <Button
           size="lg"
-          className="bg-green-500 hover:bg-green-600 text-white rounded-full w-14 h-14 shadow-lg"
-          onClick={() => openWhatsApp()}
+          aria-label="Chat on WhatsApp"
+          className="bg-white hover:bg-white border-2 border-green-500 rounded-full w-16 h-16 flex items-center justify-center shadow-lg hover:shadow-green-400/60 hover:scale-105 transition-transform duration-200"
+          onClick={() => { console.log('WhatsApp button clicked'); openWhatsApp(); }}
         >
-          <MessageCircle className="w-6 h-6" />
+          <img src="/whatsapp-logo.png" width={36} height={36} alt="WhatsApp" style={{ display: 'block' }} />
         </Button>
       </motion.div>
 

@@ -46,7 +46,7 @@ export default function Header() {
 
   return (
     <header
-      className={`sticky top-0 z-50 w-full bg-white shadow-md transition-shadow duration-300 ${isScrolled ? 'shadow-lg' : ''} overflow-x-hidden`}
+      className={`sticky top-0 z-[9999] w-full bg-white shadow-md transition-shadow duration-300 ${isScrolled ? 'shadow-lg' : ''} overflow-x-hidden`}
       style={{ WebkitOverflowScrolling: 'touch' }}
     >
       <div className="w-full max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between min-h-[80px] flex-nowrap">
@@ -93,7 +93,7 @@ export default function Header() {
 
       {/* Mobile Menu */}
       {mobileMenuOpen && (
-        <div ref={mobileMenuRef} className="md:hidden absolute left-0 right-0 bg-white shadow-lg border-t z-50 animate-fade-in">
+        <div ref={mobileMenuRef} className="md:hidden fixed inset-0 bg-white shadow-lg border-t z-[9999] animate-fade-in">
           <nav className="flex flex-col gap-2 py-4 px-6">
             {NAV_LINKS.map((link) => (
               <Link
