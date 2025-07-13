@@ -328,8 +328,8 @@ CREATE INDEX IF NOT EXISTS idx_reviews_is_approved ON reviews(is_approved);
 INSERT INTO site_settings (key, value, description, category, is_public) VALUES
 ('site_name', '"अलंकारिका"', 'Site name', 'general', true),
 ('site_description', '"Where Tradition Meets Elegance"', 'Site description', 'general', true),
-('contact_email', '"info@alankaarika.com"', 'Contact email', 'contact', true),
-('contact_phone', '"+91 98765 43210"', 'Contact phone', 'contact', true),
+('contact_email', '"akrutiutekar@gmail.com"', 'Contact email', 'contact', true),
+('contact_phone', '"+91 9769432565"', 'Contact phone', 'contact', true),
 ('whatsapp_number', '"919876543210"', 'WhatsApp number', 'contact', true),
 ('free_shipping_threshold', '50000', 'Free shipping threshold amount', 'shipping', true),
 ('currency', '"INR"', 'Site currency', 'general', true),

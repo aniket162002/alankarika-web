@@ -76,7 +76,7 @@ export const getEmailTemplate = (type: string, data: any) => {
             </div>
             <div class="footer">
               <p>© 2025 ${companyName}. Where Tradition Meets Elegance.</p>
-              <p>📧 info@alankarika.com | 📞 +91 97694 32565</p>
+              <p>📧 akrutiutekar@gmail.com | 📞 +91 9769432565</p>
             </div>
           </div>
         </body>
@@ -118,7 +118,7 @@ export const getEmailTemplate = (type: string, data: any) => {
             </div>
             <div class="footer">
               <p>© 2025 ${companyName}. Where Tradition Meets Elegance.</p>
-              <p>📧 info@alankarika.com | 📞 +91 97694 32565</p>
+              <p>📧 akrutiutekar@gmail.com | 📞 +91 9769432565</p>
             </div>
           </div>
         </body>
@@ -162,7 +162,7 @@ export const getEmailTemplate = (type: string, data: any) => {
             </div>
             <div class="footer">
               <p>© 2025 ${companyName}. Where Tradition Meets Elegance.</p>
-              <p>📧 info@alankarika.com | 📞 +91 97694 32565</p>
+              <p>📧 akrutiutekar@gmail.com | 📞 +91 9769432565</p>
             </div>
           </div>
         </body>
@@ -206,7 +206,7 @@ export const getEmailTemplate = (type: string, data: any) => {
             </div>
             <div class="footer">
               <p>© 2025 ${companyName}. Where Tradition Meets Elegance.</p>
-              <p>📧 info@alankarika.com | 📞 +91 97694 32565</p>
+              <p>📧 akrutiutekar@gmail.com | 📞 +91 9769432565</p>
             </div>
           </div>
         </body>
@@ -305,7 +305,7 @@ export const getEmailTemplate = (type: string, data: any) => {
             </div>
             <div class="footer">
               <p>© 2025 ${companyName}. Where Tradition Meets Elegance.</p>
-              <p>📧 info@alankarika.com | 📞 +91 97694 32565</p>
+              <p>📧 akrutiutekar@gmail.com | 📞 +91 9769432565</p>
             </div>
           </div>
         </body>
@@ -333,6 +333,7 @@ export const getEmailTemplate = (type: string, data: any) => {
             </div>
             <div class="footer">
               <p>© 2025 ${companyName}. Where Tradition Meets Elegance.</p>
+              <p>📧 akrutiutekar@gmail.com | 📞 +91 9769432565</p>
             </div>
           </div>
         </body>

@@ -579,7 +579,7 @@ export default function PaymentSuccess() {
                   <strong>Thank you for your purchase from अलंकारिका!</strong>
                 </div>
                 <div style={{ fontSize: '14px' }}>
-                  For any queries, contact us at support@alankaarika.com | +91 9876543210
+                  For any queries, contact us at akrutiutekar@gmail.com | +91 9769432565
                 </div>
                 <div style={{ fontSize: '12px', marginTop: '10px' }}>
                   This is a computer-generated receipt and does not require a signature.
