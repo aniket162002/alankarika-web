@@ -1,0 +1,1 @@
+{"sortedMiddleware":["/"],"middleware":{"/":{"files":["prerender-manifest.js","server/edge-runtime-webpack.js","server/middleware.js"],"name":"middleware","page":"/","matchers":[{"regexp":"(?!.*)","originalSource":"/admin/:path*"}],"wasm":[],"assets":[]}},"functions":{},"version":2}
