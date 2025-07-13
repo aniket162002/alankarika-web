@@ -10,7 +10,7 @@ import localFont from 'next/font/local';
 const inter = localFont({
   src: [
     {
-     path: './public/fonts/Inter-Regular.woff2',
+      path: '/fonts/Inter-Regular.woff2', // Retyped to ensure no hidden characters
       weight: '400',
       style: 'normal',
     },
