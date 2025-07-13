@@ -136,6 +136,99 @@ const fetchCarouselSlides = async () => {
   return data as CarouselSlide[];
 };
 
+// 1. Add a SparkleOverlay component for animated sparkles
+const SparkleOverlay = ({ count = 18, className = "" }) => (
+  <>
+    {[...Array(count)].map((_, i) => (
+      <motion.div
+        key={i}
+        className={`absolute w-2 h-2 bg-gradient-to-r from-yellow-400 to-amber-500 rounded-full pointer-events-none ${className}`}
+        style={{
+          left: `${Math.random() * 100}%`,
+          top: `${Math.random() * 100}%`,
+        }}
+        animate={{
+          scale: [0, 1.2, 0.8, 1, 0],
+          opacity: [0, 1, 0.7, 1, 0],
+          rotate: [0, 180, 360]
+        }}
+        transition={{
+          duration: Math.random() * 2 + 2.5,
+          repeat: Infinity,
+          delay: Math.random() * 5,
+          ease: "easeInOut"
+        }}
+      />
+    ))}
+  </>
+);
+
+// Add a WavyDivider component
+const WavyDivider = ({ flip = false, color = '#fbbf24' }) => (
+  <svg className="section-divider" viewBox="0 0 1440 60" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ transform: flip ? 'scaleY(-1)' : undefined }}>
+    <path d="M0,30 Q360,60 720,30 T1440,30 V60 H0 Z" fill={color} fillOpacity="0.12" />
+  </svg>
+);
+
+// Add a BrandMotif component (simple SVG paisley/jewelry motif)
+const BrandMotif = ({ className = "", style = {} }) => (
+  <svg className={className} style={style} viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <ellipse cx="60" cy="60" rx="50" ry="30" fill="#fbbf24" fillOpacity="0.08" />
+    <ellipse cx="60" cy="60" rx="30" ry="15" fill="#f43f5e" fillOpacity="0.07" />
+    <path d="M60 30 Q80 60 60 90 Q40 60 60 30 Z" fill="#6366f1" fillOpacity="0.06" />
+    <circle cx="60" cy="60" r="8" fill="#10b981" fillOpacity="0.12" />
+  </svg>
+);
+
+// Add a TrustBadges component
+const TrustBadges = () => (
+  <div className="flex flex-wrap justify-center gap-6 py-8">
+    <div className="flex flex-col items-center">
+      <svg width="36" height="36" fill="none" viewBox="0 0 36 36"><circle cx="18" cy="18" r="16" fill="#fbbf24" fillOpacity="0.15"/><path d="M10 18l5 5 11-11" stroke="#10b981" strokeWidth="2.5" fill="none"/></svg>
+      <span className="mt-2 text-sm font-semibold text-gray-700">100% Authentic</span>
+    </div>
+    <div className="flex flex-col items-center">
+      <svg width="36" height="36" fill="none" viewBox="0 0 36 36"><circle cx="18" cy="18" r="16" fill="#6366f1" fillOpacity="0.13"/><path d="M12 18h12M18 12v12" stroke="#f43f5e" strokeWidth="2.5" fill="none"/></svg>
+      <span className="mt-2 text-sm font-semibold text-gray-700">Easy Returns</span>
+    </div>
+    <div className="flex flex-col items-center">
+      <svg width="36" height="36" fill="none" viewBox="0 0 36 36"><circle cx="18" cy="18" r="16" fill="#10b981" fillOpacity="0.13"/><path d="M12 24l6-12 6 12" stroke="#fbbf24" strokeWidth="2.5" fill="none"/></svg>
+      <span className="mt-2 text-sm font-semibold text-gray-700">Secure Payments</span>
+    </div>
+  </div>
+);
+
+// Add a Confetti component for festive mode
+const Confetti = () => (
+  <div className="confetti">
+    {[...Array(40)].map((_, i) => (
+      <motion.div
+        key={i}
+        className="absolute rounded-full"
+        style={{
+          left: `${Math.random() * 100}vw`,
+          top: `${Math.random() * 100}vh`,
+          width: `${Math.random() * 8 + 6}px`,
+          height: `${Math.random() * 8 + 6}px`,
+          background: `linear-gradient(135deg, #fbbf24, #f43f5e, #6366f1, #10b981)`,
+          opacity: 0.7
+        }}
+        animate={{
+          y: [0, Math.random() * 120 + 60],
+          rotate: [0, 360],
+          opacity: [0.7, 0.9, 0.7]
+        }}
+        transition={{
+          duration: Math.random() * 2 + 2.5,
+          repeat: Infinity,
+          delay: Math.random() * 2,
+          ease: "easeInOut"
+        }}
+      />
+    ))}
+  </div>
+);
+
 export default function Home() {
   const [products, setProducts] = useState<Product[]>([]);
   const [carouselImages, setCarouselImages] = useState<CarouselSlide[]>([]);
@@ -308,7 +401,7 @@ const [loading, setLoading] = useState(true);
         transition={{ type: "spring", stiffness: 300 }}
         className="group relative"
       >
-        <Card className="overflow-hidden border-0 shadow-lg hover:shadow-xl transition-shadow duration-300">
+        <Card className="overflow-hidden border-0 shadow-lg hover:shadow-xl transition-shadow duration-300 card-animated">
           <div className="relative overflow-hidden">
             <Image
               src={imageSrc}
@@ -320,7 +413,7 @@ const [loading, setLoading] = useState(true);
             />
             {product.discount && (
               <div className="absolute top-4 left-4">
-                <Badge className="bg-gradient-to-r from-amber-500 to-orange-600 text-white">
+                <Badge className="bg-gradient-to-r from-amber-500 to-orange-600 text-white animate-gradient-border">
                   {product.discount}% OFF
                 </Badge>
               </div>
@@ -328,16 +421,12 @@ const [loading, setLoading] = useState(true);
             {/* Wishlist and Try-On buttons, etc. */}
             <div className="absolute top-4 right-4 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
               <Button
-                size="icon"
-                variant="outline"
                 className="bg-white/90 hover:bg-white"
                 onClick={() => toggleWishlist(product.id)}
               >
                 <Heart className={`w-4 h-4 ${wishlist.includes(product.id) ? 'fill-red-500 text-red-500' : ''}`} />
               </Button>
               <Button
-                size="icon"
-                variant="outline"
                 className="bg-white/90 hover:bg-white"
                 onClick={() => {
                   setSelectedProduct(product as Product);
@@ -368,14 +457,13 @@ const [loading, setLoading] = useState(true);
             </div>
             <div className="flex gap-2 mb-3">
               <Button 
-                className="flex-1 bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-700 hover:to-orange-700"
+                className="flex-1 bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-700 hover:to-orange-700 btn-animated"
                 onClick={() => handleAddToCart(product)}
               >
                 Add to Cart
               </Button>
               <Button 
-                variant="outline" 
-                size="icon"
+                className=""
                 onClick={() => openWhatsApp(`Hi! I'm interested in ${product.name}. Can you provide more details?`)}
               >
                 <MessageCircle className="w-4 h-4" />
@@ -393,7 +481,10 @@ const [loading, setLoading] = useState(true);
       <div className="p-6 space-y-6">
         <div className="flex items-center justify-between lg:justify-center">
           <h2 className="text-xl font-bold text-gray-900">Filters</h2>
-          <Button variant="ghost" size="icon" className="lg:hidden" onClick={onClose}>
+          <Button
+            className="lg:hidden"
+            onClick={onClose}
+          >
             <X className="w-5 h-5" />
           </Button>
         </div>
@@ -468,7 +559,6 @@ const [loading, setLoading] = useState(true);
         </div>
 
         <Button 
-          variant="outline" 
           className="w-full"
           onClick={() => {
             setSelectedCategory("All");
@@ -506,93 +596,93 @@ const [loading, setLoading] = useState(true);
   };
 
   return (
-    <div className={`min-h-screen ${festiveMode ? 'bg-gradient-to-br from-orange-50 via-amber-50 to-yellow-50 festive-mode' : 'bg-gradient-to-br from-orange-50 to-amber-50'}`}>
+    <div className={`relative min-h-screen flex flex-col justify-between ${festiveMode ? 'bg-gradient-to-br from-orange-50 via-amber-50 to-yellow-50 festive-mode' : 'bg-gradient-to-br from-orange-50 to-amber-50'}`}>
       <Header />
       {/* Hero Section with Dynamic Carousel */}
-      <section className="relative min-h-[60vw] sm:min-h-[70vh] overflow-hidden">
+      <section className="relative h-[60vh] sm:h-[70vh] md:h-[80vh] flex items-center justify-center overflow-hidden">
+        <BrandMotif className="absolute left-8 top-8 w-40 h-40 z-0" style={{ opacity: 0.18 }} />
         {/* Parallax & animated background (hidden on mobile for performance) */}
         <div className="absolute inset-0 z-0 pointer-events-none hidden sm:block">
           {/* Parallax layers */}
           <motion.div 
             className="absolute top-10 left-10 w-32 h-32 bg-gradient-to-r from-amber-400 to-orange-500 rounded-full blur-xl opacity-30"
-            animate={{
-              scale: [1, 1.2, 1],
-              rotate: [0, 180, 360],
-              opacity: [0.3, 0.6, 0.3]
-            }}
+            animate={{ scale: [1, 1.2, 1], rotate: [0, 180, 360], opacity: [0.3, 0.6, 0.3] }}
             transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
-            style={{ y: dragDelta * 0.1 }}
           />
           <motion.div 
             className="absolute top-32 right-20 w-40 h-40 bg-gradient-to-r from-rose-400 to-pink-500 rounded-full blur-xl opacity-25"
-            animate={{
-              scale: [1.2, 1, 1.2],
-              rotate: [360, 180, 0],
-              opacity: [0.25, 0.5, 0.25]
-            }}
+            animate={{ scale: [1.2, 1, 1.2], rotate: [360, 180, 0], opacity: [0.25, 0.5, 0.25] }}
             transition={{ duration: 10, repeat: Infinity, ease: "easeInOut", delay: 2 }}
-            style={{ y: dragDelta * 0.05 }}
           />
           <motion.div 
             className="absolute bottom-20 left-32 w-28 h-28 bg-gradient-to-r from-emerald-400 to-teal-500 rounded-full blur-xl opacity-30"
-            animate={{
-              scale: [1, 1.3, 1],
-              rotate: [0, -180, -360],
-              opacity: [0.3, 0.7, 0.3]
-            }}
+            animate={{ scale: [1, 1.3, 1], rotate: [0, -180, -360], opacity: [0.3, 0.7, 0.3] }}
             transition={{ duration: 6, repeat: Infinity, ease: "easeInOut", delay: 4 }}
-            style={{ y: dragDelta * 0.08 }}
           />
           {/* Sparkling effects */}
-          {[...Array(15)].map((_, i) => (
-            <motion.div
-              key={i}
-              className="absolute w-2 h-2 bg-gradient-to-r from-yellow-400 to-amber-500 rounded-full"
-              style={{
-                left: `${Math.random() * 100}%`,
-                top: `${Math.random() * 100}%`,
-              }}
-              animate={{
-                scale: [0, 1, 0],
-                opacity: [0, 1, 0],
-                rotate: [0, 180, 360]
-              }}
-              transition={{
-                duration: Math.random() * 3 + 2,
-                repeat: Infinity,
-                delay: Math.random() * 5,
-                ease: "easeInOut"
-              }}
-            />
-          ))}
+          <SparkleOverlay count={18} />
         </div>
-        {/* In the carousel overlay, set z-0 and pointer-events-none to ensure it does not block clicks */}
-        <div className="absolute inset-0 bg-gradient-to-r from-purple-900/70 via-pink-900/50 to-orange-900/70 z-0 pointer-events-none" />
         {/* Carousel Background */}
-        <div className="absolute inset-0">
-          <AnimatePresence mode="wait">
-            {displayCarouselImages[currentCarouselSlide] && (
-              <motion.img
-                key={displayCarouselImages[currentCarouselSlide].id}
-                src={displayCarouselImages[currentCarouselSlide].image_url}
-                alt={displayCarouselImages[currentCarouselSlide].title}
-                className="w-full h-full object-cover select-none sm:rounded-lg"
-                initial={{ opacity: 0, scale: 1.1 }}
-                animate={{ opacity: 1, scale: 1 + Math.abs(dragDelta) / 1000 }}
-                exit={{ opacity: 0, scale: 0.9 }}
-                transition={{ duration: 0.7, ease: 'easeInOut' }}
-                style={{ x: dragDelta * 0.2 }}
-                draggable={false}
-                onTouchStart={handleDragStart}
-                onTouchMove={handleDragMove}
-                onTouchEnd={handleDragEnd}
-                onMouseDown={handleDragStart}
-                onMouseMove={dragStartX !== null ? handleDragMove : undefined}
-                onMouseUp={handleDragEnd}
-                onMouseLeave={handleDragEnd}
-              />
-            )}
-          </AnimatePresence>
+        <AnimatePresence mode="wait">
+          {displayCarouselImages[currentCarouselSlide] && (
+            <motion.img
+              key={displayCarouselImages[currentCarouselSlide].id}
+              src={displayCarouselImages[currentCarouselSlide].image_url}
+              alt={displayCarouselImages[currentCarouselSlide].title}
+              className="w-full h-full object-cover select-none sm:rounded-lg shadow-2xl"
+              initial={{ opacity: 0, scale: 1.1 }}
+              animate={{ opacity: 1, scale: 1 + Math.abs(dragDelta) / 1000 }}
+              exit={{ opacity: 0, scale: 0.9 }}
+              transition={{ duration: 0.7, ease: 'easeInOut' }}
+              style={{ x: dragDelta * 0.2 }}
+              draggable={false}
+              onTouchStart={handleDragStart}
+              onTouchMove={handleDragMove}
+              onTouchEnd={handleDragEnd}
+              onMouseDown={handleDragStart}
+              onMouseMove={dragStartX !== null ? handleDragMove : undefined}
+              onMouseUp={handleDragEnd}
+              onMouseLeave={handleDragEnd}
+            />
+          )}
+        </AnimatePresence>
+        {/* Carousel Overlay Content */}
+        <div className="absolute inset-0 flex flex-col items-center justify-center z-10 text-center">
+          <motion.h1
+            className="text-4xl sm:text-5xl md:text-6xl font-bold text-white drop-shadow-lg font-playfair mb-4 tracking-wide"
+            initial={{ opacity: 0, y: 40 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1 }}
+          >
+            {/* Only show title if it's not just a number */}
+            {(() => {
+              const title = displayCarouselImages[currentCarouselSlide]?.title;
+              // Hide if title is only a number (integer or float)
+              if (typeof title === 'string' && title.trim().match(/^\d+(\.\d+)?$/)) {
+                return null;
+              }
+              return title;
+            })()}
+          </motion.h1>
+          <motion.p
+            className="text-lg sm:text-2xl md:text-3xl text-white/90 mb-8 max-w-2xl mx-auto drop-shadow-md"
+            initial={{ opacity: 0, y: 40 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1.2, delay: 0.2 }}
+          >
+            {displayCarouselImages[currentCarouselSlide]?.subtitle}
+          </motion.p>
+          <motion.div
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 1.3, delay: 0.4 }}
+          >
+            <Link href={displayCarouselImages[currentCarouselSlide]?.button_link || "/collections"}>
+              <Button className="px-8 py-3 text-lg font-semibold bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 rounded-full shadow-xl border-0 animate-gradient-border">
+                {displayCarouselImages[currentCarouselSlide]?.button_text || "Shop Now"}
+              </Button>
+            </Link>
+          </motion.div>
         </div>
         {/* Carousel Navigation & Drag/Swipe */}
         <div
@@ -633,20 +723,22 @@ const [loading, setLoading] = useState(true);
             ))}
           </div>
         </div>
-        {/* No overlay content: only animated carousel images and navigation remain */}
       </section>
+      <TrustBadges />
+      <WavyDivider color="#fbbf24" />
 
 
       {/* Jewels of India - Storytelling Section */}
-      <section className="py-16 bg-white">
-        <div className="container mx-auto px-2 sm:px-4">
+      <section className="py-16 bg-white relative">
+        <BrandMotif className="absolute right-8 bottom-8 w-32 h-32 z-0" style={{ opacity: 0.13 }} />
+        <div className="container mx-auto px-2 sm:px-4 relative z-10">
           <motion.div
             className="text-center mb-12"
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
           >
-            <h2 className="text-4xl font-bold text-gray-900 mb-4 font-playfair">Jewels of India</h2>
+            <h2 className="luxury-heading mb-4">Jewels of India</h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
               Each piece in our collection tells a story of India&apos;s rich cultural heritage, 
               passed down through generations of master craftsmen.
@@ -656,12 +748,11 @@ const [loading, setLoading] = useState(true);
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {featuredProducts.map((product, index) => {
               let imageSrc = product.image_url && product.image_url.trim() !== '' ? product.image_url : '/alankarika-logo.png';
-              // Remove accidental double slashes (except after 'https://')
-              imageSrc = imageSrc.replace(/([^:]\/)\/+/, '$1');
+              imageSrc = imageSrc.replace(/([^:]\/)\/+/g, '$1');
               return (
                 <motion.div
                   key={product.id}
-                  className="text-center"
+                  className="text-center card-animated"
                   initial={{ opacity: 0, y: 30 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.6, delay: index * 0.2 }}
@@ -675,6 +766,7 @@ const [loading, setLoading] = useState(true);
                       className="w-full h-64 sm:h-72 md:h-80 object-cover rounded-lg shadow-lg"
                       onError={(e) => { (e.target as HTMLImageElement).src = '/alankarika-logo.png'; }}
                     />
+                    <SparkleOverlay count={8} className="z-10" />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent rounded-lg" />
                     <div className="absolute bottom-4 left-4 text-white">
                       <h3 className="font-bold text-lg">{product.name}</h3>
@@ -687,6 +779,7 @@ const [loading, setLoading] = useState(true);
           </div>
         </div>
       </section>
+      <WavyDivider color="#f43f5e" flip />
 
       {/* Main Content */}
       <div className="container mx-auto px-2 sm:px-4 py-8">
@@ -699,10 +792,10 @@ const [loading, setLoading] = useState(true);
           {/* Product Grid */}
           <div className="flex-1">
             <div className="flex items-center justify-between mb-8">
-              <h2 className="text-3xl font-bold text-gray-900">Our Collection</h2>
+              <h2 className="luxury-heading">Our Collection</h2>
               <Button
                 variant="outline"
-                className="lg:hidden"
+                className="lg:hidden btn-animated"
                 onClick={() => setIsMobileMenuOpen(true)}
               >
                 <Menu className="w-4 h-4 mr-2" />
@@ -724,6 +817,7 @@ const [loading, setLoading] = useState(true);
           </div>
         </div>
       </div>
+      <WavyDivider color="#fbbf24" />
 
       {/* Customer Reviews Section */}
       <section className="py-16 bg-gray-50">
@@ -737,49 +831,55 @@ const [loading, setLoading] = useState(true);
             <h2 className="text-4xl font-bold text-gray-900 mb-4 font-playfair">What Our Customers Say</h2>
             <p className="text-xl text-gray-600">Real experiences from our jewelry family</p>
           </motion.div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {customerReviews.map((review, index) => (
-              <motion.div
-                key={review.id}
-                className="bg-white p-6 rounded-lg shadow-lg"
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: index * 0.2 }}
-              >
-                <div className="flex items-center gap-4 mb-4">
-                  <Image
-                    src={review.customerPhoto}
-                    alt={review.name}
-                    width={48}
-                    height={48}
-                    className="w-12 h-12 rounded-full object-cover"
-                  />
-                  <div>
-                    <h4 className="font-semibold text-gray-900">{review.name}</h4>
-                    <div className="flex items-center gap-1">
-                      {[...Array(5)].map((_, i) => (
-                        <Star key={i} className={`w-4 h-4 ${i < review.rating ? 'fill-yellow-400 text-yellow-400' : 'text-gray-300'}`} />
-                      ))}
+          <div className="relative">
+            <motion.div
+              className="flex gap-8 overflow-x-auto pb-4"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.7 }}
+            >
+              {customerReviews.map((review, index) => (
+                <motion.div
+                  key={review.id}
+                  className="bg-white p-6 rounded-lg shadow-lg min-w-[320px] max-w-xs mx-auto card-animated"
+                  initial={{ opacity: 0, y: 30 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6, delay: index * 0.2 }}
+                >
+                  <div className="flex items-center gap-4 mb-4">
+                    <Image
+                      src={review.customerPhoto}
+                      alt={review.name}
+                      width={48}
+                      height={48}
+                      className="w-12 h-12 rounded-full object-cover"
+                    />
+                    <div>
+                      <h4 className="font-semibold text-gray-900">{review.name}</h4>
+                      <div className="flex items-center gap-1">
+                        {[...Array(5)].map((_, i) => (
+                          <Star key={i} className={`w-4 h-4 ${i < review.rating ? 'fill-yellow-400 text-yellow-400' : 'text-gray-300'}`} />
+                        ))}
+                      </div>
                     </div>
                   </div>
-                </div>
-                <p className="text-gray-600 mb-4">{review.comment}</p>
-                <div className="flex items-center gap-2">
-                  <Image
-                    src={review.image}
-                    alt={review.product}
-                    width={40}
-                    height={40}
-                    className="w-10 h-10 rounded object-cover"
-                  />
-                  <div>
-                    <p className="text-sm font-medium text-gray-900">{review.product}</p>
-                    <p className="text-xs text-gray-500">{review.date}</p>
+                  <p className="text-gray-600 mb-4">{review.comment}</p>
+                  <div className="flex items-center gap-2">
+                    <Image
+                      src={review.image}
+                      alt={review.product}
+                      width={40}
+                      height={40}
+                      className="w-10 h-10 rounded object-cover"
+                    />
+                    <div>
+                      <p className="text-sm font-medium text-gray-900">{review.product}</p>
+                      <p className="text-xs text-gray-500">{review.date}</p>
+                    </div>
                   </div>
-                </div>
-              </motion.div>
-            ))}
+                </motion.div>
+              ))}
+            </motion.div>
           </div>
         </div>
       </section>
@@ -809,7 +909,7 @@ const [loading, setLoading] = useState(true);
                 <Button 
                   variant="link" 
                   className="p-0 h-auto text-amber-600"
-                  onClick={() => openWhatsApp(`Hi! I&apos;d like to try ${(selectedProduct as Product | null)?.name ?? ''}. Can we schedule a visit?`)}
+                  onClick={() => openWhatsApp(`Hi! I'd like to try ${(selectedProduct as Product | null)?.name ?? ''}. Can we schedule a visit?`)}
                 >
                   Schedule a visit
                 </Button>
@@ -827,9 +927,8 @@ const [loading, setLoading] = useState(true);
         transition={{ delay: 1 }}
       >
         <Button
-          size="lg"
           aria-label="Chat on WhatsApp"
-          className="bg-white hover:bg-white border-2 border-green-500 rounded-full w-16 h-16 flex items-center justify-center shadow-lg hover:shadow-green-400/60 hover:scale-105 transition-transform duration-200"
+          className="bg-white hover:bg-white border-2 border-green-500 rounded-full w-16 h-16 flex items-center justify-center shadow-lg hover:shadow-green-400/60 hover:scale-105 transition-transform duration-200 animate-wa-bounce"
           onClick={() => { console.log('WhatsApp button clicked'); openWhatsApp(); }}
         >
           <img src="/whatsapp-logo.png" width={36} height={36} alt="WhatsApp" style={{ display: 'block' }} />
@@ -916,6 +1015,7 @@ const [loading, setLoading] = useState(true);
           </div>
         </div>
       </footer>
+      {festiveMode && <Confetti />}
     </div>
   );
 }
