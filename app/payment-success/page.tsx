@@ -122,7 +122,7 @@ export default function PaymentSuccess() {
   };
 
   const openWhatsApp = () => {
-    const phoneNumber = "9769432565";
+    const phoneNumber = "9167261572";
     const message = encodeURIComponent(`Hi! I just completed my payment for Order ID: ${orderData?.id}. Can you provide me with the order tracking details?`);
     window.open(`https://wa.me/${phoneNumber}?text=${message}`, '_blank');
   };
@@ -579,7 +579,7 @@ export default function PaymentSuccess() {
                   <strong>Thank you for your purchase from अलंकारिका!</strong>
                 </div>
                 <div style={{ fontSize: '14px' }}>
-                  For any queries, contact us at akrutiutekar@gmail.com | +91 9769432565
+                  For any queries, contact us at alankarikaa@gmail.com | +91 9167261572
                 </div>
                 <div style={{ fontSize: '12px', marginTop: '10px' }}>
                   This is a computer-generated receipt and does not require a signature.

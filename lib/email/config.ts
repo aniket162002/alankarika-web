@@ -22,6 +22,6 @@ export const verifyEmailConfig = async () => {
   }
 };
 
-export const adminEmail = process.env.ADMIN_EMAIL || 'akrutiutekar@gmail.com';
+export const adminEmail = process.env.ADMIN_EMAIL || 'alankarikaa@gmail.com';
 export const companyName = 'अलंकारिका';
-export const companyEmail = process.env.COMPANY_EMAIL || 'akrutiutekar@gmail.com';
+export const companyEmail = process.env.COMPANY_EMAIL || 'alankarikaa@gmail.com';

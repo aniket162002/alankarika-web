@@ -479,7 +479,7 @@ const [loading, setLoading] = useState(true);
   };
 
   const openWhatsApp = (message: string = "Hello! I'm interested in your jewelry collection.") => {
-    const phoneNumber = "9769432565";
+    const phoneNumber = "9167261572";
     const encodedMessage = encodeURIComponent(message);
     window.open(`https://wa.me/${phoneNumber}?text=${encodedMessage}`, '_blank');
   };
@@ -1102,11 +1102,11 @@ const [loading, setLoading] = useState(true);
               <div className="mt-4 space-y-2 text-gray-400">
                 <div className="flex items-center gap-2">
                   <Phone className="w-4 h-4" />
-                  <span>+91 9769432565</span>
+                  <span>+91 9167261572</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <Mail className="w-4 h-4" />
-                  <span>akrutiutekar@gmail.com</span>
+                  <span>alankarikaa@gmail.com</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <MapPin className="w-4 h-4" />
