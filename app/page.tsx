@@ -24,6 +24,12 @@ import { useSupabaseRealtime } from '@/hooks/useSupabaseRealtime';
 import { useUser } from '@/hooks/useUser';
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from '@/components/ui/dropdown-menu';
 import Header from '@/components/ui/Header';  
+import FlyToCart from '@/components/ui/FlyToCart';
+import Player from 'lottie-react';
+import successLottie from '@/components/lottie/success.json';
+import loadingLottie from '@/components/lottie/loading.json';
+import emptyLottie from '@/components/lottie/empty.json';
+import CountdownTimer from '@/components/ui/CountdownTimer';
 
 // Update Product type to match Supabase schema
 // Fetch product data from Supabase
@@ -56,6 +62,7 @@ interface Product {
   in_stock?: boolean;
   created_at?: string;
   story?: string;
+  images?: string[]; // Added images array
   [key: string]: any;
 }
 
@@ -136,32 +143,41 @@ const fetchCarouselSlides = async () => {
   return data as CarouselSlide[];
 };
 
-// 1. Add a SparkleOverlay component for animated sparkles
-const SparkleOverlay = ({ count = 18, className = "" }) => (
-  <>
-    {[...Array(count)].map((_, i) => (
-      <motion.div
-        key={i}
-        className={`absolute w-2 h-2 bg-gradient-to-r from-yellow-400 to-amber-500 rounded-full pointer-events-none ${className}`}
-        style={{
-          left: `${Math.random() * 100}%`,
-          top: `${Math.random() * 100}%`,
-        }}
-        animate={{
-          scale: [0, 1.2, 0.8, 1, 0],
-          opacity: [0, 1, 0.7, 1, 0],
-          rotate: [0, 180, 360]
-        }}
-        transition={{
-          duration: Math.random() * 2 + 2.5,
-          repeat: Infinity,
-          delay: Math.random() * 5,
-          ease: "easeInOut"
-        }}
-      />
-    ))}
-  </>
-);
+// Refactored SparkleOverlay to avoid hydration errors
+const SparkleOverlay = ({ count = 18, className = "" }) => {
+  const [positions, setPositions] = useState<{ left: string; top: string }[]>([]);
+  useEffect(() => {
+    // Only run on client
+    setPositions(
+      Array.from({ length: count }, () => ({
+        left: `${Math.random() * 100}%`,
+        top: `${Math.random() * 100}%`,
+      }))
+    );
+  }, [count]);
+  return (
+    <>
+      {positions.map((pos, i) => (
+        <motion.div
+          key={i}
+          className={`absolute w-2 h-2 bg-gradient-to-r from-yellow-400 to-amber-500 rounded-full pointer-events-none ${className}`}
+          style={pos}
+          animate={{
+            scale: [0, 1.2, 0.8, 1, 0],
+            opacity: [0, 1, 0.7, 1, 0],
+            rotate: [0, 180, 360]
+          }}
+          transition={{
+            duration: Math.random() * 2 + 2.5,
+            repeat: Infinity,
+            delay: Math.random() * 5,
+            ease: "easeInOut"
+          }}
+        />
+      ))}
+    </>
+  );
+};
 
 // Add a WavyDivider component
 const WavyDivider = ({ flip = false, color = '#fbbf24' }) => (
@@ -199,35 +215,53 @@ const TrustBadges = () => (
 );
 
 // Add a Confetti component for festive mode
-const Confetti = () => (
-  <div className="confetti">
-    {[...Array(40)].map((_, i) => (
-      <motion.div
-        key={i}
-        className="absolute rounded-full"
-        style={{
-          left: `${Math.random() * 100}vw`,
-          top: `${Math.random() * 100}vh`,
-          width: `${Math.random() * 8 + 6}px`,
-          height: `${Math.random() * 8 + 6}px`,
-          background: `linear-gradient(135deg, #fbbf24, #f43f5e, #6366f1, #10b981)`,
-          opacity: 0.7
-        }}
-        animate={{
-          y: [0, Math.random() * 120 + 60],
-          rotate: [0, 360],
-          opacity: [0.7, 0.9, 0.7]
-        }}
-        transition={{
-          duration: Math.random() * 2 + 2.5,
-          repeat: Infinity,
-          delay: Math.random() * 2,
-          ease: "easeInOut"
-        }}
-      />
-    ))}
-  </div>
-);
+const Confetti = () => {
+  const [confetti, setConfetti] = useState<any[]>([]);
+  useEffect(() => {
+    setConfetti(
+      Array.from({ length: 40 }, () => ({
+        left: `${Math.random() * 100}vw`,
+        top: `${Math.random() * 100}vh`,
+        width: `${Math.random() * 8 + 6}px`,
+        height: `${Math.random() * 8 + 6}px`,
+        duration: Math.random() * 2 + 2.5,
+        delay: Math.random() * 2,
+        y: Math.random() * 120 + 60,
+        rotate: Math.random() * 360,
+      }))
+    );
+  }, []);
+  if (confetti.length === 0) return null;
+  return (
+    <div className="confetti">
+      {confetti.map((c, i) => (
+        <motion.div
+          key={i}
+          className="absolute rounded-full"
+          style={{
+            left: c.left,
+            top: c.top,
+            width: c.width,
+            height: c.height,
+            background: `linear-gradient(135deg, #fbbf24, #f43f5e, #6366f1, #10b981)`,
+            opacity: 0.7
+          }}
+          animate={{
+            y: [0, c.y],
+            rotate: [0, c.rotate],
+            opacity: [0.7, 0.9, 0.7]
+          }}
+          transition={{
+            duration: c.duration,
+            repeat: Infinity,
+            delay: c.delay,
+            ease: "easeInOut"
+          }}
+        />
+      ))}
+    </div>
+  );
+};
 
 export default function Home() {
   const [products, setProducts] = useState<Product[]>([]);
@@ -252,6 +286,19 @@ const [loading, setLoading] = useState(true);
   const { user, logout, loading: userLoading } = useUser();
   const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false);
   const profileDropdownRef = useRef<HTMLDivElement>(null);
+  const [flyToCartState, setFlyToCartState] = useState({ visible: false, from: { x: 0, y: 0, width: 0, height: 0 }, to: { x: 0, y: 0, width: 0, height: 0 }, image: '' });
+  const [showSuccess, setShowSuccess] = useState(false);
+  const [countdown, setCountdown] = useState<any>(null);
+  useEffect(() => {
+    fetch('/api/countdown')
+      .then(res => {
+        if (!res.ok) return null;
+        return res.text().then(text => text ? JSON.parse(text) : null);
+      })
+      .then(data => {
+        if (data && data.success && data.timer) setCountdown(data.timer);
+      });
+  }, []);
 
   // Close dropdown on outside click
   useEffect(() => {
@@ -294,6 +341,50 @@ const [loading, setLoading] = useState(true);
 
     loadData();
   }, []);
+
+  // Fetch wishlist from API if logged in
+  useEffect(() => {
+    if (!user) return;
+    fetch('/api/user/wishlist')
+      .then(res => {
+        if (!res.ok) return null;
+        return res.text().then(text => text ? JSON.parse(text) : null);
+      })
+      .then(data => {
+        if (data && data.success) {
+          setWishlist(data.wishlist.map((w: any) => w.product_id));
+        }
+      });
+  }, [user]);
+
+  // Toggle wishlist with API
+  const toggleWishlist = async (productId: string) => {
+    if (!user) {
+      setWishlist((prev: string[]) =>
+        prev.includes(productId)
+          ? prev.filter((id) => id !== productId)
+          : [...prev, productId]
+      );
+      return;
+    }
+    if (wishlist.includes(productId)) {
+      // Remove from wishlist
+      setWishlist(prev => prev.filter(id => id !== productId));
+      await fetch('/api/user/wishlist', {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ product_id: productId })
+      });
+    } else {
+      // Add to wishlist
+      setWishlist(prev => [...prev, productId]);
+      await fetch('/api/user/wishlist', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ product_id: productId })
+      });
+    }
+  };
 
   // Fallback carousel images if no data from Supabase
   const fallbackCarouselImages = [
@@ -366,17 +457,25 @@ const [loading, setLoading] = useState(true);
 
   const featuredProducts = products.slice(0, 3);
 
-  const handleAddToCart = (product: Product) => {
+  const handleAddToCart = (product: Product, e?: React.MouseEvent) => {
+    // Find image position
+    if (e) {
+      const img = (e.currentTarget.closest('.card-animated') as HTMLElement)?.querySelector('img');
+      const cartIcon = document.getElementById('cart-icon');
+      if (img && cartIcon) {
+        const imgRect = img.getBoundingClientRect();
+        const cartRect = cartIcon.getBoundingClientRect();
+        setFlyToCartState({
+          visible: true,
+          from: { x: imgRect.left, y: imgRect.top, width: imgRect.width, height: imgRect.height },
+          to: { x: cartRect.left, y: cartRect.top, width: cartRect.width, height: cartRect.height },
+          image: img.src
+        });
+      }
+    }
     addToCart(product);
-    // Show a better notification
-  };
-
-  const toggleWishlist = (productId: string) => {
-    setWishlist((prev: string[]) =>
-      prev.includes(productId)
-        ? prev.filter((id) => id !== productId)
-        : [...prev, productId]
-    );
+    setShowSuccess(true);
+    setTimeout(() => setShowSuccess(false), 1200);
   };
 
   const openWhatsApp = (message: string = "Hello! I'm interested in your jewelry collection.") => {
@@ -391,10 +490,14 @@ const [loading, setLoading] = useState(true);
     setNewsletterEmail("");
   };
 
-  // Update ProductCard to use image_url and fallback logic
-  const ProductCard = ({ product }: { product: Product }) => {
-    let imageSrc = product.image_url && product.image_url.trim() !== '' ? product.image_url : '/alankarika-logo.png';
-    imageSrc = imageSrc.replace(/([^:]\/)\/+/, '$1');
+  // Update ProductCard to use images array for alternate angles
+  const ProductCard = ({ product, onAddToCart }: { product: Product, onAddToCart: (product: Product, e?: React.MouseEvent) => void }) => {
+    // Use images array if available, else fallback to image_url, else fallback to logo
+    let images: string[] = Array.isArray(product.images) ? product.images : [];
+    let mainImage = images[0] || product.image_url || '/alankarika-logo.png';
+    let hoverImage = images[1] || mainImage;
+    mainImage = mainImage.replace(/([^:]\/)\/+/g, '$1');
+    hoverImage = hoverImage.replace(/([^:]\/)\/+/g, '$1');
     return (
       <motion.div
         whileHover={{ y: -5 }}
@@ -403,14 +506,29 @@ const [loading, setLoading] = useState(true);
       >
         <Card className="overflow-hidden border-0 shadow-lg hover:shadow-xl transition-shadow duration-300 card-animated">
           <div className="relative overflow-hidden">
-            <Image
-              src={imageSrc}
-              alt={product.name}
-              width={400}
-              height={256}
-              className="w-full h-64 sm:h-72 md:h-80 object-cover group-hover:scale-110 transition-transform duration-500 rounded-lg"
-              onError={(e) => { (e.target as HTMLImageElement).src = '/alankarika-logo.png'; }}
-            />
+            <div className="w-full h-64 sm:h-72 md:h-80 relative">
+              <Image
+                src={mainImage}
+                alt={product.name}
+                width={400}
+                height={256}
+                className="w-full h-64 sm:h-72 md:h-80 object-cover rounded-lg transition-transform duration-500 group-hover:scale-110 absolute top-0 left-0 z-10"
+                onError={(e) => { (e.target as HTMLImageElement).src = '/alankarika-logo.png'; }}
+                style={{ opacity: 1, transition: 'opacity 0.4s' }}
+              />
+              {/* Show hover image on hover if available */}
+              {hoverImage !== mainImage && (
+                <Image
+                  src={hoverImage}
+                  alt={product.name + ' alternate'}
+                  width={400}
+                  height={256}
+                  className="w-full h-64 sm:h-72 md:h-80 object-cover rounded-lg transition-transform duration-500 group-hover:scale-110 absolute top-0 left-0 z-20 opacity-0 group-hover:opacity-100"
+                  onError={(e) => { (e.target as HTMLImageElement).src = '/alankarika-logo.png'; }}
+                  style={{ transition: 'opacity 0.4s' }}
+                />
+              )}
+            </div>
             {product.discount && (
               <div className="absolute top-4 left-4">
                 <Badge className="bg-gradient-to-r from-amber-500 to-orange-600 text-white animate-gradient-border">
@@ -458,7 +576,7 @@ const [loading, setLoading] = useState(true);
             <div className="flex gap-2 mb-3">
               <Button 
                 className="flex-1 bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-700 hover:to-orange-700 btn-animated"
-                onClick={() => handleAddToCart(product)}
+                onClick={(e) => onAddToCart(product, e)}
               >
                 Add to Cart
               </Button>
@@ -595,8 +713,23 @@ const [loading, setLoading] = useState(true);
     setDragDelta(0);
   };
 
+  if (loading) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[40vh]">
+        <Player autoplay loop animationData={loadingLottie} style={{ height: 120, width: 120 }} />
+        <p className="mt-4 text-lg text-gray-500">Loading products...</p>
+      </div>
+    );
+  }
+
   return (
     <div className={`relative min-h-screen flex flex-col justify-between ${festiveMode ? 'bg-gradient-to-br from-orange-50 via-amber-50 to-yellow-50 festive-mode' : 'bg-gradient-to-br from-orange-50 to-amber-50'}`}>
+      {/* Countdown Timer (if active) */}
+      {countdown && (
+        <div className="py-8 animate-fade-in">
+          <CountdownTimer endTime={countdown.end_time} title={countdown.title} description={countdown.description} />
+        </div>
+      )}
       <Header />
       {/* Hero Section with Dynamic Carousel */}
       <section className="relative h-[60vh] sm:h-[70vh] md:h-[80vh] flex items-center justify-center overflow-hidden">
@@ -786,7 +919,7 @@ const [loading, setLoading] = useState(true);
         <div className="flex gap-8">
           {/* Filters Sidebar - Desktop */}
           <div className="hidden lg:block w-80 flex-shrink-0">
-            <FilterSidebar isOpen={true} onClose={() => {}} />
+            <FilterSidebar isOpen={isMobileMenuOpen} onClose={() => setIsMobileMenuOpen(false)} />
           </div>
 
           {/* Product Grid */}
@@ -805,13 +938,14 @@ const [loading, setLoading] = useState(true);
 
             <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-8">
               {filteredProducts.map((product) => (
-                <ProductCard key={product.id} product={product} />
+                <ProductCard key={product.id} product={product} onAddToCart={handleAddToCart} />
               ))}
             </div>
 
             {filteredProducts.length === 0 && (
-              <div className="text-center py-12">
-                <p className="text-gray-500 text-lg">No products found matching your criteria.</p>
+              <div className="flex flex-col items-center justify-center py-12">
+                <Player autoplay loop animationData={emptyLottie} style={{ height: 120, width: 120 }} />
+                <p className="mt-4 text-lg text-gray-500">No products found matching your criteria.</p>
               </div>
             )}
           </div>
@@ -919,22 +1053,6 @@ const [loading, setLoading] = useState(true);
         </DialogContent>
       </Dialog>
 
-      {/* WhatsApp Floating Button */}
-      <motion.div
-        className="fixed bottom-6 right-6 z-50"
-        initial={{ scale: 0 }}
-        animate={{ scale: 1 }}
-        transition={{ delay: 1 }}
-      >
-        <Button
-          aria-label="Chat on WhatsApp"
-          className="bg-white hover:bg-white border-2 border-green-500 rounded-full w-16 h-16 flex items-center justify-center shadow-lg hover:shadow-green-400/60 hover:scale-105 transition-transform duration-200 animate-wa-bounce"
-          onClick={() => { console.log('WhatsApp button clicked'); openWhatsApp(); }}
-        >
-          <img src="/whatsapp-logo.png" width={36} height={36} alt="WhatsApp" style={{ display: 'block' }} />
-        </Button>
-      </motion.div>
-
       {/* Footer */}
       <footer className="bg-gray-900 text-white py-12">
         <div className="container mx-auto px-2 sm:px-4">
@@ -1016,6 +1134,23 @@ const [loading, setLoading] = useState(true);
         </div>
       </footer>
       {festiveMode && <Confetti />}
+      <FlyToCart
+        image={flyToCartState.image}
+        from={flyToCartState.from}
+        to={flyToCartState.to}
+        visible={flyToCartState.visible}
+        onComplete={() => setFlyToCartState(s => ({ ...s, visible: false }))}
+      />
+      {showSuccess && (
+        <div className="fixed top-20 left-1/2 transform -translate-x-1/2 z-[9999]">
+          <Player
+            autoplay
+            loop={false}
+            animationData={successLottie}
+            style={{ height: 80, width: 80 }}
+          />
+        </div>
+      )}
     </div>
   );
 }

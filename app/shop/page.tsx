@@ -18,6 +18,11 @@ import { CartIcon } from '@/components/ui/CartIcon';
 import { formatNumber, formatCurrency } from '@/lib/utils/formatNumber';
 import { supabase } from '@/lib/supabase';
 import Header from '@/components/ui/Header';
+import FlyToCart from '@/components/ui/FlyToCart';
+import Player from 'lottie-react';
+import successLottie from '@/components/lottie/success.json';
+import loadingLottie from '@/components/lottie/loading.json';
+import emptyLottie from '@/components/lottie/empty.json';
 
 // Add Product type for proper typing
 interface Product {
@@ -42,6 +47,8 @@ export default function ShopPage() {
   const [priceRange, setPriceRange] = useState([0, 100000]);
   const [sortBy, setSortBy] = useState('featured');
   const [showFilters, setShowFilters] = useState(false);
+  const [flyToCartState, setFlyToCartState] = useState({ visible: false, from: { x: 0, y: 0, width: 0, height: 0 }, to: { x: 0, y: 0, width: 0, height: 0 }, image: '' });
+  const [showSuccess, setShowSuccess] = useState(false);
 
   const { addToCart } = useCart();
 
@@ -75,8 +82,25 @@ export default function ShopPage() {
     }
   });
 
-  const handleAddToCart = (product: any) => {
+  const handleAddToCart = (product: any, e?: React.MouseEvent) => {
+    // Find image position
+    if (e) {
+      const img = (e.currentTarget.closest('.group') as HTMLElement)?.querySelector('img');
+      const cartIcon = document.getElementById('cart-icon');
+      if (img && cartIcon) {
+        const imgRect = img.getBoundingClientRect();
+        const cartRect = cartIcon.getBoundingClientRect();
+        setFlyToCartState({
+          visible: true,
+          from: { x: imgRect.left, y: imgRect.top, width: imgRect.width, height: imgRect.height },
+          to: { x: cartRect.left, y: cartRect.top, width: cartRect.width, height: cartRect.height },
+          image: img.src
+        });
+      }
+    }
     addToCart(product);
+    setShowSuccess(true);
+    setTimeout(() => setShowSuccess(false), 1200);
   };
 
   const categories = ['All', ...Array.from(new Set(products.map(p => p.category).filter(Boolean)))];
@@ -125,9 +149,13 @@ export default function ShopPage() {
     </div>
   );
 
-  const ProductCard = ({ product }: { product: any }) => {
-    let imageSrc = product.image_url && product.image_url.trim() !== '' ? product.image_url : '/alankarika-logo.png';
-    imageSrc = imageSrc.replace(/([^:]\/)\/+/, '$1');
+  const ProductCard = ({ product, onAddToCart }: { product: any, onAddToCart: (product: any, e?: React.MouseEvent) => void }) => {
+    // Use images array if available, else fallback to image_url, else fallback to logo
+    let images: string[] = Array.isArray(product.images) ? product.images : [];
+    let mainImage = images[0] || product.image_url || '/alankarika-logo.png';
+    let hoverImage = images[1] || mainImage;
+    mainImage = mainImage.replace(/([^:]\/)\/+/g, '$1');
+    hoverImage = hoverImage.replace(/([^:]\/)\/+/g, '$1');
     const hasDiscount = typeof product.discount === 'number' && !isNaN(product.discount) && product.discount > 0;
     let originalPrice = hasDiscount ? product.price / (1 - product.discount / 100) : null;
     return (
@@ -138,13 +166,29 @@ export default function ShopPage() {
       >
         <Card className="overflow-hidden border-0 shadow-lg hover:shadow-xl transition-shadow duration-300">
           <div className="relative overflow-hidden">
-            <Image
-              src={imageSrc}
-              alt={product.name || 'Product'}
-              width={400}
-              height={256}
-              className="w-full h-64 object-cover group-hover:scale-110 transition-transform duration-500"
-            />
+            <div className="w-full h-64 relative">
+              <Image
+                src={mainImage}
+                alt={product.name || 'Product'}
+                width={400}
+                height={256}
+                className="w-full h-64 object-cover rounded-lg transition-transform duration-500 group-hover:scale-110 absolute top-0 left-0 z-10"
+                onError={(e) => { (e.target as HTMLImageElement).src = '/alankarika-logo.png'; }}
+                style={{ opacity: 1, transition: 'opacity 0.4s' }}
+              />
+              {/* Show hover image on hover if available */}
+              {hoverImage !== mainImage && (
+                <Image
+                  src={hoverImage}
+                  alt={(product.name || 'Product') + ' alternate'}
+                  width={400}
+                  height={256}
+                  className="w-full h-64 object-cover rounded-lg transition-transform duration-500 group-hover:scale-110 absolute top-0 left-0 z-20 opacity-0 group-hover:opacity-100"
+                  onError={(e) => { (e.target as HTMLImageElement).src = '/alankarika-logo.png'; }}
+                  style={{ transition: 'opacity 0.4s' }}
+                />
+              )}
+            </div>
             {hasDiscount && (
               <div className="absolute top-4 left-4">
                 <Badge className="bg-gradient-to-r from-amber-500 to-orange-600 text-white">
@@ -178,7 +222,7 @@ export default function ShopPage() {
             <Button 
               className="w-full bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-700 hover:to-orange-700"
               disabled={!product.in_stock}
-              onClick={() => handleAddToCart(product)}
+              onClick={(e) => onAddToCart(product, e)}
             >
               <ShoppingCart className="w-4 h-4 mr-2" />
               {product.in_stock ? 'Add to Cart' : 'Out of Stock'}
@@ -188,6 +232,15 @@ export default function ShopPage() {
       </motion.div>
     );
   };
+
+  if (products.length === 0 && !showFilters) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[40vh]">
+        <Player autoplay loop animationData={loadingLottie} style={{ height: 120, width: 120 }} />
+        <p className="mt-4 text-lg text-gray-500">Loading products...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-orange-50 to-amber-50">
@@ -271,29 +324,36 @@ export default function ShopPage() {
             {/* Products Grid */}
             <div className={`grid gap-8 ${viewMode === 'grid' ? 'grid-cols-1 sm:grid-cols-2 xl:grid-cols-3' : 'grid-cols-1'}`}>
               {sortedProducts.map((product) => (
-                <ProductCard key={product.id} product={product} />
+                <ProductCard key={product.id} product={product} onAddToCart={handleAddToCart} />
               ))}
             </div>
 
             {sortedProducts.length === 0 && (
-              <div className="text-center py-12">
-                <p className="text-gray-500 text-lg">No products found matching your criteria.</p>
-                <Button 
-                  variant="outline" 
-                  className="mt-4"
-                  onClick={() => {
-                    setSelectedCategory('All');
-                    setPriceRange([0, 100000]);
-                    setSearchTerm('');
-                  }}
-                >
-                  Clear All Filters
-                </Button>
+              <div className="flex flex-col items-center justify-center py-12">
+                <Player autoplay loop animationData={emptyLottie} style={{ height: 120, width: 120 }} />
+                <p className="mt-4 text-lg text-gray-500">No products found matching your criteria.</p>
               </div>
             )}
           </div>
         </div>
       </div>
+      <FlyToCart
+        image={flyToCartState.image}
+        from={flyToCartState.from}
+        to={flyToCartState.to}
+        visible={flyToCartState.visible}
+        onComplete={() => setFlyToCartState(s => ({ ...s, visible: false }))}
+      />
+      {showSuccess && (
+        <div className="fixed top-20 left-1/2 transform -translate-x-1/2 z-[9999]">
+          <Player
+            autoplay
+            loop={false}
+            animationData={successLottie}
+            style={{ height: 80, width: 80 }}
+          />
+        </div>
+      )}
     </div>
   );
 }

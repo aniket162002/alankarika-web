@@ -1,12 +1,11 @@
 import './globals.css';
 import type { Metadata } from 'next';
 import { Playfair_Display } from 'next/font/google';
-import { CartProvider } from '@/components/cart/CartProvider';
-import { UserProvider } from '@/hooks/useUser';
-import { TooltipProvider } from '@/components/ui/tooltip';
+import { Providers } from './providers';
 import Head from 'next/head';
 import localFont from 'next/font/local';
-import RouteLoaderProvider from '@/components/ui/RouteLoaderProvider';
+import dynamic from 'next/dynamic';
+const FloatingChat = dynamic(() => import('./components/ui/FloatingChat'), { ssr: false });
 
 const inter = localFont({
   src: [
@@ -48,12 +47,12 @@ export default function RootLayout({
         <link rel="icon" type="image/png" sizes="32x32" href="/favicon_io/favicon-32x32.png" />
         <link rel="icon" type="image/png" sizes="16x16" href="/favicon_io/favicon-16x16.png" />
         <link rel="manifest" href="/favicon_io/site.webmanifest" />
-        <link rel="canonical" href="https://alankaarika.com/" />
+        <link rel="canonical" href="https://alankarika-web.vercel.app/" />
         {/* Open Graph */}
         <meta property="og:title" content="अलंकारिका | Where Tradition Meets Elegance" />
         <meta property="og:description" content="Exquisite jewelry where tradition meets elegance. Shop our exclusive collections of Kundan, Meenakari, Gold, and more." />
         <meta property="og:image" content="/alankarika-logo.png" />
-        <meta property="og:url" content="https://alankaarika.com/" />
+        <meta property="og:url" content="https://alankarika-web.vercel.app/" />
         <meta property="og:type" content="website" />
         {/* Twitter Card */}
         <meta name="twitter:card" content="summary_large_image" />
@@ -63,16 +62,11 @@ export default function RootLayout({
       </Head>
       <html lang="en">
         <body className={`${inter.variable} ${playfair.variable} font-sans`}>
-          <RouteLoaderProvider>
-            <TooltipProvider>
-              <UserProvider>
-                <CartProvider>
-                  {children}
-                </CartProvider>
-              </UserProvider>
-            </TooltipProvider>
-          </RouteLoaderProvider>
+          <Providers>
+            {children}
+          </Providers>
         </body>
+        <FloatingChat />
       </html>
     </>
   );

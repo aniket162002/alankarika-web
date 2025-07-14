@@ -16,7 +16,7 @@ import { useCart } from '@/components/cart/CartProvider';
 import { formatNumber, formatCurrency } from '@/lib/utils/formatNumber';
 import type { CartItem } from '@/components/cart/CartProvider';
 import { useUser } from '@/hooks/useUser';
-import LoginRegisterModal from '@/components/ui/LoginRegisterModal';
+import { useRouter } from 'next/navigation';
 import Header from '@/components/ui/Header';
 
 // Sample products data (in real app, this would come from context/state management)
@@ -54,36 +54,40 @@ const products = [
 ];
 
 export default function CartPage() {
-  const [cartItems, setCartItems] = useState<CartItem[]>([]);
+  // Remove local cartItems state
+  // const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [showCheckout, setShowCheckout] = useState(false);
   const [couponCode, setCouponCode] = useState('');
   const [appliedCoupon, setAppliedCoupon] = useState<any>(null);
   
-  const { cartItems: contextCartItems, updateQuantity: contextUpdateQuantity, removeFromCart: contextRemoveFromCart } = useCart();
+  // Use cartItems directly from context
+  const { cartItems, updateQuantity: contextUpdateQuantity, removeFromCart: contextRemoveFromCart } = useCart();
 
   // User auth
   const { user, loading } = useUser();
-  const [showAuthModal, setShowAuthModal] = useState(false);
+  const router = useRouter();
 
   useEffect(() => {
-    if (!user && !loading) setShowAuthModal(true);
-    else setShowAuthModal(false);
-  }, [user, loading]);
+    if (!user && !loading) {
+      router.push('/login?redirect=/cart');
+    }
+  }, [user, loading, router]);
 
-  useEffect(() => {
-    setCartItems(contextCartItems as CartItem[]);
-  }, [contextCartItems]);
+  // Remove useEffect that syncs local cartItems
+  // useEffect(() => {
+  //   setCartItems(contextCartItems as CartItem[]);
+  // }, [contextCartItems]);
 
   const updateQuantity = (productId: number | string, newQuantity: number) => {
     if (newQuantity <= 0) {
       removeFromCart(productId);
       return;
     }
-    contextUpdateQuantity(Number(productId), Number(newQuantity));
+    contextUpdateQuantity(productId, newQuantity);
   };
 
   const removeFromCart = (productId: number | string) => {
-    contextRemoveFromCart(Number(productId));
+    contextRemoveFromCart(productId);
   };
 
   const applyCoupon = () => {
@@ -128,14 +132,7 @@ export default function CartPage() {
 
   return (
     <>
-      {/* Show login modal only if not logged in AND showAuthModal is true */}
-      {!user && showAuthModal && (
-        <LoginRegisterModal 
-          open={showAuthModal} 
-          onClose={() => setShowAuthModal(false)} 
-          onSuccess={() => setShowAuthModal(false)} 
-        />
-      )}
+      {/* Removed old login modal logic. Now redirects to /login if not logged in. */}
 
       {/* Show checkout if requested and user is logged in */}
       {showCheckout && user && (
@@ -144,7 +141,7 @@ export default function CartPage() {
           total={total}
           onBack={() => setShowCheckout(false)}
           onSuccess={() => {
-            setCartItems([]);
+            // setCartItems([]); // This line is removed as per the edit hint
             localStorage.removeItem('alankaarika-cart');
             window.location.href = '/payment-success';
           }}

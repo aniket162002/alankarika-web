@@ -261,3 +261,87 @@
 .animate-logo-pulse {
   animation: logo-pulse 1.8s cubic-bezier(.4,0,.2,1) infinite;
 }
+
+/* Animated gradient border for buttons/cards */
+.animate-gradient-border {
+  background: linear-gradient(90deg, #fbbf24, #f43f5e, #6366f1, #10b981, #fbbf24);
+  background-size: 300% 300%;
+  animation: gradient-border-move 4s ease-in-out infinite;
+}
+@keyframes gradient-border-move {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* Wavy SVG section divider utility */
+.section-divider {
+  width: 100%;
+  height: 60px;
+  display: block;
+  margin: 0;
+  padding: 0;
+}
+
+/* Button hover and card hover enhancements */
+.btn-animated {
+  transition: background 0.4s, box-shadow 0.3s, transform 0.2s;
+  box-shadow: 0 2px 12px 0 #fbbf2440;
+}
+.btn-animated:hover {
+  background: linear-gradient(90deg, #fbbf24, #f43f5e, #6366f1, #10b981, #fbbf24);
+  color: #fff;
+  box-shadow: 0 4px 24px 0 #6366f155, 0 0 12px 4px #fbbf2440;
+  transform: translateY(-2px) scale(1.04);
+}
+.card-animated {
+  transition: box-shadow 0.3s, transform 0.2s, border 0.3s;
+  border: 2px solid transparent;
+}
+.card-animated:hover {
+  box-shadow: 0 8px 32px 0 #fbbf2440, 0 0 0 4px #fbbf2440;
+  border-image: linear-gradient(90deg, #fbbf24, #f43f5e, #6366f1, #10b981, #fbbf24) 1;
+  transform: translateY(-4px) scale(1.03);
+}
+
+/* Responsive typography for luxury headings */
+.luxury-heading {
+  font-size: 2.5rem;
+  letter-spacing: 0.04em;
+  font-family: var(--font-playfair), serif;
+  font-weight: 700;
+}
+@media (min-width: 640px) {
+  .luxury-heading { font-size: 3.5rem; }
+}
+@media (min-width: 1024px) {
+  .luxury-heading { font-size: 4.5rem; }
+}
+
+/* Cart icon bounce animation */
+@keyframes cart-bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-4px) scale(1.08); }
+}
+.animate-cart-bounce {
+  animation: cart-bounce 1.6s infinite cubic-bezier(.4,0,.2,1);
+}
+
+/* WhatsApp floating button bounce/pulse */
+@keyframes wa-bounce {
+  0%, 100% { transform: scale(1); box-shadow: 0 2px 12px #22c55e44; }
+  50% { transform: scale(1.08); box-shadow: 0 6px 24px #22c55e66; }
+}
+.animate-wa-bounce {
+  animation: wa-bounce 1.8s infinite cubic-bezier(.4,0,.2,1);
+}
+
+/* Confetti for festive mode */
+.confetti {
+  position: absolute;
+  pointer-events: none;
+  z-index: 50;
+  width: 100vw;
+  height: 100vh;
+  top: 0; left: 0;
+}

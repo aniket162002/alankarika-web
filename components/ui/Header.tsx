@@ -15,6 +15,10 @@ const NAV_LINKS = [
   { name: 'Reviews', href: '/reviews' },
   { name: 'Contact', href: '/contact' },
 ];
+const AUTH_LINKS = [
+  { name: 'Custom Builder', href: '/custom-builder' },
+  { name: 'Gift Finder Quiz', href: '/gift-quiz' },
+];
 
 export default function Header() {
   const { cartItems } = useCart();
@@ -68,6 +72,16 @@ export default function Header() {
               <span className="absolute left-0 bottom-0 w-full h-0.5 bg-gradient-to-r from-amber-600 to-orange-600 scale-x-0 group-hover:scale-x-100 transition-transform origin-left duration-300" />
             </Link>
           ))}
+          {user && AUTH_LINKS.map((link) => (
+            <Link
+              key={link.name}
+              href={link.href}
+              className="relative px-2 py-1 text-lg font-semibold text-amber-700 hover:text-amber-600 transition-colors duration-200 focus:outline-none"
+            >
+              <span className="z-10 relative">{link.name}</span>
+              <span className="absolute left-0 bottom-0 w-full h-0.5 bg-gradient-to-r from-amber-600 to-orange-600 scale-x-0 group-hover:scale-x-100 transition-transform origin-left duration-300" />
+            </Link>
+          ))}
         </nav>
 
         {/* Cart/Profile */}
@@ -100,6 +114,16 @@ export default function Header() {
                 key={link.name}
                 href={link.href}
                 className="block py-2 text-lg font-medium text-gray-800 hover:text-amber-600 transition-colors duration-200"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                {link.name}
+              </Link>
+            ))}
+            {user && AUTH_LINKS.map((link) => (
+              <Link
+                key={link.name}
+                href={link.href}
+                className="block py-2 text-lg font-semibold text-amber-700 hover:text-amber-600 transition-colors duration-200"
                 onClick={() => setMobileMenuOpen(false)}
               >
                 {link.name}

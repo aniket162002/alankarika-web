@@ -33,24 +33,34 @@ const buttonVariants = cva(
   }
 );
 
+export { buttonVariants };
+
 export interface ButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement>,
     VariantProps<typeof buttonVariants> {
   asChild?: boolean;
 }
 
-const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, variant, size, asChild = false, ...props }, ref) => {
+export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
+  ({ className, children, variant, size, asChild, ...props }, ref) => {
     const Comp = asChild ? Slot : 'button';
     return (
       <Comp
-        className={cn(buttonVariants({ variant, size, className }))}
         ref={ref}
+        className={cn(
+          buttonVariants({ variant, size, className })
+        )}
         {...props}
-      />
+      >
+        <span className="inline-flex items-center gap-2 group">
+          {React.Children.map(children, child =>
+            typeof child === 'object' && child && (child as any).type?.displayName === 'Icon' ? (
+              <span className="transition-transform duration-200 group-hover:translate-x-1">{child}</span>
+            ) : child
+          )}
+        </span>
+      </Comp>
     );
   }
 );
 Button.displayName = 'Button';
-
-export { Button, buttonVariants };

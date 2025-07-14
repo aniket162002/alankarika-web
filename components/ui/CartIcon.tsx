@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { useCart } from '@/components/cart/CartProvider';
 import Link from 'next/link';
+import React from 'react';
 
 export function CartIcon() {
   const { getCartCount } = useCart();

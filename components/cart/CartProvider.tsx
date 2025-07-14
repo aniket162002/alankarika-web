@@ -19,8 +19,8 @@ export interface CartItem {
 interface CartContextType {
   cartItems: CartItem[];
   addToCart: (product: any) => void;
-  removeFromCart: (productId: number) => void;
-  updateQuantity: (productId: number, quantity: number) => void;
+  removeFromCart: (productId: number | string) => void;
+  updateQuantity: (productId: number | string, quantity: number) => void;
   clearCart: () => void;
   getCartTotal: () => number;
   getCartCount: () => number;
@@ -85,11 +85,11 @@ export function CartProvider({ children }: { children: ReactNode }) {
     });
   };
 
-  const removeFromCart = (productId: number) => {
-    setCartItems(prev => prev.filter(item => item.id !== productId));
+  const removeFromCart = (productId: number | string) => {
+    setCartItems(prev => prev.filter(item => item.id != productId));
   };
 
-  const updateQuantity = (productId: number, quantity: number) => {
+  const updateQuantity = (productId: number | string, quantity: number) => {
     if (quantity <= 0) {
       removeFromCart(productId);
       return;
@@ -97,7 +97,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
     
     setCartItems(prev =>
       prev.map(item =>
-        item.id === productId
+        item.id == productId
           ? { ...item, quantity }
           : item
       )
@@ -126,7 +126,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
       getCartTotal,
       getCartCount
     }}>
-      {children}
+      {isLoaded ? children : null}
     </CartContext.Provider>
   );
 }
