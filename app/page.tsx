@@ -805,17 +805,7 @@ const [loading, setLoading] = useState(true);
           >
             {displayCarouselImages[currentCarouselSlide]?.subtitle}
           </motion.p>
-          <motion.div
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 1.3, delay: 0.4 }}
-          >
-            <Link href={displayCarouselImages[currentCarouselSlide]?.button_link || "/collections"}>
-              <Button className="px-8 py-3 text-lg font-semibold bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 rounded-full shadow-xl border-0 animate-gradient-border">
-                {displayCarouselImages[currentCarouselSlide]?.button_text || "Shop Now"}
-              </Button>
-            </Link>
-          </motion.div>
+          {/* Removed the Explore/Shop Now button here */}
         </div>
         {/* Carousel Navigation & Drag/Swipe */}
         <div
