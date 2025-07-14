@@ -204,8 +204,9 @@ const TrustBadges = () => (
       <span className="mt-2 text-sm font-semibold text-gray-700">100% Authentic</span>
     </div>
     <div className="flex flex-col items-center">
-      <svg width="36" height="36" fill="none" viewBox="0 0 36 36"><circle cx="18" cy="18" r="16" fill="#6366f1" fillOpacity="0.13"/><path d="M12 18h12M18 12v12" stroke="#f43f5e" strokeWidth="2.5" fill="none"/></svg>
-      <span className="mt-2 text-sm font-semibold text-gray-700">Easy Returns</span>
+      {/* Gift box icon for Luxury Packaging */}
+      <svg width="36" height="36" fill="none" viewBox="0 0 36 36"><circle cx="18" cy="18" r="16" fill="#f43f5e" fillOpacity="0.13"/><rect x="10" y="16" width="16" height="10" rx="2" fill="#fff7ed" stroke="#fbbf24" strokeWidth="2"/><rect x="10" y="16" width="16" height="4" rx="1" fill="#fde68a" stroke="#fbbf24" strokeWidth="1.5"/><path d="M18 16v10" stroke="#fbbf24" strokeWidth="2"/><path d="M14 16c0-2 2-4 4-4s4 2 4 4" stroke="#f43f5e" strokeWidth="1.5" fill="none"/></svg>
+      <span className="mt-2 text-sm font-semibold text-gray-700">Luxury Packaging</span>
     </div>
     <div className="flex flex-col items-center">
       <svg width="36" height="36" fill="none" viewBox="0 0 36 36"><circle cx="18" cy="18" r="16" fill="#10b981" fillOpacity="0.13"/><path d="M12 24l6-12 6 12" stroke="#fbbf24" strokeWidth="2.5" fill="none"/></svg>
