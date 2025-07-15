@@ -513,7 +513,8 @@ const [loading, setLoading] = useState(true);
                 alt={product.name}
                 width={400}
                 height={256}
-                className="w-full h-40 object-contain rounded-lg sm:h-64 sm:object-cover sm:rounded-lg transition-transform duration-500 group-hover:scale-110"
+                className="w-full h-40 object-contain rounded-lg sm:h-64 sm:object-cover sm:rounded-lg transition-transform duration-500 group-hover:scale-110 cursor-pointer"
+                onClick={() => setOpenImageUrl(mainImage)}
                 onError={(e) => { (e.target as HTMLImageElement).src = '/alankarika-logo.png'; }}
                 style={{ opacity: 1, transition: 'opacity 0.4s' }}
               />
@@ -720,6 +721,19 @@ const [loading, setLoading] = useState(true);
     setDragStartX(null);
     setDragDelta(0);
   };
+
+  // Add state for image modal
+  const [openImageUrl, setOpenImageUrl] = useState<string | null>(null);
+
+  // Modal close handler
+  useEffect(() => {
+    if (!openImageUrl) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setOpenImageUrl(null);
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [openImageUrl]);
 
   if (loading) {
     return (
@@ -1104,6 +1118,24 @@ const [loading, setLoading] = useState(true);
             animationData={successLottie}
             style={{ height: 80, width: 80 }}
           />
+        </div>
+      )}
+      {openImageUrl && (
+        <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/70 backdrop-blur-sm" onClick={() => setOpenImageUrl(null)}>
+          <div className="relative max-w-full max-h-full p-2" onClick={e => e.stopPropagation()}>
+            <button
+              className="absolute top-2 right-2 bg-white/80 hover:bg-white rounded-full p-2 shadow-lg z-10"
+              onClick={() => setOpenImageUrl(null)}
+              aria-label="Close image"
+            >
+              <X className="w-6 h-6 text-gray-800" />
+            </button>
+            <img
+              src={openImageUrl}
+              alt="Product Full"
+              className="max-w-[90vw] max-h-[80vh] rounded-lg shadow-xl object-contain bg-white"
+            />
+          </div>
         </div>
       )}
     </div>

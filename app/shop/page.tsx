@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Search, Filter, Grid, List, Heart, ShoppingCart, Star, Eye } from 'lucide-react';
+import { Search, Filter, Grid, List, Heart, ShoppingCart, Star, Eye, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -49,6 +49,8 @@ export default function ShopPage() {
   const [showFilters, setShowFilters] = useState(false);
   const [flyToCartState, setFlyToCartState] = useState({ visible: false, from: { x: 0, y: 0, width: 0, height: 0 }, to: { x: 0, y: 0, width: 0, height: 0 }, image: '' });
   const [showSuccess, setShowSuccess] = useState(false);
+  // Add state for image modal
+  const [openImageUrl, setOpenImageUrl] = useState<string | null>(null);
 
   const { addToCart } = useCart();
 
@@ -60,6 +62,16 @@ export default function ShopPage() {
     };
     fetchProducts();
   }, []);
+
+  // Modal close handler
+  useEffect(() => {
+    if (!openImageUrl) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setOpenImageUrl(null);
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [openImageUrl]);
 
   const filteredProducts = products.filter(product => {
     const matchesSearch = product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -172,7 +184,8 @@ export default function ShopPage() {
                 alt={product.name || 'Product'}
                 width={400}
                 height={256}
-                className="w-full h-40 object-contain rounded-lg sm:h-64 sm:object-cover sm:rounded-lg transition-transform duration-500 group-hover:scale-110"
+                className="w-full h-40 object-contain rounded-lg sm:h-64 sm:object-cover sm:rounded-lg transition-transform duration-500 group-hover:scale-110 cursor-pointer"
+                onClick={() => setOpenImageUrl(mainImage)}
                 onError={(e) => { (e.target as HTMLImageElement).src = '/alankarika-logo.png'; }}
                 style={{ opacity: 1, transition: 'opacity 0.4s' }}
               />
@@ -365,6 +378,24 @@ export default function ShopPage() {
             animationData={successLottie}
             style={{ height: 80, width: 80 }}
           />
+        </div>
+      )}
+      {openImageUrl && (
+        <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/70 backdrop-blur-sm" onClick={() => setOpenImageUrl(null)}>
+          <div className="relative max-w-full max-h-full p-2" onClick={e => e.stopPropagation()}>
+            <button
+              className="absolute top-2 right-2 bg-white/80 hover:bg-white rounded-full p-2 shadow-lg z-10"
+              onClick={() => setOpenImageUrl(null)}
+              aria-label="Close image"
+            >
+              <X className="w-6 h-6 text-gray-800" />
+            </button>
+            <img
+              src={openImageUrl}
+              alt="Product Full"
+              className="max-w-[90vw] max-h-[80vh] rounded-lg shadow-xl object-contain bg-white"
+            />
+          </div>
         </div>
       )}
     </div>
