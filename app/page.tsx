@@ -1047,7 +1047,6 @@ const [loading, setLoading] = useState(true);
               <h4 className="font-semibold mb-4">Quick Links</h4>
               <ul className="space-y-2 text-gray-400">
                 <li><Link href="/about" className="hover:text-white transition-colors">About अलंकारिका</Link></li>
-                <li><Link href="/collections" className="hover:text-white transition-colors">Collections</Link></li>
                 <li><Link href="/shop" className="hover:text-white transition-colors">Shop</Link></li>
                 <li><Link href="/reviews" className="hover:text-white transition-colors">Customer Reviews</Link></li>
               </ul>
@@ -1062,6 +1061,12 @@ const [loading, setLoading] = useState(true);
               </ul>
             </div>
             
+            <div>
+              <h4 className="font-semibold mb-4">No Return & Refund Policy</h4>
+              <ul className="space-y-2 text-gray-400">
+                <li><Link href="/no-return-refund-policy" className="hover:text-white transition-colors">Read Policy</Link></li>
+              </ul>
+            </div>
             <div>
               <h4 className="font-semibold mb-4">Newsletter</h4>
               <p className="text-gray-400 mb-4">Subscribe to get updates on new collections and festive offers</p>
