@@ -218,8 +218,12 @@ export default function ShopPage() {
               <span className="text-sm text-gray-600 ml-1">(5)</span>
             </div>
             <h3 className="font-semibold text-lg text-gray-900 mb-2">{product.name}</h3>
-            <p className="text-gray-600 text-sm mb-1 line-clamp-2">{product.short_description}</p>
-            {product.description && (
+            {product.short_description ? (
+              <p className="text-gray-600 text-sm mb-1 line-clamp-2">{product.short_description}</p>
+            ) : product.description ? (
+              <p className="text-gray-600 text-sm mb-1 line-clamp-2">{product.description}</p>
+            ) : null}
+            {product.description && product.short_description && (
               <p className="text-gray-700 text-xs mb-4 whitespace-pre-line line-clamp-4">{product.description}</p>
             )}
             <div className="flex items-center gap-2 mb-4">
