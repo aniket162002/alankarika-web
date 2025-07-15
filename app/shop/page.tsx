@@ -215,6 +215,7 @@ export default function ShopPage() {
               {[...Array(5)].map((_, i) => (
                 <Star key={i} className="w-4 h-4 fill-yellow-400 text-yellow-400" />
               ))}
+              <span className="text-sm text-gray-600 ml-1">(5)</span>
             </div>
             <h3 className="font-semibold text-lg text-gray-900 mb-2">{product.name}</h3>
             <p className="text-gray-600 text-sm mb-1 line-clamp-2">{product.short_description}</p>
