@@ -51,14 +51,14 @@ export default function RootLayout({
         {/* Open Graph */}
         <meta property="og:title" content="अलंकारिका | Where Tradition Meets Elegance" />
         <meta property="og:description" content="Exquisite jewelry where tradition meets elegance. Shop our exclusive collections of Kundan, Meenakari, Gold, and more." />
-        <meta property="og:image" content="/alankarika-logo.png" />
+        <meta property="og:image" content="https://alankarika-web.vercel.app/alankarika-logo.png" />
         <meta property="og:url" content="https://alankarika-web.vercel.app/" />
         <meta property="og:type" content="website" />
         {/* Twitter Card */}
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content="अलंकारिका | Where Tradition Meets Elegance" />
         <meta name="twitter:description" content="Exquisite jewelry where tradition meets elegance. Shop our exclusive collections of Kundan, Meenakari, Gold, and more." />
-        <meta name="twitter:image" content="/alankarika-logo.png" />
+        <meta name="twitter:image" content="https://alankarika-web.vercel.app/alankarika-logo.png" />
       </Head>
       <html lang="en">
         <body className={`${inter.variable} ${playfair.variable} font-sans`}>
