@@ -313,24 +313,90 @@ export const getEmailTemplate = (type: string, data: any) => {
       `;
 
     case 'order_payment_pending':
-      return {
-        subject: 'Your Payment is Pending Approval',
-        html: `<p>Thank you for submitting your payment for Order #${data.orderId}. Your payment is under review. You can track your order status below.</p>
-          <a href="${process.env.NEXT_PUBLIC_BASE_URL}/profile#orders" class="button">Track Your Order</a>`
-      };
+      return `
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <meta charset="utf-8">
+          <title>Your Payment is Pending Approval - ${companyName}</title>
+          ${baseStyle}
+        </head>
+        <body>
+          <div class="container">
+            <div class="header">
+              <img src="/alankarika-logo.png" alt="Alankarika Logo" class="logo" />
+              <h1>✨ ${companyName} ✨</h1>
+              <h2>Your Payment is Pending Approval</h2>
+            </div>
+            <div class="content">
+              <p>Thank you for submitting your payment for Order #${data.orderId}. Your payment is under review. You can track your order status below.</p>
+              <a href="${process.env.NEXT_PUBLIC_BASE_URL}/profile#orders" class="button">Track Your Order</a>
+            </div>
+            <div class="footer">
+              <p>© 2025 ${companyName}. Where Tradition Meets Elegance.</p>
+              <p>📧 alankarikaa@gmail.com | 📞 +91 9167261572</p>
+            </div>
+          </div>
+        </body>
+        </html>
+      `;
     case 'order_payment_confirmed':
-      return {
-        subject: 'Your Order is Confirmed!',
-        html: `<p>Your payment for Order #${data.orderId} has been approved and your order is now confirmed.</p>
-          ${data.payment_screenshot ? `<p>Payment Receipt: <a href="https://ljvrtryayjlwtankpfrm.supabase.co/storage/v1/object/public/payment_screenshots/${data.payment_screenshot}">View Screenshot</a></p>` : ''}
-          <a href="${process.env.NEXT_PUBLIC_BASE_URL}/profile#orders" class="button">Track Your Order</a>`
-      };
+      return `
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <meta charset="utf-8">
+          <title>Your Order is Confirmed! - ${companyName}</title>
+          ${baseStyle}
+        </head>
+        <body>
+          <div class="container">
+            <div class="header">
+              <img src="/alankarika-logo.png" alt="Alankarika Logo" class="logo" />
+              <h1>✨ ${companyName} ✨</h1>
+              <h2>Your Order is Confirmed!</h2>
+            </div>
+            <div class="content">
+              <p>Your payment for Order #${data.orderId} has been approved and your order is now confirmed.</p>
+              ${data.payment_screenshot ? `<p>Payment Receipt: <a href="https://ljvrtryayjlwtankpfrm.supabase.co/storage/v1/object/public/payment_screenshots/${data.payment_screenshot}">View Screenshot</a></p>` : ''}
+              <a href="${process.env.NEXT_PUBLIC_BASE_URL}/profile#orders" class="button">Track Your Order</a>
+            </div>
+            <div class="footer">
+              <p>© 2025 ${companyName}. Where Tradition Meets Elegance.</p>
+              <p>📧 alankarikaa@gmail.com | 📞 +91 9167261572</p>
+            </div>
+          </div>
+        </body>
+        </html>
+      `;
     case 'order_payment_failed':
-      return {
-        subject: 'Payment Rejected for Your Order',
-        html: `<p>Unfortunately, your payment for Order #${data.orderId} was not approved. Please contact support or try again.</p>
-          <a href="${process.env.NEXT_PUBLIC_BASE_URL}/profile#orders" class="button">Track Your Order</a>`
-      };
+      return `
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <meta charset="utf-8">
+          <title>Payment Rejected for Your Order - ${companyName}</title>
+          ${baseStyle}
+        </head>
+        <body>
+          <div class="container">
+            <div class="header">
+              <img src="/alankarika-logo.png" alt="Alankarika Logo" class="logo" />
+              <h1>✨ ${companyName} ✨</h1>
+              <h2>Payment Rejected for Your Order</h2>
+            </div>
+            <div class="content">
+              <p>Unfortunately, your payment for Order #${data.orderId} was not approved. Please contact support or try again.</p>
+              <a href="${process.env.NEXT_PUBLIC_BASE_URL}/profile#orders" class="button">Track Your Order</a>
+            </div>
+            <div class="footer">
+              <p>© 2025 ${companyName}. Where Tradition Meets Elegance.</p>
+              <p>📧 alankarikaa@gmail.com | 📞 +91 9167261572</p>
+            </div>
+          </div>
+        </body>
+        </html>
+      `;
 
     default:
       return `

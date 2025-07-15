@@ -278,9 +278,12 @@ export default function ProductsManagement() {
       };
       let response;
       if (selectedProduct) {
-        // For update, you can add a PUT handler if needed
-        alert('Product update not implemented via API yet.');
-        return;
+        // For update, call the PUT API
+        response = await fetch('/api/admin/products', {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ id: selectedProduct.id, ...productData }),
+        });
       } else {
         response = await fetch('/api/admin/products', {
           method: 'POST',
