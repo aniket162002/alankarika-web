@@ -11,6 +11,17 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { createClient } from '@supabase/supabase-js';
 import { useUser } from '@/hooks/useUser';
 
+// Add a type for formData
+interface CheckoutFormData {
+  name: string;
+  email: string;
+  phone: string;
+  address: string;
+  city: string;
+  state: string;
+  pincode: string;
+}
+
 export default function PaymentQRPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -26,7 +37,7 @@ export default function PaymentQRPage() {
   });
 
   // Parse checkout data from query
-  let checkoutData = { formData: {}, cartItems: [], total: 0 };
+  let checkoutData: { formData: CheckoutFormData; cartItems: any[]; total: number } = { formData: { name: '', email: '', phone: '', address: '', city: '', state: '', pincode: '' }, cartItems: [], total: 0 };
   try {
     if (searchParams.get('data')) {
       checkoutData = JSON.parse(decodeURIComponent(searchParams.get('data')!));
