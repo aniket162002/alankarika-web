@@ -11,7 +11,7 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Separator } from '@/components/ui/separator';
 import { Badge } from '@/components/ui/badge';
 import { Textarea } from '@/components/ui/textarea';
-import { processPayment, createRazorpayOrder } from '@/lib/razorpay';
+import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { createClient } from '@supabase/supabase-js';
 import { useUser } from '@/hooks/useUser';
@@ -42,6 +42,7 @@ export default function CheckoutForm({ cartItems, total, onBack, onSuccess }: Ch
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
   );
 
+  const router = useRouter();
   const { user } = useUser();
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -60,8 +61,9 @@ export default function CheckoutForm({ cartItems, total, onBack, onSuccess }: Ch
         // Handle Cash on Delivery
         await handleCODOrder();
       } else {
-        // Handle Online Payment
-        await handleOnlinePayment();
+        // Redirect to QR payment page with form data and cart items
+        const data = encodeURIComponent(JSON.stringify({ formData, cartItems, total }));
+        router.push(`/payment/qr?data=${data}`);
       }
     } catch (error) {
       alert('Payment failed. Please try again.');
@@ -137,81 +139,6 @@ export default function CheckoutForm({ cartItems, total, onBack, onSuccess }: Ch
     setTimeout(() => {
       window.location.href = `/payment-success?orderId=${codOrderData.id}`;
     }, 1000);
-  };
-
-  const handleOnlinePayment = async () => {
-    try {
-      // Create Razorpay order
-      const orderData = await createRazorpayOrder(total, formData, cartItems);
-      // Store order data for payment success page
-      const completeOrderData = {
-        id: orderData.orderId,
-        customer_name: formData.name,
-        customer_email: formData.email,
-        customer_phone: formData.phone,
-        customer_address: `${formData.address}, ${formData.city}, ${formData.state} - ${formData.pincode}`,
-        items: cartItems,
-        total_amount: total,
-        payment_method: 'online',
-        payment_status: 'pending',
-        razorpay_order_id: orderData.id,
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString(),
-        status: 'pending',
-        simple_user_id: user?.id || null,
-      };
-      localStorage.setItem('currentOrderData', JSON.stringify(completeOrderData));
-      // Insert order into Supabase (simulate as if payment is successful for now)
-      const { error } = await supabase.from('orders').insert([{
-        customer_name: completeOrderData.customer_name,
-        customer_email: completeOrderData.customer_email,
-        customer_phone: completeOrderData.customer_phone,
-        customer_address: completeOrderData.customer_address,
-        items: completeOrderData.items,
-        total_amount: completeOrderData.total_amount,
-        payment_method: completeOrderData.payment_method,
-        payment_status: completeOrderData.payment_status,
-        status: completeOrderData.status,
-        created_at: completeOrderData.created_at,
-        updated_at: completeOrderData.updated_at,
-        razorpay_order_id: completeOrderData.razorpay_order_id,
-        simple_user_id: user?.id || null,
-      }]);
-      if (error) {
-        alert('Order error: ' + error.message);
-        return;
-      }
-      // Send order confirmation email (Online)
-      try {
-        await fetch('/api/email/order-confirmation', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            orderId: completeOrderData.id,
-            customerName: completeOrderData.customer_name,
-            customerEmail: completeOrderData.customer_email,
-            customerPhone: completeOrderData.customer_phone,
-            shippingAddress: completeOrderData.customer_address,
-            items: completeOrderData.items,
-            totalAmount: completeOrderData.total_amount,
-            paymentMethod: completeOrderData.payment_method,
-            orderDate: completeOrderData.created_at
-          })
-        });
-      } catch (e) {
-        alert('Order placed, but failed to send confirmation email.');
-      }
-      // Process payment
-      await processPayment(orderData, {
-        name: formData.name,
-        email: formData.email,
-        contact: formData.phone
-      });
-      // Don't call onSuccess here - it will be called after payment verification
-    } catch (error) {
-      alert('Online payment error: ' + error);
-      throw error;
-    }
   };
 
   return (

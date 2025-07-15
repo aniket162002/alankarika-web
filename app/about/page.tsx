@@ -96,11 +96,12 @@ export default function AboutPage() {
               className="relative"
             >
               <Image
-                src="https://images.pexels.com/photos/1190298/pexels-photo-1190298.jpeg?auto=compress&cs=tinysrgb&w=800"
-                alt="Jewelry Crafting"
-                width={800}
-                height={384}
-                className="w-full h-96 object-cover rounded-lg shadow-lg"
+                src="/about.png"
+                alt="About Alankarika"
+                width={500}
+                height={350}
+                className="rounded-xl shadow-lg object-cover"
+                priority
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent rounded-lg" />
             </motion.div>

@@ -12,7 +12,7 @@ export default function ShippingInfoPage() {
         <h2>Shipping Charges</h2>
         <p>Shipping is free for orders above ₹50,000. For orders below this amount, a nominal shipping fee will be applied at checkout.</p>
         <h2>Support</h2>
-        <p>If you have any questions about your shipment, please contact us at <a href="mailto:alankarikaa@gmail.com">alankarikaa@gmail.com</a> or WhatsApp us at <a href="https://wa.me/9167261572" target="_blank" rel="noopener noreferrer">+91 9167261572</a>.</p>
+        <p>If you have any questions about your shipment, please contact us at <a href="mailto:alankarikaa@gmail.com">alankarikaa@gmail.com</a> or WhatsApp us at <a href="https://wa.me/9769432565" target="_blank" rel="noopener noreferrer">+91 9769432565</a>.</p>
       </div>
     </div>
   );

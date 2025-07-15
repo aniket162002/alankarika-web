@@ -57,6 +57,9 @@ interface Order {
   estimated_delivery?: string;
   created_at: string;
   updated_at: string;
+  payment_utr?: string;
+  payment_app?: string;
+  payment_screenshot?: string;
 }
 
 // Fetch orders from database
@@ -92,7 +95,9 @@ export default function OrdersManagement() {
   useEffect(() => {
     if (ordersData) {
       setOrders(ordersData);
-      setFilteredOrders(ordersData);
+      // Filter orders to exclude online payments with pending status
+      const filtered = ordersData.filter(order => order.payment_method !== 'online' || order.payment_status !== 'pending');
+      setFilteredOrders(filtered);
     }
   }, [ordersData]);
 
@@ -140,7 +145,7 @@ export default function OrdersManagement() {
       const response = await fetch('/api/admin/orders', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id: selectedOrder.id, updateData }),
+        body: JSON.stringify({ id: selectedOrder.id, ...updateData }),
       });
       const result = await response.json();
       if (!result.success) throw new Error(result.error);
@@ -595,6 +600,8 @@ export default function OrdersManagement() {
                   </div>
                 </CardContent>
               </Card>
+
+              {/* Remove payment approval/reject UI and logic from here */}
             </div>
           )}
         </DialogContent>

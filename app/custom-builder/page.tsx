@@ -72,7 +72,7 @@ export default function CustomBuilderPage() {
     setShowPreview(false);
   };
 
-  const whatsappNumber = "9167261572";
+  const whatsappNumber = "9769432565";
   const whatsappMessage = encodeURIComponent(
     `Hello! I'm interested in a custom ${form.baseType}.
 Material: ${form.material}

@@ -15,7 +15,8 @@ import {
   Menu,
   X,
   Bell,
-  Search
+  Search,
+  DollarSign
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -31,6 +32,7 @@ const navigation = [
   { name: 'Products', href: '/admin/products', icon: Package },
   { name: 'Carousel', href: '/admin/carousel', icon: ImageIcon },
   { name: 'Orders', href: '/admin/orders', icon: ShoppingCart },
+  { name: 'Payments', href: '/admin/payments', icon: DollarSign },
   { name: 'Shipping', href: '/admin/shipping', icon: Truck },
   { name: 'Users', href: '/admin/users', icon: Users },
   { name: 'Settings', href: '/admin/settings', icon: Settings },

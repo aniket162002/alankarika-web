@@ -3,7 +3,7 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { MessageCircle, X, Mail, Phone } from "lucide-react";
 
-const WHATSAPP_NUMBER = "9167261572";
+const WHATSAPP_NUMBER = "9769432565";
 const EMAIL = "alankarikaa@gmail.com";
 
 export default function FloatingChat() {

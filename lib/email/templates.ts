@@ -71,7 +71,7 @@ export const getEmailTemplate = (type: string, data: any) => {
               <p>For any questions, feel free to reach out to us!</p>
               
               <div style="text-align: center; margin: 30px 0;">
-                <a href="${process.env.NEXT_PUBLIC_BASE_URL}/orders/${data.orderId}" class="button">Track Your Order</a>
+                <a href="${process.env.NEXT_PUBLIC_BASE_URL}/profile#orders" class="button">Track Your Order</a>
               </div>
             </div>
             <div class="footer">
@@ -113,7 +113,7 @@ export const getEmailTemplate = (type: string, data: any) => {
               <p>Your exquisite jewelry pieces are being crafted with the utmost care and attention to detail. Each piece is a work of art that carries the legacy of traditional Indian craftsmanship.</p>
               
               <div style="text-align: center; margin: 30px 0;">
-                <a href="${process.env.NEXT_PUBLIC_BASE_URL}/orders/${data.orderId}" class="button">Track Your Order</a>
+                <a href="${process.env.NEXT_PUBLIC_BASE_URL}/profile#orders" class="button">Track Your Order</a>
               </div>
             </div>
             <div class="footer">
@@ -148,8 +148,8 @@ export const getEmailTemplate = (type: string, data: any) => {
               <div style="background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%); padding: 20px; border-radius: 8px; margin: 20px 0;">
                 <h3>Shipping Details</h3>
                 <p><strong>Order ID:</strong> ${data.orderId}</p>
-                <p><strong>Tracking Number:</strong> <span class="highlight">${data.trackingNumber}</span></p>
-                <p><strong>Shipping Provider:</strong> ${data.shippingProvider}</p>
+                <p><strong>Tracking Number:</strong> <span class="highlight">${data.trackingNumber || 'To be assigned'}</span></p>
+                <p><strong>Shipping Provider:</strong> Alankarika</p>
                 <p><strong>Status:</strong> <span class="status-badge status-shipped">Shipped</span></p>
                 <p><strong>Estimated Delivery:</strong> ${new Date(data.estimatedDelivery).toLocaleDateString()}</p>
               </div>
@@ -311,6 +311,26 @@ export const getEmailTemplate = (type: string, data: any) => {
         </body>
         </html>
       `;
+
+    case 'order_payment_pending':
+      return {
+        subject: 'Your Payment is Pending Approval',
+        html: `<p>Thank you for submitting your payment for Order #${data.orderId}. Your payment is under review. You can track your order status below.</p>
+          <a href="${process.env.NEXT_PUBLIC_BASE_URL}/profile#orders" class="button">Track Your Order</a>`
+      };
+    case 'order_payment_confirmed':
+      return {
+        subject: 'Your Order is Confirmed!',
+        html: `<p>Your payment for Order #${data.orderId} has been approved and your order is now confirmed.</p>
+          ${data.payment_screenshot ? `<p>Payment Receipt: <a href="https://ljvrtryayjlwtankpfrm.supabase.co/storage/v1/object/public/payment_screenshots/${data.payment_screenshot}">View Screenshot</a></p>` : ''}
+          <a href="${process.env.NEXT_PUBLIC_BASE_URL}/profile#orders" class="button">Track Your Order</a>`
+      };
+    case 'order_payment_failed':
+      return {
+        subject: 'Payment Rejected for Your Order',
+        html: `<p>Unfortunately, your payment for Order #${data.orderId} was not approved. Please contact support or try again.</p>
+          <a href="${process.env.NEXT_PUBLIC_BASE_URL}/profile#orders" class="button">Track Your Order</a>`
+      };
 
     default:
       return `

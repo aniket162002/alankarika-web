@@ -128,6 +128,7 @@ export default function ProfilePage() {
             </div>
           </div>
           <motion.div
+            id="orders"
             className="w-full bg-white/95 rounded-2xl shadow-xl px-8 py-8 border border-orange-100 animate-fade-in"
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
@@ -156,13 +157,15 @@ export default function ProfilePage() {
                       <span className="font-semibold text-gray-900">Phone:</span> <span className="text-gray-700">{order.customer_phone}</span>
                     </div>
                     <div className="flex flex-wrap gap-2 mb-1">
-                      <span className="font-semibold text-gray-900">Status:</span> <Badge className="bg-green-100 text-green-800">{order.status}</Badge>
+                      <span className="font-semibold text-gray-900">Status:</span>
+                      <span className="text-orange-700 font-semibold">{order.status || 'Pending'}</span>
                       <span className="font-semibold text-gray-900">Payment Status:</span> <Badge className="bg-blue-100 text-blue-800">{order.payment_status}</Badge>
                       <span className="font-semibold text-gray-900">Payment Method:</span> <span className="text-gray-700">{order.payment_method}</span>
                       <span className="font-semibold text-gray-900">Payment ID:</span> <span className="text-gray-700">{order.payment_id || 'N/A'}</span>
                     </div>
                     <div className="flex flex-wrap gap-2 mb-1">
-                      <span className="font-semibold text-gray-900">Tracking Number:</span> <span className="text-gray-700">{order.tracking_number || 'N/A'}</span>
+                      <span className="font-semibold text-gray-900">Tracking Number:</span> <span className="text-gray-700">{order.tracking_number || `ALK${order.id.slice(-6)}${Math.floor(1000 + (parseInt(order.id.slice(-4), 16) % 9000))}`}</span>
+                      <span className="font-semibold text-gray-900">Shipping Provider:</span> <span className="text-gray-700">Alankarika</span>
                     </div>
                     <div className="flex flex-wrap gap-2 mb-1">
                       <span className="font-semibold text-gray-900">Subtotal:</span> <span className="text-gray-700">₹{order.subtotal?.toLocaleString()}</span>

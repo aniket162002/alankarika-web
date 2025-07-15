@@ -31,19 +31,26 @@ export async function POST(req: NextRequest) {
 export async function PUT(req: NextRequest) {
   try {
     const body = await req.json();
-    const { id, ...updates } = body;
+    const { id, notes, status, ...updates } = body;
     if (!id) {
       return NextResponse.json({ success: false, error: 'Order id required' }, { status: 400 });
     }
     const { data, error } = await supabase
       .from('orders')
-      .update(updates)
+      .update({ ...updates, status, notes })
       .eq('id', id)
       .select()
       .single();
     if (error) {
       return NextResponse.json({ success: false, error: error.message }, { status: 500 });
     }
+    // Insert order tracking entry
+    await supabase.from('order_tracking').insert({
+      order_id: id,
+      status: status,
+      message: notes || `Order status updated to ${status}`,
+      created_at: new Date().toISOString()
+    });
     return NextResponse.json({ success: true, order: data });
   } catch (error: any) {
     return NextResponse.json({ success: false, error: error.message }, { status: 500 });

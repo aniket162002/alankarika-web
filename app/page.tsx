@@ -480,7 +480,7 @@ const [loading, setLoading] = useState(true);
   };
 
   const openWhatsApp = (message: string = "Hello! I'm interested in your jewelry collection.") => {
-    const phoneNumber = "9167261572";
+    const phoneNumber = "9769432565";
     const encodedMessage = encodeURIComponent(message);
     window.open(`https://wa.me/${phoneNumber}?text=${encodedMessage}`, '_blank');
   };
@@ -945,66 +945,24 @@ const [loading, setLoading] = useState(true);
       <WavyDivider color="#fbbf24" />
 
       {/* Customer Reviews Section */}
-      <section className="py-16 bg-gray-50">
-        <div className="container mx-auto px-2 sm:px-4">
-          <motion.div
-            className="text-center mb-12"
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-          >
-            <h2 className="text-4xl font-bold text-gray-900 mb-4 font-playfair">What Our Customers Say</h2>
-            <p className="text-xl text-gray-600">Real experiences from our jewelry family</p>
-          </motion.div>
-          <div className="relative">
-            <motion.div
-              className="flex gap-8 overflow-x-auto pb-4"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.7 }}
-            >
-              {customerReviews.map((review, index) => (
-                <motion.div
-                  key={review.id}
-                  className="bg-white p-6 rounded-lg shadow-lg min-w-[320px] max-w-xs mx-auto card-animated"
-                  initial={{ opacity: 0, y: 30 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.6, delay: index * 0.2 }}
-                >
-                  <div className="flex items-center gap-4 mb-4">
-                    <Image
-                      src={review.customerPhoto}
-                      alt={review.name}
-                      width={48}
-                      height={48}
-                      className="w-12 h-12 rounded-full object-cover"
-                    />
-                    <div>
-                      <h4 className="font-semibold text-gray-900">{review.name}</h4>
-                      <div className="flex items-center gap-1">
-                        {[...Array(5)].map((_, i) => (
-                          <Star key={i} className={`w-4 h-4 ${i < review.rating ? 'fill-yellow-400 text-yellow-400' : 'text-gray-300'}`} />
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                  <p className="text-gray-600 mb-4">{review.comment}</p>
-                  <div className="flex items-center gap-2">
-                    <Image
-                      src={review.image}
-                      alt={review.product}
-                      width={40}
-                      height={40}
-                      className="w-10 h-10 rounded object-cover"
-                    />
-                    <div>
-                      <p className="text-sm font-medium text-gray-900">{review.product}</p>
-                      <p className="text-xs text-gray-500">{review.date}</p>
-                    </div>
-                  </div>
-                </motion.div>
-              ))}
-            </motion.div>
+      <section className="py-16 bg-gradient-to-br from-amber-50 to-orange-100">
+        <div className="container mx-auto px-2 sm:px-4 flex flex-col md:flex-row items-center gap-12">
+          <div className="flex-1 text-center md:text-left">
+            <h2 className="text-4xl font-bold text-amber-700 mb-4 font-playfair">Discover Your Perfect Jewelry Style</h2>
+            <p className="text-xl text-gray-700 mb-6 max-w-xl">Take our quick, fun quiz and get personalized recommendations for pieces that match your unique taste and personality. Find the jewelry that truly speaks to you!</p>
+            <Button asChild size="lg" className="bg-gradient-to-r from-amber-600 to-orange-600 text-white text-lg font-semibold shadow-lg hover:from-orange-600 hover:to-amber-700">
+              <a href="/quiz">Start the Style Quiz</a>
+            </Button>
+          </div>
+          <div className="flex-1 flex justify-center">
+            <Image
+              src="/about.png"
+              alt="Jewelry Style Quiz Illustration"
+              width={400}
+              height={320}
+              className="rounded-xl shadow-lg object-cover"
+              priority
+            />
           </div>
         </div>
       </section>
@@ -1102,7 +1060,7 @@ const [loading, setLoading] = useState(true);
               <div className="mt-4 space-y-2 text-gray-400">
                 <div className="flex items-center gap-2">
                   <Phone className="w-4 h-4" />
-                  <span>+91 9167261572</span>
+                  <span>+91 9769432565</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <Mail className="w-4 h-4" />

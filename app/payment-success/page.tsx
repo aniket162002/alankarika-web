@@ -122,7 +122,7 @@ export default function PaymentSuccess() {
   };
 
   const openWhatsApp = () => {
-    const phoneNumber = "9167261572";
+    const phoneNumber = "9769432565";
     const message = encodeURIComponent(`Hi! I just completed my payment for Order ID: ${orderData?.id}. Can you provide me with the order tracking details?`);
     window.open(`https://wa.me/${phoneNumber}?text=${message}`, '_blank');
   };
