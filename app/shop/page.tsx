@@ -164,26 +164,26 @@ export default function ShopPage() {
         transition={{ type: "spring", stiffness: 300 }}
         className="group"
       >
-        <Card className="overflow-hidden border-0 shadow-lg hover:shadow-xl transition-shadow duration-300">
+        <Card className="overflow-hidden border-0 shadow-lg hover:shadow-xl transition-shadow duration-300 rounded-xl p-2 sm:p-0">
           <div className="relative overflow-hidden">
-            <div className="w-full h-64 relative">
+            <div className="w-full h-40 sm:h-64 relative flex items-center justify-center bg-white">
               <Image
                 src={mainImage}
                 alt={product.name || 'Product'}
                 width={400}
                 height={256}
-                className="w-full h-64 object-cover rounded-lg transition-transform duration-500 group-hover:scale-110 absolute top-0 left-0 z-10"
+                className="w-full h-40 object-contain rounded-lg sm:h-64 sm:object-cover sm:rounded-lg transition-transform duration-500 group-hover:scale-110"
                 onError={(e) => { (e.target as HTMLImageElement).src = '/alankarika-logo.png'; }}
                 style={{ opacity: 1, transition: 'opacity 0.4s' }}
               />
-              {/* Show hover image on hover if available */}
+              {/* Show hover image on hover if available (desktop only) */}
               {hoverImage !== mainImage && (
                 <Image
                   src={hoverImage}
                   alt={(product.name || 'Product') + ' alternate'}
                   width={400}
                   height={256}
-                  className="w-full h-64 object-cover rounded-lg transition-transform duration-500 group-hover:scale-110 absolute top-0 left-0 z-20 opacity-0 group-hover:opacity-100"
+                  className="hidden sm:block w-full h-64 object-cover rounded-lg transition-transform duration-500 group-hover:scale-110 absolute top-0 left-0 z-20 opacity-0 group-hover:opacity-100"
                   onError={(e) => { (e.target as HTMLImageElement).src = '/alankarika-logo.png'; }}
                   style={{ transition: 'opacity 0.4s' }}
                 />
@@ -331,7 +331,7 @@ export default function ShopPage() {
             </div>
 
             {/* Products Grid */}
-            <div className={`grid gap-8 ${viewMode === 'grid' ? 'grid-cols-1 sm:grid-cols-2 xl:grid-cols-3' : 'grid-cols-1'}`}>
+            <div className={`grid gap-4 sm:gap-8 ${viewMode === 'grid' ? 'grid-cols-1 sm:grid-cols-2 xl:grid-cols-3' : 'grid-cols-1'}`}>
               {sortedProducts.map((product) => (
                 <ProductCard key={product.id} product={product} onAddToCart={handleAddToCart} />
               ))}

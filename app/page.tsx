@@ -505,26 +505,26 @@ const [loading, setLoading] = useState(true);
         transition={{ type: "spring", stiffness: 300 }}
         className="group relative"
       >
-        <Card className="overflow-hidden border-0 shadow-lg hover:shadow-xl transition-shadow duration-300 card-animated">
+        <Card className="overflow-hidden border-0 shadow-lg hover:shadow-xl transition-shadow duration-300 card-animated rounded-xl p-2 sm:p-0">
           <div className="relative overflow-hidden">
-            <div className="w-full h-64 sm:h-72 md:h-80 relative">
+            <div className="w-full h-40 sm:h-64 md:h-80 relative flex items-center justify-center bg-white">
               <Image
                 src={mainImage}
                 alt={product.name}
                 width={400}
                 height={256}
-                className="w-full h-64 sm:h-72 md:h-80 object-cover rounded-lg transition-transform duration-500 group-hover:scale-110 absolute top-0 left-0 z-10"
+                className="w-full h-40 object-contain rounded-lg sm:h-64 sm:object-cover sm:rounded-lg transition-transform duration-500 group-hover:scale-110"
                 onError={(e) => { (e.target as HTMLImageElement).src = '/alankarika-logo.png'; }}
                 style={{ opacity: 1, transition: 'opacity 0.4s' }}
               />
-              {/* Show hover image on hover if available */}
+              {/* Show hover image on hover if available (desktop only) */}
               {hoverImage !== mainImage && (
                 <Image
                   src={hoverImage}
                   alt={product.name + ' alternate'}
                   width={400}
                   height={256}
-                  className="w-full h-64 sm:h-72 md:h-80 object-cover rounded-lg transition-transform duration-500 group-hover:scale-110 absolute top-0 left-0 z-20 opacity-0 group-hover:opacity-100"
+                  className="hidden sm:block w-full h-64 object-cover rounded-lg transition-transform duration-500 group-hover:scale-110 absolute top-0 left-0 z-20 opacity-0 group-hover:opacity-100"
                   onError={(e) => { (e.target as HTMLImageElement).src = '/alankarika-logo.png'; }}
                   style={{ transition: 'opacity 0.4s' }}
                 />
@@ -736,8 +736,8 @@ const [loading, setLoading] = useState(true);
       )}
       <Header />
       {/* Hero Section with Dynamic Carousel */}
-      <section className="relative h-[60vh] sm:h-[70vh] md:h-[80vh] flex items-center justify-center overflow-hidden">
-        <BrandMotif className="absolute left-8 top-8 w-40 h-40 z-0" style={{ opacity: 0.18 }} />
+      <section className="relative w-full max-w-md mx-auto sm:max-w-full h-56 sm:h-[70vh] md:h-[80vh] flex items-center justify-center overflow-hidden rounded-xl bg-white shadow-lg sm:rounded-lg sm:bg-transparent sm:shadow-none p-2 sm:p-0">
+        <BrandMotif className="absolute left-4 top-4 w-24 h-24 z-0 hidden sm:block" style={{ opacity: 0.18 }} />
         {/* Parallax & animated background (hidden on mobile for performance) */}
         <div className="absolute inset-0 z-0 pointer-events-none hidden sm:block">
           {/* Parallax layers */}
@@ -766,7 +766,7 @@ const [loading, setLoading] = useState(true);
               key={displayCarouselImages[currentCarouselSlide].id}
               src={displayCarouselImages[currentCarouselSlide].image_url}
               alt={displayCarouselImages[currentCarouselSlide].title}
-              className="w-full h-full object-cover select-none sm:rounded-lg shadow-2xl"
+              className="w-full h-48 object-contain rounded-lg sm:h-full sm:object-cover sm:rounded-lg select-none shadow-2xl"
               initial={{ opacity: 0, scale: 1.1 }}
               animate={{ opacity: 1, scale: 1 + Math.abs(dragDelta) / 1000 }}
               exit={{ opacity: 0, scale: 0.9 }}
@@ -890,7 +890,7 @@ const [loading, setLoading] = useState(true);
                       alt={product.name}
                       width={400}
                       height={256}
-                      className="w-full h-64 sm:h-72 md:h-80 object-cover rounded-lg shadow-lg"
+                      className="w-full h-40 object-contain rounded-lg shadow-lg"
                       onError={(e) => { (e.target as HTMLImageElement).src = '/alankarika-logo.png'; }}
                     />
                     <SparkleOverlay count={8} className="z-10" />
