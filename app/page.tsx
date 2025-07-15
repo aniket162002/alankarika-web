@@ -562,7 +562,7 @@ const [loading, setLoading] = useState(true);
           <CardContent className="p-6">
             <div className="flex items-center gap-1 mb-2">
               {[...Array(5)].map((_, i) => (
-                <Star key={i} className={`w-4 h-4 ${i < Math.floor(product.rating || 0) ? 'fill-yellow-400 text-yellow-400' : 'text-gray-300'}`} />
+                <Star key={i} className="w-4 h-4 fill-yellow-400 text-yellow-400" />
               ))}
               <span className="text-sm text-gray-600 ml-1">({product.reviews || 0})</span>
             </div>
