@@ -919,17 +919,9 @@ const [loading, setLoading] = useState(true);
           <div className="flex-1">
             <div className="flex items-center justify-between mb-8">
               <h2 className="luxury-heading">Our Collection</h2>
-              <Button
-                variant="outline"
-                className="lg:hidden btn-animated"
-                onClick={() => setIsMobileMenuOpen(true)}
-              >
-                <Menu className="w-4 h-4 mr-2" />
-                Filters
-              </Button>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-8">
+            <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-8 justify-center items-center">
               {filteredProducts.map((product) => (
                 <ProductCard key={product.id} product={product} onAddToCart={handleAddToCart} />
               ))}
