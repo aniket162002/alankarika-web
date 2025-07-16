@@ -19,6 +19,7 @@ export default function PaymentReview() {
   const [selectedOrder, setSelectedOrder] = useState<any | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
 
   // Fetch only online payment requests with pending status
   const fetchPayments = async () => {
@@ -103,6 +104,49 @@ export default function PaymentReview() {
     }
   };
 
+  const handleDelete = async (orderId: string) => {
+    setLoading(true);
+    try {
+      await supabase.from('orders').delete().eq('id', orderId);
+      toast.success('Payment record deleted!');
+    } catch (e) {
+      toast.error('Failed to delete payment record.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleCreate = async () => {
+    setLoading(true);
+    try {
+      // Example data for creating a new payment
+      const newPayment = {
+        id: `order-${Date.now()}`, // Generate a unique ID
+        customer_name: 'New Customer',
+        customer_email: 'newcustomer@example.com',
+        customer_phone: '9876543210',
+        customer_address: '123 New Street, New City',
+        items: [{ name: 'Sample Item', quantity: 1, price: 100 }],
+        total_amount: 100,
+        payment_method: 'online',
+        payment_status: 'pending',
+        payment_utr: 'UTR-00000000000000000000',
+        payment_app: 'New App',
+        payment_screenshot: null,
+        status: 'pending',
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+      };
+      await supabase.from('orders').insert(newPayment);
+      toast.success('New payment record created!');
+      setIsCreateDialogOpen(false);
+    } catch (e) {
+      toast.error('Failed to create new payment record.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="p-6">
       <Card>
@@ -110,6 +154,7 @@ export default function PaymentReview() {
           <CardTitle>Online Payment Review</CardTitle>
         </CardHeader>
         <CardContent>
+          <Button onClick={() => setIsCreateDialogOpen(true)} className="mb-4 bg-amber-600 text-white">Create Payment</Button>
           <Table>
             <TableHeader>
               <TableRow>
@@ -144,6 +189,7 @@ export default function PaymentReview() {
                   <TableCell>{new Date(order.created_at).toLocaleDateString()}</TableCell>
                   <TableCell>
                     <Button size="sm" onClick={() => { setSelectedOrder(order); setIsDialogOpen(true); }}>Review</Button>
+                    <Button size="sm" variant="destructive" onClick={() => handleDelete(order.id)}>Delete</Button>
                   </TableCell>
                 </TableRow>
               ))}
@@ -180,6 +226,53 @@ export default function PaymentReview() {
               </div>
             </div>
           )}
+        </DialogContent>
+      </Dialog>
+
+      {/* Dialog for creating new payment */}
+      <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Create New Online Payment</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div>
+              <label htmlFor="new-customer-name" className="block text-sm font-medium">Customer Name</label>
+              <input type="text" id="new-customer-name" className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" />
+            </div>
+            <div>
+              <label htmlFor="new-customer-email" className="block text-sm font-medium">Customer Email</label>
+              <input type="email" id="new-customer-email" className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" />
+            </div>
+            <div>
+              <label htmlFor="new-customer-phone" className="block text-sm font-medium">Customer Phone</label>
+              <input type="tel" id="new-customer-phone" className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" />
+            </div>
+            <div>
+              <label htmlFor="new-customer-address" className="block text-sm font-medium">Customer Address</label>
+              <textarea id="new-customer-address" rows={3} className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"></textarea>
+            </div>
+            <div>
+              <label htmlFor="new-total-amount" className="block text-sm font-medium">Total Amount (₹)</label>
+              <input type="number" id="new-total-amount" className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" />
+            </div>
+            <div>
+              <label htmlFor="new-payment-utr" className="block text-sm font-medium">UTR/Txn ID</label>
+              <input type="text" id="new-payment-utr" className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" />
+            </div>
+            <div>
+              <label htmlFor="new-payment-app" className="block text-sm font-medium">Payment App</label>
+              <input type="text" id="new-payment-app" className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" />
+            </div>
+            <div>
+              <label htmlFor="new-payment-screenshot" className="block text-sm font-medium">Payment Screenshot (URL)</label>
+              <input type="url" id="new-payment-screenshot" className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" />
+            </div>
+            <div className="flex justify-end gap-2">
+              <Button variant="outline" onClick={() => setIsCreateDialogOpen(false)}>Cancel</Button>
+              <Button onClick={handleCreate} disabled={loading}>{loading ? 'Creating...' : 'Create Payment'}</Button>
+            </div>
+          </div>
         </DialogContent>
       </Dialog>
     </div>

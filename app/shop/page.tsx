@@ -39,8 +39,18 @@ interface Product {
   [key: string]: any;
 }
 
+interface Category {
+  id: string;
+  name: string;
+  slug: string;
+  description?: string;
+  image_url?: string;
+  parent_id?: string;
+}
+
 export default function ShopPage() {
   const [products, setProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
   const [viewMode, setViewMode] = useState('grid');
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All');
@@ -55,12 +65,15 @@ export default function ShopPage() {
   const { addToCart } = useCart();
 
   useEffect(() => {
-    const fetchProducts = async () => {
+    const fetchData = async () => {
+      setLoading(true);
+      // Fetch products
       let query = supabase.from('products').select('*').eq('in_stock', true);
-      const { data, error } = await query;
-      if (!error) setProducts(data || []);
+      const { data: prodData, error: prodError } = await query;
+      if (!prodError) setProducts(prodData || []);
+      setLoading(false);
     };
-    fetchProducts();
+    fetchData();
   }, []);
 
   // Modal close handler
@@ -115,7 +128,9 @@ export default function ShopPage() {
     setTimeout(() => setShowSuccess(false), 1200);
   };
 
-  const categories = ['All', ...Array.from(new Set(products.map(p => p.category).filter(Boolean)))];
+  // Remove all categories state and Supabase fetch for categories
+  // Instead, derive categories from products:
+  const categories = Array.from(new Set(products.map(p => p.category).filter((c): c is string => !!c)));
 
   const FilterSidebar = () => (
     <div className="space-y-6">
@@ -126,7 +141,7 @@ export default function ShopPage() {
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
-            {categories.filter((category): category is string => typeof category === 'string').map(category => (
+            {['All', ...categories].map(category => (
               <SelectItem key={category} value={category}>{category}</SelectItem>
             ))}
           </SelectContent>
@@ -259,7 +274,7 @@ export default function ShopPage() {
     );
   };
 
-  if (products.length === 0 && !showFilters) {
+  if (loading) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[40vh]">
         <Player autoplay loop animationData={loadingLottie} style={{ height: 120, width: 120 }} />
@@ -268,136 +283,43 @@ export default function ShopPage() {
     );
   }
 
+  // Group products by category
+  const productsByCategory: { [category: string]: Product[] } = {};
+  categories.forEach(cat => {
+    productsByCategory[cat] = products.filter(p => p.category === cat);
+  });
+
+  // Render only category cards
   return (
-    <div className="min-h-screen bg-gradient-to-br from-orange-50 to-amber-50">
-      <Header />
-
-      <div className="container mx-auto px-2 sm:px-4 py-8">
-        <div className="flex flex-col lg:flex-row gap-8">
-          {/* Filters Sidebar - Desktop */}
-          <div className="hidden lg:block w-80 flex-shrink-0">
-            <Card className="p-6">
-              <h2 className="text-xl font-bold text-gray-900 mb-6">Filters</h2>
-              <FilterSidebar />
-            </Card>
-          </div>
-          {/* Main Content */}
-          <div className="flex-1">
-            {/* Search and Controls */}
-            <div className="mb-8">
-              <div className="flex flex-col md:flex-row gap-4 mb-6">
-                <div className="relative flex-1">
-                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-                  <Input
-                    placeholder="Search jewelry..."
-                    className="pl-10 w-full"
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                  />
+    <div className="shop-page py-8 px-4 min-h-screen bg-gradient-to-br from-amber-50 to-yellow-100">
+      <div className="max-w-6xl mx-auto">
+        <div className="flex items-center gap-4 mb-8">
+          <Button asChild variant="outline">
+            <Link href="/">Back to Home</Link>
+          </Button>
+          <h1 className="text-3xl font-bold text-amber-700">Shop by Category</h1>
+        </div>
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+          {categories.map(category => {
+            const categoryProduct = products.find(p => p.category === category && p.image_url);
+            return (
+              <Link key={category} href={`/shop/category/${encodeURIComponent(category)}`} className="block group">
+                <div className="rounded-xl shadow-lg bg-white hover:shadow-2xl transition p-6 flex flex-col items-center border border-amber-100 hover:border-amber-400">
+                  <div className="w-20 h-20 rounded-full bg-amber-50 flex items-center justify-center mb-4 border-2 border-amber-200 overflow-hidden">
+                    {categoryProduct ? (
+                      <img src={categoryProduct.image_url} alt={category} className="w-16 h-16 object-cover rounded-full" />
+                    ) : (
+                      <span className="text-3xl text-amber-400 font-bold">{category[0]}</span>
+                    )}
+                  </div>
+                  <div className="text-lg font-bold text-amber-700 group-hover:text-orange-600 mb-1">{category}</div>
+                  <div className="text-sm text-gray-500">{products.filter(p => p.category === category).length} products</div>
                 </div>
-                <Select value={sortBy} onValueChange={setSortBy}>
-                  <SelectTrigger className="w-48">
-                    <SelectValue placeholder="Sort by" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="featured">Featured</SelectItem>
-                    <SelectItem value="price-low">Price: Low to High</SelectItem>
-                    <SelectItem value="price-high">Price: High to Low</SelectItem>
-                    <SelectItem value="newest">Newest</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-4">
-                  <Sheet open={showFilters} onOpenChange={setShowFilters}>
-                    <SheetTrigger asChild>
-                      <Button variant="outline" className="lg:hidden">
-                        <Filter className="w-4 h-4 mr-2" />
-                        Filters
-                      </Button>
-                    </SheetTrigger>
-                    <SheetContent side="left" className="w-80">
-                      <div className="py-6">
-                        <h2 className="text-xl font-bold text-gray-900 mb-6">Filters</h2>
-                        <FilterSidebar />
-                      </div>
-                    </SheetContent>
-                  </Sheet>
-                  <p className="text-gray-600">
-                    {sortedProducts.length} products found
-                  </p>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Button
-                    variant={viewMode === 'grid' ? 'default' : 'outline'}
-                    size="icon"
-                    onClick={() => setViewMode('grid')}
-                  >
-                    <Grid className="w-4 h-4" />
-                  </Button>
-                  <Button
-                    variant={viewMode === 'list' ? 'default' : 'outline'}
-                    size="icon"
-                    onClick={() => setViewMode('list')}
-                  >
-                    <List className="w-4 h-4" />
-                  </Button>
-                </div>
-              </div>
-            </div>
-
-            {/* Products Grid */}
-            <div className={`grid gap-4 sm:gap-8 ${viewMode === 'grid' ? 'grid-cols-1 sm:grid-cols-2 xl:grid-cols-3' : 'grid-cols-1'}`}>
-              {sortedProducts.map((product) => (
-                <ProductCard key={product.id} product={product} onAddToCart={handleAddToCart} />
-              ))}
-            </div>
-
-            {sortedProducts.length === 0 && (
-              <div className="flex flex-col items-center justify-center py-12">
-                <Player autoplay loop animationData={emptyLottie} style={{ height: 120, width: 120 }} />
-                <p className="mt-4 text-lg text-gray-500">No products found matching your criteria.</p>
-              </div>
-            )}
-          </div>
+              </Link>
+            );
+          })}
         </div>
       </div>
-      <FlyToCart
-        image={flyToCartState.image}
-        from={flyToCartState.from}
-        to={flyToCartState.to}
-        visible={flyToCartState.visible}
-        onComplete={() => setFlyToCartState(s => ({ ...s, visible: false }))}
-      />
-      {showSuccess && (
-        <div className="fixed top-20 left-1/2 transform -translate-x-1/2 z-[9999]">
-          <Player
-            autoplay
-            loop={false}
-            animationData={successLottie}
-            style={{ height: 80, width: 80 }}
-          />
-        </div>
-      )}
-      {openImageUrl && (
-        <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/70 backdrop-blur-sm" onClick={() => setOpenImageUrl(null)}>
-          <div className="relative max-w-full max-h-full p-2" onClick={e => e.stopPropagation()}>
-            <button
-              className="absolute top-2 right-2 bg-white/80 hover:bg-white rounded-full p-2 shadow-lg z-10"
-              onClick={() => setOpenImageUrl(null)}
-              aria-label="Close image"
-            >
-              <X className="w-6 h-6 text-gray-800" />
-            </button>
-            <img
-              src={openImageUrl}
-              alt="Product Full"
-              className="max-w-[90vw] max-h-[80vh] rounded-lg shadow-xl object-contain bg-white"
-            />
-          </div>
-        </div>
-      )}
     </div>
   );
 }

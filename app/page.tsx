@@ -66,6 +66,15 @@ interface Product {
   [key: string]: any;
 }
 
+interface Category {
+  id: string;
+  name: string;
+  slug: string;
+  description?: string;
+  image_url?: string;
+  parent_id?: string;
+}
+
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
 
@@ -267,6 +276,7 @@ const Confetti = () => {
 export default function Home() {
   const [products, setProducts] = useState<Product[]>([]);
   const [carouselImages, setCarouselImages] = useState<CarouselSlide[]>([]);
+  const [categories, setCategories] = useState<Category[]>([]);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<string>("All");
   const [selectedMaterial, setSelectedMaterial] = useState<string>("All");
@@ -281,6 +291,7 @@ export default function Home() {
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [currentCarouselSlide, setCurrentCarouselSlide] = useState(0);
 const [loading, setLoading] = useState(true);
+  const [showFilterSidebar, setShowFilterSidebar] = useState(false);
   const carouselRef = useRef(null);
   const [dragStartX, setDragStartX] = useState<number | null>(null);
   const [dragDelta, setDragDelta] = useState(0);
@@ -328,9 +339,8 @@ const [loading, setLoading] = useState(true);
         setLoading(true);
         const [productsData, carouselData] = await Promise.all([
           fetchProducts(),
-          fetchCarouselSlides()
+          fetchCarouselSlides(),
         ]);
-
         setProducts(productsData || []);
         setCarouselImages(carouselData || []);
       } catch (error) {
@@ -603,100 +613,59 @@ const [loading, setLoading] = useState(true);
     );
   };
 
-  const FilterSidebar = ({ isOpen, onClose }: { isOpen: boolean, onClose: () => void }) => (
-    <div className={`bg-white border-r h-full ${isOpen ? 'block' : 'hidden'} lg:block`}>
+  // Dynamic filter options
+  const categoryOptions = ['All', ...Array.from(new Set(products.map(p => p.category).filter(Boolean)))];
+  const minPrice = Math.min(...products.map(p => p.price), 0);
+  const maxPrice = Math.max(...products.map(p => p.price), 100000);
+
+  // Replace FilterSidebar with a dynamic, mobile-friendly version
+  const DynamicFilterSidebar = ({ isOpen, onClose }: { isOpen: boolean, onClose: () => void }) => (
+    <div className={`bg-white border-r h-full ${isOpen ? 'block' : 'hidden'} lg:block w-80`}>
       <div className="p-6 space-y-6">
         <div className="flex items-center justify-between lg:justify-center">
           <h2 className="text-xl font-bold text-gray-900">Filters</h2>
-          <Button
-            className="lg:hidden"
-            onClick={onClose}
-          >
-            <X className="w-5 h-5" />
+          <Button className="lg:hidden" onClick={onClose}>
+            Close
           </Button>
         </div>
-        
         <div className="space-y-4">
           <div>
-            <label className="text-sm font-medium text-gray-700 mb-2 block">Category</label>
+            <Label className="text-sm font-medium text-gray-700 mb-2 block">Category</Label>
             <Select value={selectedCategory} onValueChange={setSelectedCategory}>
               <SelectTrigger>
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                {categories.map(category => (
-                  <SelectItem key={category} value={category}>{category}</SelectItem>
+                {categoryOptions.map(category => (
+                  category ? <SelectItem key={category} value={category}>{category}</SelectItem> : null
                 ))}
               </SelectContent>
             </Select>
           </div>
-
           <div>
-            <label className="text-sm font-medium text-gray-700 mb-2 block">Material</label>
-            <Select value={selectedMaterial} onValueChange={setSelectedMaterial}>
-              <SelectTrigger>
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                {materials.map(material => (
-                  <SelectItem key={material} value={material}>{material}</SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-
-          <div>
-            <label className="text-sm font-medium text-gray-700 mb-2 block">Occasion</label>
-            <Select value={selectedOccasion} onValueChange={setSelectedOccasion}>
-              <SelectTrigger>
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                {occasions.map(occasion => (
-                  <SelectItem key={occasion} value={occasion}>{occasion}</SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-
-          <div>
-            <label className="text-sm font-medium text-gray-700 mb-2 block">
+            <Label className="text-sm font-medium text-gray-700 mb-2 block">
               Price Range: {formatCurrency(priceRange[0])} - {formatCurrency(priceRange[1])}
-            </label>
+            </Label>
             <Slider
               value={priceRange}
               onValueChange={(val: number[]) => setPriceRange([val[0], val[1]] as [number, number])}
-              max={100000}
-              min={0}
+              max={maxPrice}
+              min={minPrice}
               step={1000}
               className="w-full"
             />
           </div>
-
-          <div className="flex items-center space-x-2">
-            <Switch
-              id="festive-mode"
-              checked={festiveMode}
-              onCheckedChange={setFestiveMode}
-            />
-            <Label htmlFor="festive-mode" className="text-sm font-medium text-gray-700">
-              Festive Mode
-            </Label>
-          </div>
+          <Button 
+            className="w-full"
+            onClick={() => {
+              setSelectedCategory('All');
+              setPriceRange([minPrice, maxPrice]);
+              setSearchTerm('');
+            }}
+          >
+            Clear Filters
+          </Button>
         </div>
-
-        <Button 
-          className="w-full"
-          onClick={() => {
-            setSelectedCategory("All");
-            setSelectedMaterial("All");
-            setSelectedOccasion("All");
-            setPriceRange([0, 100000]);
-            setSearchTerm("");
-          }}
-        >
-          Clear Filters
-        </Button>
       </div>
     </div>
   );
@@ -931,9 +900,21 @@ const [loading, setLoading] = useState(true);
         <div className="flex gap-8">
           {/* Filters Sidebar - Desktop */}
           <div className="hidden lg:block w-80 flex-shrink-0">
-            <FilterSidebar isOpen={isMobileMenuOpen} onClose={() => setIsMobileMenuOpen(false)} />
+            <DynamicFilterSidebar isOpen={true} onClose={() => setShowFilterSidebar(false)} />
           </div>
-
+          {/* Filter Button - Mobile */}
+          <div className="lg:hidden flex justify-end mb-4 w-full">
+            <Sheet open={showFilterSidebar} onOpenChange={setShowFilterSidebar}>
+              <SheetTrigger asChild>
+                <Button variant="outline" className="btn-animated" onClick={() => setShowFilterSidebar(true)}>
+                  Filters
+                </Button>
+              </SheetTrigger>
+              <SheetContent side="left" className="w-80">
+                <DynamicFilterSidebar isOpen={showFilterSidebar} onClose={() => setShowFilterSidebar(false)} />
+              </SheetContent>
+            </Sheet>
+          </div>
           {/* Product Grid */}
           <div className="flex-1">
             <div className="flex items-center justify-between mb-8">

@@ -109,9 +109,7 @@ export default function PaymentQRPage() {
         })
       });
       setSuccess(true);
-      setTimeout(() => {
-        router.push('/profile');
-      }, 2000);
+      router.push(`/payment/receipt/${insertedOrder.id}`);
     } catch (err: any) {
       setError(err.message || 'Failed to submit payment details.');
     } finally {

@@ -134,64 +134,57 @@ export default function ProfilePage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, delay: 0.2 }}
           >
-            <h2 className="text-2xl font-semibold mb-4 flex items-center gap-2 text-amber-700"><ShoppingCart className="w-6 h-6 text-orange-500" /> Order History</h2>
+            <h2 className="text-2xl font-semibold mb-4 flex items-center gap-2 text-amber-700">
+              <ShoppingCart className="w-6 h-6 text-orange-500" /> Order History
+            </h2>
             {orders && orders.length === 0 ? (
               <div className="text-gray-500">No orders found.</div>
             ) : (
-              <div className="space-y-4">
+              <div className="space-y-6">
                 {orders && orders.map((order: any, idx: number) => (
                   <motion.div
                     key={order.id}
-                    className="bg-gradient-to-r from-amber-50 to-orange-50 rounded-lg shadow p-4 animate-fade-in"
+                    className="relative bg-gradient-to-br from-yellow-50 via-amber-100 to-orange-50 rounded-2xl shadow-xl p-6 border border-amber-100 animate-fade-in overflow-hidden"
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.5, delay: idx * 0.08 }}
                   >
-                    <div className="flex flex-wrap gap-2 mb-1">
-                      <span className="font-semibold text-gray-900">Order ID:</span> <span className="font-mono text-xs text-gray-700">{order.id}</span>
-                      <span className="font-semibold text-gray-900">Order Number:</span> <span className="text-xs text-gray-700">{order.order_number}</span>
-                    </div>
-                    <div className="flex flex-wrap gap-2 mb-1">
-                      <span className="font-semibold text-gray-900">Customer Name:</span> <span className="text-gray-700">{order.customer_name}</span>
-                      <span className="font-semibold text-gray-900">Email:</span> <span className="text-gray-700">{order.customer_email}</span>
-                      <span className="font-semibold text-gray-900">Phone:</span> <span className="text-gray-700">{order.customer_phone}</span>
-                    </div>
-                    <div className="flex flex-wrap gap-2 mb-1">
+                    {/* Logo watermark */}
+                    <img src="/alankarika-logo.png" alt="Logo" className="absolute top-4 right-4 w-12 opacity-10 pointer-events-none select-none" />
+                    <div className="flex flex-wrap gap-2 items-center mb-2">
+                      <Badge className="bg-gradient-to-r from-amber-400 to-orange-500 text-white font-bold text-xs px-3 py-1 rounded-full shadow">Order ID: {order.id.slice(0, 8)}</Badge>
+                      <span className="font-semibold text-gray-900">Order No:</span> <span className="text-xs text-gray-700">{order.order_number}</span>
                       <span className="font-semibold text-gray-900">Status:</span>
-                      <span className="text-orange-700 font-semibold">{order.status || 'Pending'}</span>
-                      <span className="font-semibold text-gray-900">Payment Status:</span> <Badge className="bg-blue-100 text-blue-800">{order.payment_status}</Badge>
-                      <span className="font-semibold text-gray-900">Payment Method:</span> <span className="text-gray-700">{order.payment_method}</span>
-                      <span className="font-semibold text-gray-900">Payment ID:</span> <span className="text-gray-700">{order.payment_id || 'N/A'}</span>
+                      <Badge className="bg-gradient-to-r from-green-400 to-green-600 text-white font-bold px-3 py-1 rounded-full shadow">{order.status || 'Pending'}</Badge>
+                      <span className="font-semibold text-gray-900">Payment:</span>
+                      <Badge className="bg-gradient-to-r from-blue-400 to-blue-600 text-white font-bold px-3 py-1 rounded-full shadow">{order.payment_status}</Badge>
                     </div>
-                    <div className="flex flex-wrap gap-2 mb-1">
-                      <span className="font-semibold text-gray-900">Tracking Number:</span> <span className="text-gray-700">{order.tracking_number || `ALK${order.id.slice(-6)}${Math.floor(1000 + (parseInt(order.id.slice(-4), 16) % 9000))}`}</span>
-                      <span className="font-semibold text-gray-900">Shipping Provider:</span> <span className="text-gray-700">Alankarika</span>
+                    <div className="flex flex-wrap gap-2 items-center mb-2">
+                      <span className="font-semibold text-gray-900">Total:</span>
+                      <span className="text-2xl font-bold text-orange-600">₹{order.total_amount?.toLocaleString()}</span>
+                      <span className="font-semibold text-gray-900">Date:</span>
+                      <span className="text-gray-700">{order.created_at ? new Date(order.created_at).toLocaleString() : ''}</span>
                     </div>
-                    <div className="flex flex-wrap gap-2 mb-1">
-                      <span className="font-semibold text-gray-900">Subtotal:</span> <span className="text-gray-700">₹{order.subtotal?.toLocaleString()}</span>
-                      <span className="font-semibold text-gray-900">Discount:</span> <span className="text-gray-700">₹{order.discount_amount?.toLocaleString()}</span>
-                      <span className="font-semibold text-gray-900">Shipping:</span> <span className="text-gray-700">₹{order.shipping_cost?.toLocaleString()}</span>
-                      <span className="font-semibold text-gray-900">Tax:</span> <span className="text-gray-700">₹{order.tax_amount?.toLocaleString()}</span>
-                      <span className="font-semibold text-gray-900">Total:</span> <span className="text-orange-700 font-bold">₹{order.total_amount?.toLocaleString()}</span>
-                    </div>
-                    <div className="flex flex-wrap gap-2 mb-1">
-                      <span className="font-semibold text-gray-900">Created At:</span> <span className="text-gray-700">{order.created_at ? new Date(order.created_at).toLocaleString() : ''}</span>
-                      <span className="font-semibold text-gray-900">Updated At:</span> <span className="text-gray-700">{order.updated_at ? new Date(order.updated_at).toLocaleString() : ''}</span>
-                    </div>
-                    <div className="flex flex-wrap gap-2 mb-1">
-                      <span className="font-semibold text-gray-900">Shipping Address:</span> <span className="text-gray-700">{order.shipping_address ? (typeof order.shipping_address === 'string' ? order.shipping_address : JSON.stringify(order.shipping_address)) : 'N/A'}</span>
-                      <span className="font-semibold text-gray-900">Billing Address:</span> <span className="text-gray-700">{order.billing_address ? (typeof order.billing_address === 'string' ? order.billing_address : JSON.stringify(order.billing_address)) : 'N/A'}</span>
-                    </div>
-                    <div className="flex flex-wrap gap-2 mb-1">
-                      <span className="font-semibold text-gray-900">Notes:</span> <span className="text-gray-700">{order.notes || 'N/A'}</span>
-                    </div>
-                    <div className="flex items-center gap-2 mb-1">
+                    <div className="flex flex-wrap gap-2 items-center mb-2">
                       <span className="font-semibold text-gray-900">Items:</span>
                       <ul className="list-disc ml-6 text-gray-700">
                         {order.items?.map((item: any, idx: number) => (
                           <li key={idx}>{item.name} x {item.quantity}</li>
                         ))}
                       </ul>
+                    </div>
+                    <div className="flex flex-wrap gap-2 items-center mb-2">
+                      <span className="font-semibold text-gray-900">Shipping:</span>
+                      <span className="text-gray-700">{order.shipping_address ? (typeof order.shipping_address === 'string' ? order.shipping_address : JSON.stringify(order.shipping_address)) : 'N/A'}</span>
+                    </div>
+                    <div className="flex flex-wrap gap-2 items-center mb-2">
+                      <span className="font-semibold text-gray-900">Notes:</span>
+                      <span className="text-gray-700">{order.notes || 'N/A'}</span>
+                    </div>
+                    <div className="flex gap-4 mt-4">
+                      <Button asChild variant="outline" className="bg-gradient-to-r from-amber-400 to-orange-500 text-white font-bold shadow">
+                        <Link href={`/payment/receipt/${order.id}`}>View Receipt</Link>
+                      </Button>
                     </div>
                   </motion.div>
                 ))}

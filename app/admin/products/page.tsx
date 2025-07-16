@@ -360,7 +360,7 @@ export default function ProductsManagement() {
     try {
       const { error } = await supabase
         .from('products')
-        .update({ is_active: !product.is_active })
+        .update({ in_stock: !product.in_stock })
         .eq('id', product.id);
       
         if (error) throw error;
@@ -492,18 +492,18 @@ export default function ProductsManagement() {
                         <TableCell>{product.category}</TableCell>
                       <TableCell className="font-semibold">₹{parseFloat(String(product.price)).toLocaleString()}</TableCell>
                       <TableCell>
-                        <Badge variant={product.stock_quantity > 10 ? 'default' : product.stock_quantity > 0 ? 'secondary' : 'destructive'}>
-                          {product.stock_quantity > 0 ? product.stock_quantity : 'Out of Stock'}
+                        <Badge variant={product.in_stock ? 'default' : 'destructive'}>
+                          {product.in_stock ? 'Available' : 'Out of Stock'}
                         </Badge>
                       </TableCell>
                       <TableCell>
                         <div className="flex items-center gap-2">
                           <Switch
-                            checked={product.is_active}
+                            checked={product.in_stock}
                             onCheckedChange={() => toggleProductStatus(product)}
                           />
-                          <Badge className={product.is_active ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}>
-                            {product.is_active ? 'Active' : 'Inactive'}
+                          <Badge className={product.in_stock ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}>
+                            {product.in_stock ? 'Active' : 'Inactive'}
                           </Badge>
                         </div>
                       </TableCell>

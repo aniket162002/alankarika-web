@@ -15,6 +15,15 @@ import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { createClient } from '@supabase/supabase-js';
 import { useUser } from '@/hooks/useUser';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+  DialogClose
+} from '@/components/ui/dialog';
 
 interface CheckoutFormProps {
   cartItems: any[];
@@ -36,6 +45,7 @@ export default function CheckoutForm({ cartItems, total, onBack, onSuccess }: Ch
     pincode: '',
     specialInstructions: ''
   });
+  const [showComingSoon, setShowComingSoon] = useState(false);
 
   const supabase = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -58,8 +68,10 @@ export default function CheckoutForm({ cartItems, total, onBack, onSuccess }: Ch
 
     try {
       if (paymentMethod === 'cod') {
-        // Handle Cash on Delivery
-        await handleCODOrder();
+        // Show Coming Soon modal instead of placing COD order
+        setShowComingSoon(true);
+        setLoading(false);
+        return;
       } else {
         // Redirect to QR payment page with form data and cart items
         const data = encodeURIComponent(JSON.stringify({ formData, cartItems, total }));
@@ -143,6 +155,33 @@ export default function CheckoutForm({ cartItems, total, onBack, onSuccess }: Ch
 
   return (
     <div className="min-h-screen bg-gray-50 py-8">
+      {/* Coming Soon Modal for COD */}
+      <Dialog open={showComingSoon} onOpenChange={setShowComingSoon}>
+        <DialogContent className="max-w-md text-center">
+          <DialogHeader>
+            <DialogTitle className="text-2xl font-bold text-orange-600">Cash on Delivery - Coming Soon!</DialogTitle>
+            <DialogDescription className="mt-2 text-base text-gray-700">
+              <span className="block mb-2">We're working hard to bring you the convenience of Cash on Delivery (COD) soon!</span>
+              <span className="block mb-2 font-semibold text-amber-700">Meanwhile, you can complete your order securely with our trusted online payment options.</span>
+              <span className="block text-sm text-gray-500">Enjoy instant confirmation, fast processing, and exclusive online offers!</span>
+            </DialogDescription>
+          </DialogHeader>
+          <div className="flex flex-col gap-4 mt-4">
+            <Button
+              className="w-full bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-700 hover:to-orange-700 text-lg font-semibold shadow-lg"
+              onClick={() => {
+                setShowComingSoon(false);
+                setPaymentMethod('online');
+              }}
+            >
+              Go to Secure Online Payment
+            </Button>
+            <DialogClose asChild>
+              <Button variant="outline" className="w-full">Cancel</Button>
+            </DialogClose>
+          </div>
+        </DialogContent>
+      </Dialog>
       <div className="container mx-auto px-4">
         <div className="max-w-4xl mx-auto">
           <div className="flex items-center gap-4 mb-8">
