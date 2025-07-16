@@ -897,13 +897,9 @@ const [loading, setLoading] = useState(true);
 
       {/* Main Content */}
       <div className="container mx-auto px-2 sm:px-4 py-8">
-        <div className="flex gap-8">
-          {/* Filters Sidebar - Desktop */}
-          <div className="hidden lg:block w-80 flex-shrink-0">
-            <DynamicFilterSidebar isOpen={true} onClose={() => setShowFilterSidebar(false)} />
-          </div>
-          {/* Filter Button - Mobile */}
-          <div className="lg:hidden flex justify-end mb-4 w-full">
+        {/* Product Grid Section - Mobile Friendly */}
+        <div className="flex flex-col gap-2 mb-6 sm:mb-8 lg:hidden">
+          <div className="flex w-full justify-start mb-2">
             <Sheet open={showFilterSidebar} onOpenChange={setShowFilterSidebar}>
               <SheetTrigger asChild>
                 <Button variant="outline" className="btn-animated" onClick={() => setShowFilterSidebar(true)}>
@@ -915,26 +911,25 @@ const [loading, setLoading] = useState(true);
               </SheetContent>
             </Sheet>
           </div>
-          {/* Product Grid */}
-          <div className="flex-1">
-            <div className="flex items-center justify-between mb-8">
-              <h2 className="luxury-heading">Our Collection</h2>
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-8 justify-center items-center">
-              {filteredProducts.map((product) => (
-                <ProductCard key={product.id} product={product} onAddToCart={handleAddToCart} />
-              ))}
-            </div>
-
-            {filteredProducts.length === 0 && (
-              <div className="flex flex-col items-center justify-center py-12">
-                <Player autoplay loop animationData={emptyLottie} style={{ height: 120, width: 120 }} />
-                <p className="mt-4 text-lg text-gray-500">No products found matching your criteria.</p>
-              </div>
-            )}
-          </div>
+          <h2 className="luxury-heading text-center w-full">Our Collection</h2>
         </div>
+        {/* Desktop Heading */}
+        <div className="hidden lg:flex items-center justify-between mb-8">
+          <h2 className="luxury-heading">Our Collection</h2>
+        </div>
+        {/* Product Grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-8 w-full max-w-xl mx-auto">
+          {filteredProducts.map((product) => (
+            <ProductCard key={product.id} product={product} onAddToCart={handleAddToCart} />
+          ))}
+        </div>
+
+        {filteredProducts.length === 0 && (
+          <div className="flex flex-col items-center justify-center py-12">
+            <Player autoplay loop animationData={emptyLottie} style={{ height: 120, width: 120 }} />
+            <p className="mt-4 text-lg text-gray-500">No products found matching your criteria.</p>
+          </div>
+        )}
       </div>
       <WavyDivider color="#fbbf24" />
 
