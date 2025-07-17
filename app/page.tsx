@@ -1018,9 +1018,16 @@ const [loading, setLoading] = useState(true);
               </ul>
             </div>
             <div>
-              <h4 className="font-semibold mb-4">No Return & Refund Policy</h4>
+              <h4 className="font-semibold mb-4">No Return Policy</h4>
               <ul className="space-y-2 text-gray-400">
                 <li><Link href="/no-return-refund-policy" className="hover:text-white transition-colors">Read Policy</Link></li>
+              </ul>
+            </div>
+            <div>
+              <h4 className="font-semibold mb-4">Legal</h4>
+              <ul className="space-y-2 text-gray-400">
+                <li><Link href="/privacy-policy" className="hover:text-white transition-colors">Privacy Policy</Link></li>
+                <li><Link href="/terms-and-conditions" className="hover:text-white transition-colors">Terms & Conditions</Link></li>
               </ul>
             </div>
             {/* Newsletter section removed */}
