@@ -96,7 +96,7 @@ export default function AboutPage() {
               className="relative"
             >
               <Image
-                src="/about.png"
+                src="/about.jpeg"
                 alt="About Alankarika"
                 width={500}
                 height={350}
@@ -204,7 +204,7 @@ export default function AboutPage() {
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button asChild size="lg" className="bg-white text-amber-600 hover:bg-gray-100">
-                <Link href="/collections">Explore Collections</Link>
+                <Link href="/shop">Explore Collections</Link>
               </Button>
               <Button asChild size="lg" variant="outline" className="border-white text-white hover:bg-white hover:text-amber-600">
                 <Link href="/contact">Contact Us</Link>

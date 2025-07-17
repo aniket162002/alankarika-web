@@ -48,6 +48,12 @@ export default function LoginPage() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.7 }}
       >
+        <div className="absolute top-6 left-6 z-20">
+          <Button variant="outline" onClick={() => router.push('/')}>
+            <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" className="w-5 h-5 mr-1"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
+            Go Back Home
+          </Button>
+        </div>
         <div className="bg-white/95 rounded-2xl shadow-2xl px-8 py-10 flex flex-col items-center relative border border-orange-100 animate-fade-in">
           <Image
             src="/alankarika-logo.png"

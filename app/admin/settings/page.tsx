@@ -19,8 +19,9 @@ export default function AdminSettingsPage() {
         </CardHeader>
         <CardContent>
           <div className="text-center py-12">
-            <Settings className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">Settings Coming Soon</h3>
+            <Settings className="w-16 h-16 text-gray-300 mx-auto mb-4 animate-bounce" />
+            <h3 className="text-2xl font-bold text-gray-900 mb-2">Settings Coming Soon</h3>
+            <p className="text-lg text-red-600 font-semibold mb-4">This page is under construction and will be available soon.</p>
             <p className="text-gray-600 mb-4">This page will allow you to manage site-wide preferences and configurations.</p>
           </div>
         </CardContent>

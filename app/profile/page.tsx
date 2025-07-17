@@ -9,15 +9,23 @@ import { motion } from 'framer-motion';
 import { Badge } from '@/components/ui/badge';
 import { LogOut, User as UserIcon, ShoppingCart, Truck } from 'lucide-react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 export default function ProfilePage() {
   const { user, logout, loading } = useUser();
-  const [showAuthModal, setShowAuthModal] = useState(false);
+  const router = useRouter();
+  const handleLogout = async () => {
+    await logout();
+    router.push('/');
+  };
 
   useEffect(() => {
-    if (!user && !loading) setShowAuthModal(true);
-    else setShowAuthModal(false);
+    if (!user && !loading) {
+      router.push('/');
+    }
   }, [user, loading]);
+
+  if (!user && !loading) return null;
 
   // Real-time orders
   const orders = useSupabaseRealtime(
@@ -81,13 +89,7 @@ export default function ProfilePage() {
         transition={{ duration: 1.5, delay: 0.5 }}
       />
       {/* Show login modal only if not logged in AND showAuthModal is true */}
-      {!user && showAuthModal && (
-        <LoginRegisterModal 
-          open={showAuthModal} 
-          onClose={() => setShowAuthModal(false)} 
-          onSuccess={() => setShowAuthModal(false)} 
-        />
-      )}
+      {/* This block is removed as per the edit hint */}
       {/* Main profile UI, only if user is logged in */}
       {user && (
         <motion.div
@@ -116,7 +118,7 @@ export default function ProfilePage() {
               <div className="mb-1 text-gray-700">{user.email}</div>
               <div className="mb-1 text-gray-700">{user.mobile}</div>
               <Badge className="bg-green-100 text-green-800 mt-2">Customer</Badge>
-              <Button onClick={logout} className="mt-4 w-full bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-700 hover:to-orange-700 shadow rounded-lg flex items-center gap-2">
+              <Button onClick={handleLogout} className="mt-4 w-full bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-700 hover:to-orange-700 shadow rounded-lg flex items-center gap-2">
                 <LogOut className="w-4 h-4" /> Logout
               </Button>
             </div>

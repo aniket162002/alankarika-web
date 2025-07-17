@@ -857,6 +857,7 @@ const [loading, setLoading] = useState(true);
               Each piece in our collection tells a story of India&apos;s rich cultural heritage, 
               passed down through generations of master craftsmen.
             </p>
+            <p className="text-lg font-bold text-red-600 mt-6">No Refund and No Return under any circumstances.</p>
           </motion.div>
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -918,7 +919,7 @@ const [loading, setLoading] = useState(true);
           <h2 className="luxury-heading">Our Collection</h2>
         </div>
         {/* Product Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-8 w-full max-w-xl mx-auto">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-8 w-full">
           {filteredProducts.map((product) => (
             <ProductCard key={product.id} product={product} onAddToCart={handleAddToCart} />
           ))}
@@ -940,12 +941,12 @@ const [loading, setLoading] = useState(true);
             <h2 className="text-4xl font-bold text-amber-700 mb-4 font-playfair">Discover Your Perfect Jewelry Style</h2>
             <p className="text-xl text-gray-700 mb-6 max-w-xl">Take our quick, fun quiz and get personalized recommendations for pieces that match your unique taste and personality. Find the jewelry that truly speaks to you!</p>
             <Button asChild size="lg" className="bg-gradient-to-r from-amber-600 to-orange-600 text-white text-lg font-semibold shadow-lg hover:from-orange-600 hover:to-amber-700">
-              <a href="/quiz">Start the Style Quiz</a>
+              <a href="/register">Start the Style Quiz</a>
             </Button>
           </div>
           <div className="flex-1 flex justify-center">
             <Image
-              src="/about.png"
+              src="/about.jpeg"
               alt="Jewelry Style Quiz Illustration"
               width={400}
               height={320}
@@ -998,19 +999,8 @@ const [loading, setLoading] = useState(true);
             <div>
               <h3 className="text-xl font-bold mb-4">अलंकारिका</h3>
               <p className="text-gray-400 mb-4">Where Tradition Meets Elegance</p>
-              <div className="flex gap-4">
-                <div className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center cursor-pointer hover:bg-blue-700 transition-colors">
-                  <span className="text-white text-sm">f</span>
-                </div>
-                <div className="w-8 h-8 bg-pink-600 rounded-full flex items-center justify-center cursor-pointer hover:bg-pink-700 transition-colors">
-                  <span className="text-white text-sm">i</span>
-                </div>
-                <div className="w-8 h-8 bg-red-600 rounded-full flex items-center justify-center cursor-pointer hover:bg-red-700 transition-colors">
-                  <span className="text-white text-sm">p</span>
-                </div>
-              </div>
+              {/* Social media icons removed */}
             </div>
-            
             <div>
               <h4 className="font-semibold mb-4">Quick Links</h4>
               <ul className="space-y-2 text-gray-400">
@@ -1019,7 +1009,6 @@ const [loading, setLoading] = useState(true);
                 <li><Link href="/reviews" className="hover:text-white transition-colors">Customer Reviews</Link></li>
               </ul>
             </div>
-            
             <div>
               <h4 className="font-semibold mb-4">Customer Service</h4>
               <ul className="space-y-2 text-gray-400">
@@ -1028,48 +1017,15 @@ const [loading, setLoading] = useState(true);
                 <li><Link href="/size-guide" className="hover:text-white transition-colors">Size Guide</Link></li>
               </ul>
             </div>
-            
             <div>
               <h4 className="font-semibold mb-4">No Return & Refund Policy</h4>
               <ul className="space-y-2 text-gray-400">
                 <li><Link href="/no-return-refund-policy" className="hover:text-white transition-colors">Read Policy</Link></li>
               </ul>
             </div>
-            <div>
-              <h4 className="font-semibold mb-4">Newsletter</h4>
-              <p className="text-gray-400 mb-4">Subscribe to get updates on new collections and festive offers</p>
-              <form onSubmit={handleNewsletterSubmit} className="space-y-2">
-                <Input
-                  type="email"
-                  placeholder="Your email"
-                  value={newsletterEmail}
-                  onChange={(e) => setNewsletterEmail(e.target.value)}
-                  className="bg-gray-800 border-gray-700 text-white"
-                  required
-                />
-                <Button type="submit" className="w-full bg-gradient-to-r from-amber-600 to-orange-600">
-                  Subscribe
-                </Button>
-              </form>
-              <div className="mt-4 space-y-2 text-gray-400">
-                <div className="flex items-center gap-2">
-                  <Phone className="w-4 h-4" />
-                  <span>+91 9769432565</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Mail className="w-4 h-4" />
-                  <span>alankarikaa@gmail.com</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <MapPin className="w-4 h-4" />
-                  <span>Mumbai, India</span>
-                </div>
-              </div>
-            </div>
+            {/* Newsletter section removed */}
           </div>
-          
           <Separator className="my-8 bg-gray-800" />
-          
           <div className="text-center text-gray-400">
             <p>&copy; 2025 अलंकारिका. All rights reserved.</p>
           </div>
