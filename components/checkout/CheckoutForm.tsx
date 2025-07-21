@@ -24,6 +24,7 @@ import {
   DialogFooter,
   DialogClose
 } from '@/components/ui/dialog';
+import { useCart } from '@/components/cart/CartProvider';
 
 interface CheckoutFormProps {
   cartItems: any[];
@@ -54,6 +55,7 @@ export default function CheckoutForm({ cartItems, total, onBack, onSuccess }: Ch
 
   const router = useRouter();
   const { user } = useUser();
+  const { clearCart } = useCart();
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setFormData({
@@ -75,6 +77,7 @@ export default function CheckoutForm({ cartItems, total, onBack, onSuccess }: Ch
       } else {
         // Redirect to QR payment page with form data and cart items
         const data = encodeURIComponent(JSON.stringify({ formData, cartItems, total }));
+        clearCart();
         router.push(`/payment/qr?data=${data}`);
       }
     } catch (error) {
@@ -146,7 +149,7 @@ export default function CheckoutForm({ cartItems, total, onBack, onSuccess }: Ch
     sessionStorage.setItem('paymentSuccessOrderData', JSON.stringify(codOrderData));
     localStorage.setItem('lastOrderData', JSON.stringify(codOrderData));
     // Clear cart data
-    localStorage.removeItem('alankaarika-cart');
+    clearCart();
     // Redirect to success page
     setTimeout(() => {
       window.location.href = `/payment-success?orderId=${codOrderData.id}`;

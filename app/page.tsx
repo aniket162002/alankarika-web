@@ -502,13 +502,32 @@ const [loading, setLoading] = useState(true);
   };
 
   // Update ProductCard to use images array for alternate angles
-  const ProductCard = ({ product, onAddToCart }: { product: Product, onAddToCart: (product: Product, e?: React.MouseEvent) => void }) => {
-    // Use images array if available, else fallback to image_url, else fallback to logo
+  const ProductCard = ({ product, onAddToCart }: { product: Product, onAddToCart: (product: Product, e?: React.MouseEvent, options?: any) => void }) => {
+    const [size, setSize] = useState('');
+    const [customName, setCustomName] = useState('');
+    const [error, setError] = useState('');
     let images: string[] = Array.isArray(product.images) ? product.images : [];
     let mainImage = images[0] || product.image_url || '/alankarika-logo.png';
     let hoverImage = images[1] || mainImage;
     mainImage = mainImage.replace(/([^:]\/)\/+/g, '$1');
     hoverImage = hoverImage.replace(/([^:]\/)\/+/g, '$1');
+    const isMangalsutra = (product.category || '').trim().toLowerCase() === 'मंगळसूत्र';
+    const isHairband = (product.category || '').trim().toLowerCase() === 'हेरबँड';
+    const handleAdd = (e: React.MouseEvent) => {
+      setError('');
+      if (isMangalsutra && !size) {
+        setError('कृपया साईज निवडा (Please select a size)');
+        return;
+      }
+      if (isHairband && !customName.trim()) {
+        setError('कृपया नाव भरा (Please enter a name)');
+        return;
+      }
+      const options: any = {};
+      if (isMangalsutra) options.size = size;
+      if (isHairband) options.customName = customName.trim();
+      onAddToCart(product, e, options);
+    };
     return (
       <motion.div
         whileHover={{ y: -5 }}
@@ -528,7 +547,6 @@ const [loading, setLoading] = useState(true);
                 onError={(e) => { (e.target as HTMLImageElement).src = '/alankarika-logo.png'; }}
                 style={{ opacity: 1, transition: 'opacity 0.4s' }}
               />
-              {/* Show hover image on hover if available (desktop only) */}
               {hoverImage !== mainImage && (
                 <Image
                   src={hoverImage}
@@ -592,10 +610,31 @@ const [loading, setLoading] = useState(true);
                 <span className="text-lg text-gray-400 line-through">{formatCurrency(product.price / (1 - product.discount / 100))}</span>
               )}
             </div>
+            {isMangalsutra && (
+              <div className="mb-3">
+                <Label>Size (inch)</Label>
+                <Select value={size} onValueChange={setSize}>
+                  <SelectTrigger><SelectValue placeholder="Select Size" /></SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="30">30"</SelectItem>
+                    <SelectItem value="32">32"</SelectItem>
+                    <SelectItem value="34">34"</SelectItem>
+                    <SelectItem value="36">36"</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            )}
+            {isHairband && (
+              <div className="mb-3">
+                <Label>Name</Label>
+                <Input value={customName} onChange={e => setCustomName(e.target.value)} placeholder="Enter Name" className="w-full mt-1" />
+              </div>
+            )}
+            {error && <div className="text-red-600 text-sm mb-2">{error}</div>}
             <div className="flex gap-2 mb-3">
               <Button 
                 className="flex-1 bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-700 hover:to-orange-700 btn-animated"
-                onClick={(e) => onAddToCart(product, e)}
+                onClick={handleAdd}
               >
                 Add to Cart
               </Button>
@@ -857,7 +896,6 @@ const [loading, setLoading] = useState(true);
               Each piece in our collection tells a story of India&apos;s rich cultural heritage, 
               passed down through generations of master craftsmen.
             </p>
-            <p className="text-lg font-bold text-red-600 mt-6">No Refund and No Return under any circumstances.</p>
           </motion.div>
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">

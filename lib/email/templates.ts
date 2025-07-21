@@ -1,6 +1,7 @@
 import { companyName } from './config';
 
 export const getEmailTemplate = (type: string, data: any) => {
+  const DEPLOY_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://alankarika-web.vercel.app';
   const baseStyle = `
     <style>
       body { font-family: 'Arial', sans-serif; margin: 0; padding: 0; background-color: #f5f5f5; }
@@ -76,7 +77,7 @@ export const getEmailTemplate = (type: string, data: any) => {
               <p>For any questions, feel free to reach out to us!</p>
               
               <div style="text-align: center; margin: 30px 0;">
-                <a href="${process.env.NEXT_PUBLIC_BASE_URL}/profile#orders" class="button">Track Your Order</a>
+                <a href="${DEPLOY_URL}/profile#orders" class="button">Track Your Order</a>
               </div>
             </div>
             <div class="footer">
@@ -118,7 +119,7 @@ export const getEmailTemplate = (type: string, data: any) => {
               <p>Your exquisite jewelry pieces are being crafted with the utmost care and attention to detail. Each piece is a work of art that carries the legacy of traditional Indian craftsmanship.</p>
               
               <div style="text-align: center; margin: 30px 0;">
-                <a href="${process.env.NEXT_PUBLIC_BASE_URL}/profile#orders" class="button">Track Your Order</a>
+                <a href="${DEPLOY_URL}/profile#orders" class="button">Track Your Order</a>
               </div>
             </div>
             <div class="footer">
@@ -206,7 +207,7 @@ export const getEmailTemplate = (type: string, data: any) => {
               <p>Please take a moment to share your experience with us. Your feedback helps us continue to provide exceptional service.</p>
               
               <div style="text-align: center; margin: 30px 0;">
-                <a href="${process.env.NEXT_PUBLIC_BASE_URL}/reviews/new?order=${data.orderId}" class="button">Leave a Review</a>
+                <a href="${DEPLOY_URL}/reviews/new?order=${data.orderId}" class="button">Leave a Review</a>
               </div>
             </div>
             <div class="footer">
@@ -263,7 +264,7 @@ export const getEmailTemplate = (type: string, data: any) => {
               </div>
               
               <div style="text-align: center; margin: 30px 0;">
-                <a href="${process.env.NEXT_PUBLIC_BASE_URL}/admin/orders/${data.orderId}" class="button">Manage Order</a>
+                <a href="${DEPLOY_URL}/admin/orders/${data.orderId}" class="button">Manage Order</a>
               </div>
             </div>
             <div class="footer">
@@ -305,7 +306,7 @@ export const getEmailTemplate = (type: string, data: any) => {
               <p>${data.description}</p>
               
               <div style="text-align: center; margin: 30px 0;">
-                <a href="${process.env.NEXT_PUBLIC_BASE_URL}/products/${data.productId}" class="button">View Product</a>
+                <a href="${DEPLOY_URL}/products/${data.productId}" class="button">View Product</a>
               </div>
             </div>
             <div class="footer">
@@ -335,7 +336,7 @@ export const getEmailTemplate = (type: string, data: any) => {
             </div>
             <div class="content">
               <p>Thank you for submitting your payment for Order #${data.orderId}. Your payment is under review. You can track your order status below.</p>
-              <a href="${process.env.NEXT_PUBLIC_BASE_URL}/profile#orders" class="button">Track Your Order</a>
+              <a href="${DEPLOY_URL}/profile#orders" class="button">Track Your Order</a>
             </div>
             <div class="footer">
               <p>© 2025 ${companyName}. Where Tradition Meets Elegance.</p>
@@ -364,7 +365,7 @@ export const getEmailTemplate = (type: string, data: any) => {
             <div class="content">
               <p>Your payment for Order #${data.orderId} has been approved and your order is now confirmed.</p>
               ${data.payment_screenshot ? `<p>Payment Receipt: <a href="https://ljvrtryayjlwtankpfrm.supabase.co/storage/v1/object/public/payment_screenshots/${data.payment_screenshot}">View Screenshot</a></p>` : ''}
-              <a href="${process.env.NEXT_PUBLIC_BASE_URL}/profile#orders" class="button">Track Your Order</a>
+              <a href="${DEPLOY_URL}/profile#orders" class="button">Track Your Order</a>
             </div>
             <div class="footer">
               <p>© 2025 ${companyName}. Where Tradition Meets Elegance.</p>
@@ -392,7 +393,7 @@ export const getEmailTemplate = (type: string, data: any) => {
             </div>
             <div class="content">
               <p>Unfortunately, your payment for Order #${data.orderId} was not approved. Please contact support or try again.</p>
-              <a href="${process.env.NEXT_PUBLIC_BASE_URL}/profile#orders" class="button">Track Your Order</a>
+              <a href="${DEPLOY_URL}/profile#orders" class="button">Track Your Order</a>
             </div>
             <div class="footer">
               <p>© 2025 ${companyName}. Where Tradition Meets Elegance.</p>
