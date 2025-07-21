@@ -380,6 +380,8 @@ export default function CheckoutForm({ cartItems, total, onBack, onSuccess }: Ch
                   {cartItems.map((item) => {
                     let imageSrc = item.image_url && item.image_url.trim() !== '' ? item.image_url : (item.image || '/alankarika-logo.png');
                     imageSrc = imageSrc.replace(/([^:]\/)+/g, '$1');
+                    const isMangalsutra = (item.category || '').trim().toLowerCase() === 'मंगळसूत्र';
+                    const isHairband = (item.category || '').trim().toLowerCase() === 'हेरबँड';
                     return (
                       <div key={item.id} className="flex items-center gap-3 sm:gap-4 min-w-0">
                         <Image
@@ -393,6 +395,12 @@ export default function CheckoutForm({ cartItems, total, onBack, onSuccess }: Ch
                         <div className="flex-1">
                           <h4 className="font-semibold">{item.name}</h4>
                           <p className="text-sm text-gray-600">Quantity: {item.quantity}</p>
+                          {isMangalsutra && item.size && (
+                            <div className="text-sm text-amber-700">Size: <b>{item.size}"</b></div>
+                          )}
+                          {isHairband && item.customName && (
+                            <div className="text-sm text-amber-700">Name: <b>{item.customName}</b></div>
+                          )}
                         </div>
                         <div className="text-right">
                           <p className="font-semibold">₹{(item.price * item.quantity).toLocaleString()}</p>

@@ -205,24 +205,28 @@ export default function PaymentReview() {
             <DialogTitle>Review Payment</DialogTitle>
           </DialogHeader>
           {selectedOrder && (
-            <div className="space-y-4">
-              <div><b>Order ID:</b> {selectedOrder.id}</div>
-              <div><b>Customer:</b> {selectedOrder.customer_name} ({selectedOrder.customer_email})</div>
-              <div><b>Amount:</b> ₹{selectedOrder.total_amount?.toLocaleString()}</div>
-              <div><b>UTR/Txn ID:</b> {selectedOrder.payment_utr}</div>
-              <div><b>Payment App:</b> {selectedOrder.payment_app}</div>
-              {selectedOrder.payment_screenshot && (
-                <div>
-                  <b>Screenshot:</b><br />
-                  <a href={`https://ljvrtryayjlwtankpfrm.supabase.co/storage/v1/object/public/payment_screenshots/${selectedOrder.payment_screenshot}`} target="_blank" rel="noopener noreferrer">
-                    <img src={`https://ljvrtryayjlwtankpfrm.supabase.co/storage/v1/object/public/payment_screenshots/${selectedOrder.payment_screenshot}`} alt="Screenshot" className="w-40 border rounded mt-2" />
-                  </a>
+            <div className="flex flex-col gap-4 w-full sm:w-[420px] max-w-full">
+              <div className="flex flex-col sm:flex-row sm:gap-8 gap-2 w-full">
+                <div className="flex-1">
+                  <div className="mb-1"><b>Order ID:</b> {selectedOrder.id}</div>
+                  <div className="mb-1"><b>Customer:</b> {selectedOrder.customer_name} ({selectedOrder.customer_email})</div>
+                  <div className="mb-1"><b>Amount:</b> ₹{selectedOrder.total_amount?.toLocaleString()}</div>
+                  <div className="mb-1"><b>UTR/Txn ID:</b> {selectedOrder.payment_utr}</div>
+                  <div className="mb-1"><b>Payment App:</b> {selectedOrder.payment_app}</div>
                 </div>
-              )}
-              <div className="flex gap-4 mt-4">
-                <Button className="bg-green-600 hover:bg-green-700 text-white" disabled={loading} onClick={() => handleApprove(selectedOrder)}>Approve</Button>
-                <Button className="bg-red-600 hover:bg-red-700 text-white" disabled={loading} onClick={() => handleReject(selectedOrder)}>Reject</Button>
-                <Button variant="outline" onClick={() => setIsDialogOpen(false)}>Cancel</Button>
+                {selectedOrder.payment_screenshot && (
+                  <div className="flex flex-col items-center sm:items-end w-full sm:w-auto">
+                    <b className="mb-1">Screenshot:</b>
+                    <a href={`https://ljvrtryayjlwtankpfrm.supabase.co/storage/v1/object/public/payment_screenshots/${selectedOrder.payment_screenshot}`} target="_blank" rel="noopener noreferrer">
+                      <img src={`https://ljvrtryayjlwtankpfrm.supabase.co/storage/v1/object/public/payment_screenshots/${selectedOrder.payment_screenshot}`} alt="Screenshot" className="w-32 h-32 object-cover rounded border mt-1" />
+                    </a>
+                  </div>
+                )}
+              </div>
+              <div className="flex flex-col sm:flex-row gap-2 w-full justify-end">
+                <Button className="bg-green-600 hover:bg-green-700 text-white w-full sm:w-auto" disabled={loading} onClick={() => handleApprove(selectedOrder)}>Approve</Button>
+                <Button className="bg-red-600 hover:bg-red-700 text-white w-full sm:w-auto" disabled={loading} onClick={() => handleReject(selectedOrder)}>Reject</Button>
+                <Button variant="outline" className="w-full sm:w-auto" onClick={() => setIsDialogOpen(false)}>Cancel</Button>
               </div>
             </div>
           )}

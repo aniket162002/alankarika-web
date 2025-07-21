@@ -107,7 +107,7 @@ export default function ShopPage() {
     }
   });
 
-  const handleAddToCart = (product: any, e?: React.MouseEvent) => {
+  const handleAddToCart = (product: any, e?: React.MouseEvent, options?: any) => {
     // Find image position
     if (e) {
       const img = (e.currentTarget.closest('.group') as HTMLElement)?.querySelector('img');
@@ -123,7 +123,10 @@ export default function ShopPage() {
         });
       }
     }
-    addToCart(product);
+    const productWithOptions = { ...product };
+    if (options?.size) productWithOptions.size = options.size;
+    if (options?.customName) productWithOptions.customName = options.customName;
+    addToCart(productWithOptions);
     setShowSuccess(true);
     setTimeout(() => setShowSuccess(false), 1200);
   };
@@ -176,8 +179,10 @@ export default function ShopPage() {
     </div>
   );
 
-  const ProductCard = ({ product, onAddToCart }: { product: any, onAddToCart: (product: any, e?: React.MouseEvent) => void }) => {
-    // Use images array if available, else fallback to image_url, else fallback to logo
+  const ProductCard = ({ product, onAddToCart }: { product: any, onAddToCart: (product: any, e?: React.MouseEvent, options?: any) => void }) => {
+    const [size, setSize] = useState('');
+    const [customName, setCustomName] = useState('');
+    const [error, setError] = useState('');
     let images: string[] = Array.isArray(product.images) ? product.images : [];
     let mainImage = images[0] || product.image_url || '/alankarika-logo.png';
     let hoverImage = images[1] || mainImage;
@@ -185,6 +190,23 @@ export default function ShopPage() {
     hoverImage = hoverImage.replace(/([^:]\/)\/+/g, '$1');
     const hasDiscount = typeof product.discount === 'number' && !isNaN(product.discount) && product.discount > 0;
     let originalPrice = hasDiscount ? product.price / (1 - product.discount / 100) : null;
+    const isMangalsutra = (product.category || '').trim().toLowerCase() === 'मंगळसूत्र';
+    const isHairband = (product.category || '').trim().toLowerCase() === 'हेरबँड';
+    const handleAdd = (e: React.MouseEvent) => {
+      setError('');
+      if (isMangalsutra && !size) {
+        setError('कृपया साईज निवडा (Please select a size)');
+        return;
+      }
+      if (isHairband && !customName.trim()) {
+        setError('कृपया नाव भरा (Please enter a name)');
+        return;
+      }
+      const options: any = {};
+      if (isMangalsutra) options.size = size;
+      if (isHairband) options.customName = customName.trim();
+      onAddToCart(product, e, options);
+    };
     return (
       <motion.div
         whileHover={{ y: -5 }}
@@ -260,10 +282,31 @@ export default function ShopPage() {
                 <span className="text-lg text-gray-400 line-through">{formatCurrency(originalPrice)}</span>
               )}
             </div>
+            {isMangalsutra && (
+              <div className="mb-3">
+                <Label>Size (inch)</Label>
+                <Select value={size} onValueChange={setSize} className="w-full mt-1">
+                  <SelectTrigger><SelectValue placeholder="Select Size" /></SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="30">30"</SelectItem>
+                    <SelectItem value="32">32"</SelectItem>
+                    <SelectItem value="34">34"</SelectItem>
+                    <SelectItem value="36">36"</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            )}
+            {isHairband && (
+              <div className="mb-3">
+                <Label>Name</Label>
+                <Input value={customName} onChange={e => setCustomName(e.target.value)} placeholder="Enter Name" className="w-full mt-1" />
+              </div>
+            )}
+            {error && <div className="text-red-600 text-sm mb-2">{error}</div>}
             <Button 
               className="w-full bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-700 hover:to-orange-700"
               disabled={!product.in_stock}
-              onClick={(e) => onAddToCart(product, e)}
+              onClick={handleAdd}
             >
               <ShoppingCart className="w-4 h-4 mr-2" />
               {product.in_stock ? 'Add to Cart' : 'Out of Stock'}

@@ -174,6 +174,8 @@ export default function CartPage() {
                       {cartItems.map((item, index) => {
                         let imageSrc = item.image_url && item.image_url.trim() !== '' ? item.image_url : (item.image || '/alankarika-logo.png');
                         imageSrc = imageSrc.replace(/([^:]\/)\/+/, '$1');
+                        const isMangalsutra = (item.category || '').trim().toLowerCase() === 'मंगळसूत्र';
+                        const isHairband = (item.category || '').trim().toLowerCase() === 'हेरबँड';
                         return (
                           <motion.div
                             key={item.id}
@@ -199,6 +201,12 @@ export default function CartPage() {
                                       <Badge variant="outline">{item.category}</Badge>
                                       <Badge variant="outline">{item.material}</Badge>
                                     </div>
+                                    {isMangalsutra && item.size && (
+                                      <div className="text-sm text-amber-700 mb-1">Size: <b>{item.size}"</b></div>
+                                    )}
+                                    {isHairband && item.customName && (
+                                      <div className="text-sm text-amber-700 mb-1">Name: <b>{item.customName}</b></div>
+                                    )}
                                     <div className="flex items-center gap-2">
                                       <span className="text-xl font-bold text-green-600">{formatCurrency(item.price)}</span>
                                       <span className="text-sm text-gray-400 line-through">{formatCurrency(item.originalPrice || 0)}</span>

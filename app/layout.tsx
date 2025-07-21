@@ -59,8 +59,57 @@ export default function RootLayout({
         <meta name="twitter:title" content="अलंकारिका | Where Tradition Meets Elegance" />
         <meta name="twitter:description" content="Exquisite jewelry where tradition meets elegance. Shop our exclusive collections of Kundan, Meenakari, Gold, and more." />
         <meta name="twitter:image" content="https://alankarika-web.vercel.app/alankarika-logo.png" />
+        <meta name="robots" content="index, follow" />
+        <link rel="sitemap" type="application/xml" href="https://alankarika-web.vercel.app/sitemap.xml" />
+        {/* Google Search Console Verification */}
+        <meta name="google-site-verification" content="YOUR_GOOGLE_VERIFICATION_CODE" />
+        {/* Preconnect for performance */}
+        <link rel="preconnect" href="https://fonts.googleapis.com" crossOrigin="anonymous" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        {/* JSON-LD Structured Data: Organization */}
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({
+          '@context': 'https://schema.org',
+          '@type': 'Organization',
+          name: 'अलंकारिका',
+          url: 'https://alankarika-web.vercel.app/',
+          logo: 'https://alankarika-web.vercel.app/alankarika-logo.png',
+          sameAs: [
+            'https://www.instagram.com/alankarikaa',
+            'https://www.facebook.com/alankarikaa',
+            'mailto:alankarikaa@gmail.com'
+          ],
+          contactPoint: [{
+            '@type': 'ContactPoint',
+            email: 'alankarikaa@gmail.com',
+            contactType: 'customer support',
+            telephone: '+91 9167261572',
+            areaServed: 'IN',
+            availableLanguage: ['English', 'Hindi', 'Marathi']
+          }]
+        })}} />
+        {/* JSON-LD Structured Data: Breadcrumbs (example for homepage) */}
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({
+          '@context': 'https://schema.org',
+          '@type': 'BreadcrumbList',
+          itemListElement: [
+            {
+              '@type': 'ListItem',
+              position: 1,
+              name: 'Home',
+              item: 'https://alankarika-web.vercel.app/'
+            }
+          ]
+        })}} />
+        {/* Google Analytics (replace with your GA4 ID) */}
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+        <script dangerouslySetInnerHTML={{ __html: `
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'G-XXXXXXXXXX');
+        `}} />
       </Head>
-      <html lang="en">
+      <html lang="en" aria-label="Alankaarika Jewelry Store" data-theme="light">
         <body className={`${inter.variable} ${playfair.variable} font-sans`}>
           <Providers>
             {children}

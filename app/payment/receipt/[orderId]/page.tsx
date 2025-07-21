@@ -221,12 +221,29 @@ export default function PaymentReceiptPage() {
         <div>
           <div className="font-semibold text-lg text-amber-700 mb-2">Items</div>
           <ul className="space-y-2">
-            {orderData.items?.map((item: any, idx: number) => (
-              <li key={idx} className="flex justify-between items-center">
-                <span className="text-gray-700">{item.name} <span className="text-xs text-gray-400">x{item.quantity}</span></span>
-                <span className="font-medium">{formatCurrency(item.price * item.quantity)}</span>
-              </li>
-            ))}
+            {orderData.items?.map((item: any, idx: number) => {
+              const isMangalsutra = (item.category || '').trim().toLowerCase() === 'मंगळसूत्र';
+              const isHairband = (item.category || '').trim().toLowerCase() === 'हेरबँड';
+              let imageSrc = item.image_url || item.image || '/alankarika-logo.png';
+              return (
+                <li key={idx} className="flex items-center gap-3 justify-between">
+                  <div className="flex items-center gap-3 min-w-0">
+                    <img src={imageSrc} alt={item.name} className="w-12 h-12 object-cover rounded border" />
+                    <div>
+                      <span className="text-gray-700 font-semibold">{item.name}</span>
+                      <span className="text-xs text-gray-400 ml-2">x{item.quantity}</span>
+                      {isMangalsutra && item.size && (
+                        <div className="text-xs text-amber-700">Size: <b>{item.size}"</b></div>
+                      )}
+                      {isHairband && item.customName && (
+                        <div className="text-xs text-amber-700">Name: <b>{item.customName}</b></div>
+                      )}
+                    </div>
+                  </div>
+                  <span className="font-medium">{formatCurrency(item.price * item.quantity)}</span>
+                </li>
+              );
+            })}
           </ul>
         </div>
         <div className="border-t border-dashed border-amber-200 my-4"></div>
@@ -288,12 +305,29 @@ export default function PaymentReceiptPage() {
           <div style={{ background: '#fffde7', borderRadius: 16, padding: 24, marginBottom: 24, boxShadow: '0 2px 8px #ffe08255' }}>
             <div style={{ fontWeight: 800, color: '#ff9800', fontSize: 20, marginBottom: 8 }}>Items</div>
             <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
-              {orderData.items?.map((item: any, idx: number) => (
-                <li key={idx} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
-                  <span style={{ color: '#333', fontWeight: 600 }}>{item.name} <span style={{ color: '#bbb', fontSize: 13 }}>x{item.quantity}</span></span>
-                  <span style={{ fontWeight: 700 }}>{formatCurrency(item.price * item.quantity)}</span>
-                </li>
-              ))}
+              {orderData.items?.map((item: any, idx: number) => {
+                const isMangalsutra = (item.category || '').trim().toLowerCase() === 'मंगळसूत्र';
+                const isHairband = (item.category || '').trim().toLowerCase() === 'हेरबँड';
+                let imageSrc = item.image_url || item.image || '/alankarika-logo.png';
+                return (
+                  <li key={idx} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 8 }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                      <img src={imageSrc} alt={item.name} style={{ width: 36, height: 36, objectFit: 'cover', borderRadius: 6, border: '1px solid #ffb300', background: '#fff' }} />
+                      <div>
+                        <span style={{ color: '#333', fontWeight: 600 }}>{item.name}</span>
+                        <span style={{ color: '#bbb', fontSize: 13, marginLeft: 6 }}>x{item.quantity}</span>
+                        {isMangalsutra && item.size && (
+                          <div style={{ color: '#ff9800', fontSize: 12 }}>Size: <b>{item.size}"</b></div>
+                        )}
+                        {isHairband && item.customName && (
+                          <div style={{ color: '#ff9800', fontSize: 12 }}>Name: <b>{item.customName}</b></div>
+                        )}
+                      </div>
+                    </div>
+                    <span style={{ fontWeight: 700 }}>{formatCurrency(item.price * item.quantity)}</span>
+                  </li>
+                );
+              })}
             </ul>
           </div>
           <div style={{ background: 'linear-gradient(90deg, #ffb300 0%, #ff9800 100%)', borderRadius: 16, padding: 22, color: '#fff', fontWeight: 900, fontSize: 28, textAlign: 'right', boxShadow: '0 2px 8px #ffe08255', marginBottom: 24 }}>

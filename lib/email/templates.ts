@@ -55,10 +55,15 @@ export const getEmailTemplate = (type: string, data: any) => {
 
               <h3>Items Ordered:</h3>
               ${data.items.map((item: any) => `
-                <div class="product-card">
-                  <h4>${item.name}</h4>
-                  <p>Quantity: ${item.quantity}</p>
-                  <p>Price: ₹${item.price.toLocaleString()}</p>
+                <div class="product-card" style="display: flex; align-items: center; gap: 16px;">
+                  <img src="${item.image_url || item.image || '/alankarika-logo.png'}" alt="${item.name}" style="width: 64px; height: 64px; object-fit: cover; border-radius: 8px; border: 1px solid #f59e0b; background: #fff;" />
+                  <div>
+                    <h4>${item.name}</h4>
+                    <p>Quantity: ${item.quantity}</p>
+                    <p>Price: ₹${item.price.toLocaleString()}</p>
+                    ${(item.category || '').trim().toLowerCase() === 'मंगळसूत्र' && item.size ? `<p>Size: <b>${item.size}"</b></p>` : ''}
+                    ${(item.category || '').trim().toLowerCase() === 'हेरबँड' && item.customName ? `<p>Name: <b>${item.customName}</b></p>` : ''}
+                  </div>
                 </div>
               `).join('')}
 

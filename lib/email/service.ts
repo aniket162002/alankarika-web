@@ -75,9 +75,15 @@ export const sendOrderConfirmation = async (orderData: any) => {
         items: orderData.items,
         shippingAddress: orderData.customer_address || orderData.shippingAddress,
         customerName: orderData.customer_name || orderData.customerName,
+        baseUrl: process.env.NEXT_PUBLIC_BASE_URL || 'https://alankarika-web.vercel.app',
       },
     };
     const result = await sendEmail(emailData);
+    // Also send admin notification
+    await sendAdminOrderNotification({
+      ...orderData,
+      baseUrl: process.env.NEXT_PUBLIC_BASE_URL || 'https://alankarika-web.vercel.app',
+    });
     if (result && result.success) {
       return { success: true };
     } else {

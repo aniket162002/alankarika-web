@@ -48,6 +48,9 @@ export default function CategoryProductsPage() {
   };
 
   const ProductCard = ({ product }: { product: any }) => {
+    const [size, setSize] = useState('');
+    const [customName, setCustomName] = useState('');
+    const [error, setError] = useState('');
     let images: string[] = Array.isArray(product.images) ? product.images : [];
     let mainImage = images[0] || product.image_url || '/alankarika-logo.png';
     let hoverImage = images[1] || mainImage;
@@ -55,6 +58,23 @@ export default function CategoryProductsPage() {
     hoverImage = hoverImage.replace(/([^:]\/)\/+/g, '$1');
     const hasDiscount = typeof product.discount === 'number' && !isNaN(product.discount) && product.discount > 0;
     let originalPrice = hasDiscount ? product.price / (1 - product.discount / 100) : null;
+    const isMangalsutra = (product.category || '').trim().toLowerCase() === 'मंगळसूत्र';
+    const isHairband = (product.category || '').trim().toLowerCase() === 'हेरबँड';
+    const handleAdd = () => {
+      setError('');
+      if (isMangalsutra && !size) {
+        setError('कृपया साईज निवडा (Please select a size)');
+        return;
+      }
+      if (isHairband && !customName.trim()) {
+        setError('कृपया नाव भरा (Please enter a name)');
+        return;
+      }
+      const productWithOptions = { ...product };
+      if (isMangalsutra) productWithOptions.size = size;
+      if (isHairband) productWithOptions.customName = customName.trim();
+      handleAddToCart(productWithOptions);
+    };
     return (
       <div className="group">
         <Card className="overflow-hidden border-0 shadow-lg hover:shadow-2xl transition-shadow duration-300 rounded-xl p-2 sm:p-0 bg-white relative">
@@ -114,11 +134,26 @@ export default function CategoryProductsPage() {
                 <span className="text-lg text-gray-400 line-through">₹{originalPrice?.toFixed(2)}</span>
               )}
             </div>
-            <Button 
-              className="w-full bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-700 hover:to-orange-700 flex items-center justify-center gap-2 text-lg font-semibold shadow-md"
-              disabled={!product.in_stock}
-              onClick={() => handleAddToCart(product)}
-            >
+            {isMangalsutra && (
+              <div className="mb-3">
+                <label className="block text-sm font-medium mb-1">Size (inch)</label>
+                <select value={size} onChange={e => setSize(e.target.value)} className="w-full border rounded p-2">
+                  <option value="">Select Size</option>
+                  <option value="30">30"</option>
+                  <option value="32">32"</option>
+                  <option value="34">34"</option>
+                  <option value="36">36"</option>
+                </select>
+              </div>
+            )}
+            {isHairband && (
+              <div className="mb-3">
+                <label className="block text-sm font-medium mb-1">Name</label>
+                <input value={customName} onChange={e => setCustomName(e.target.value)} placeholder="Enter Name" className="w-full border rounded p-2" />
+              </div>
+            )}
+            {error && <div className="text-red-600 text-sm mb-2">{error}</div>}
+            <Button className="w-full bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-700 hover:to-orange-700 flex items-center justify-center gap-2 text-lg font-semibold shadow-md" disabled={!product.in_stock} onClick={handleAdd}>
               <ShoppingCart className="w-5 h-5 mr-1" />
               {product.in_stock ? 'Add to Cart' : 'Out of Stock'}
             </Button>

@@ -526,18 +526,32 @@ export default function OrdersManagement() {
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-3">
-                    {selectedOrder.items?.map((item, index) => (
-                      <div key={index} className="flex justify-between items-center p-3 border rounded-lg">
-                        <div>
-                          <div className="font-medium">{item.name}</div>
-                          <div className="text-sm text-gray-500">Quantity: {item.quantity}</div>
+                    {selectedOrder.items?.map((item, index) => {
+                      const isMangalsutra = (item.category || '').trim().toLowerCase() === 'मंगळसूत्र';
+                      const isHairband = (item.category || '').trim().toLowerCase() === 'हेरबँड';
+                      let imageSrc = item.image_url || item.image || '/alankarika-logo.png';
+                      return (
+                        <div key={index} className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 p-3 border rounded-lg w-full">
+                          <div className="flex items-center gap-3 min-w-0 w-full sm:w-auto">
+                            <img src={imageSrc} alt={item.name} className="w-14 h-14 object-cover rounded border" />
+                            <div>
+                              <div className="font-medium">{item.name}</div>
+                              <div className="text-sm text-gray-500">Quantity: {item.quantity}</div>
+                              {isMangalsutra && item.size && (
+                                <div className="text-sm text-amber-700">Size: <b>{item.size}"</b></div>
+                              )}
+                              {isHairband && item.customName && (
+                                <div className="text-sm text-amber-700">Name: <b>{item.customName}</b></div>
+                              )}
+                            </div>
+                          </div>
+                          <div className="text-right w-full sm:w-auto">
+                            <div className="font-medium">{formatCurrency(item.price * item.quantity)}</div>
+                            <div className="text-sm text-gray-500">{formatCurrency(item.price)} each</div>
+                          </div>
                         </div>
-                        <div className="text-right">
-                          <div className="font-medium">{formatCurrency(item.price * item.quantity)}</div>
-                          <div className="text-sm text-gray-500">{formatCurrency(item.price)} each</div>
-                        </div>
-                      </div>
-                    ))}
+                      );
+                    })}
                   </div>
                 </CardContent>
               </Card>
