@@ -285,7 +285,7 @@ export default function ShopPage() {
             {isMangalsutra && (
               <div className="mb-3">
                 <Label>Size (inch)</Label>
-                <Select value={size} onValueChange={setSize} className="w-full mt-1">
+                <Select value={size} onValueChange={setSize}>
                   <SelectTrigger><SelectValue placeholder="Select Size" /></SelectTrigger>
                   <SelectContent>
                     <SelectItem value="30">30"</SelectItem>
