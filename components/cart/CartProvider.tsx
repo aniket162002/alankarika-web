@@ -14,6 +14,8 @@ export interface CartItem {
   category?: string;
   material?: string;
   description?: string;
+  size?: string; // For मंगळसूत्र
+  customName?: string; // For हेरबँड
 }
 
 interface CartContextType {
@@ -77,7 +79,9 @@ export function CartProvider({ children }: { children: ReactNode }) {
           quantity: 1,
           category: product.category,
           material: product.material,
-          description: product.description
+          description: product.description,
+          size: product.size, // Add size if present
+          customName: product.customName, // Add customName if present
         };
         const updated = [...prev, newItem];
         return updated;
