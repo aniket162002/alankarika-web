@@ -468,7 +468,7 @@ const [loading, setLoading] = useState(true);
 
   const featuredProducts = products.slice(0, 3);
 
-  const handleAddToCart = (product: Product, e?: React.MouseEvent) => {
+  const handleAddToCart = (product: Product, e?: React.MouseEvent, options?: any) => {
     // Find image position
     if (e) {
       const img = (e.currentTarget.closest('.card-animated') as HTMLElement)?.querySelector('img');
@@ -484,7 +484,8 @@ const [loading, setLoading] = useState(true);
         });
       }
     }
-    addToCart(product);
+    // Merge options (size/customName) into product
+    addToCart({ ...product, ...options });
     setShowSuccess(true);
     setTimeout(() => setShowSuccess(false), 1200);
   };
@@ -694,16 +695,16 @@ const [loading, setLoading] = useState(true);
               className="w-full"
             />
           </div>
-          <Button 
-            className="w-full"
-            onClick={() => {
+        <Button 
+          className="w-full"
+          onClick={() => {
               setSelectedCategory('All');
               setPriceRange([minPrice, maxPrice]);
               setSearchTerm('');
-            }}
-          >
-            Clear Filters
-          </Button>
+          }}
+        >
+          Clear Filters
+        </Button>
         </div>
       </div>
     </div>
@@ -942,14 +943,14 @@ const [loading, setLoading] = useState(true);
             <Sheet open={showFilterSidebar} onOpenChange={setShowFilterSidebar}>
               <SheetTrigger asChild>
                 <Button variant="outline" className="btn-animated" onClick={() => setShowFilterSidebar(true)}>
-                  Filters
-                </Button>
+                Filters
+              </Button>
               </SheetTrigger>
               <SheetContent side="left" className="w-80">
                 <DynamicFilterSidebar isOpen={showFilterSidebar} onClose={() => setShowFilterSidebar(false)} />
               </SheetContent>
             </Sheet>
-          </div>
+            </div>
           <h2 className="luxury-heading text-center w-full">Our Collection</h2>
         </div>
         {/* Desktop Heading */}
@@ -958,17 +959,17 @@ const [loading, setLoading] = useState(true);
         </div>
         {/* Product Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-8 w-full">
-          {filteredProducts.map((product) => (
-            <ProductCard key={product.id} product={product} onAddToCart={handleAddToCart} />
-          ))}
-        </div>
+              {filteredProducts.map((product) => (
+                <ProductCard key={product.id} product={product} onAddToCart={handleAddToCart} />
+              ))}
+            </div>
 
-        {filteredProducts.length === 0 && (
-          <div className="flex flex-col items-center justify-center py-12">
-            <Player autoplay loop animationData={emptyLottie} style={{ height: 120, width: 120 }} />
-            <p className="mt-4 text-lg text-gray-500">No products found matching your criteria.</p>
-          </div>
-        )}
+            {filteredProducts.length === 0 && (
+              <div className="flex flex-col items-center justify-center py-12">
+                <Player autoplay loop animationData={emptyLottie} style={{ height: 120, width: 120 }} />
+                <p className="mt-4 text-lg text-gray-500">No products found matching your criteria.</p>
+              </div>
+            )}
       </div>
       <WavyDivider color="#fbbf24" />
 
@@ -1038,7 +1039,7 @@ const [loading, setLoading] = useState(true);
               <h3 className="text-xl font-bold mb-4">अलंकारिका</h3>
               <p className="text-gray-400 mb-4">Where Tradition Meets Elegance</p>
               {/* Social media icons removed */}
-            </div>
+                </div>
             <div>
               <h4 className="font-semibold mb-4">Quick Links</h4>
               <ul className="space-y-2 text-gray-400">
@@ -1067,9 +1068,9 @@ const [loading, setLoading] = useState(true);
                 <li><Link href="/privacy-policy" className="hover:text-white transition-colors">Privacy Policy</Link></li>
                 <li><Link href="/terms-and-conditions" className="hover:text-white transition-colors">Terms & Conditions</Link></li>
               </ul>
-            </div>
+                </div>
             {/* Newsletter section removed */}
-          </div>
+                </div>
           <Separator className="my-8 bg-gray-800" />
           <div className="text-center text-gray-400">
             <p>&copy; 2025 अलंकारिका. All rights reserved.</p>
