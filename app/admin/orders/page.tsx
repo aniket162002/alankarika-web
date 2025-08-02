@@ -32,6 +32,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { useSupabaseRealtime } from '@/hooks/useSupabaseRealtime';
 import { createClient } from '@supabase/supabase-js';
 import { formatCurrency } from '@/lib/utils/formatNumber';
+import { isParijaatProduct } from '@/components/ui/ColorSelector';
 import toast from 'react-hot-toast';
 
 const supabase = createClient(
@@ -529,6 +530,7 @@ export default function OrdersManagement() {
                     {selectedOrder.items?.map((item, index) => {
                       const isMangalsutra = (item.category || '').trim().toLowerCase() === 'मंगळसूत्र';
                       const isHairband = (item.category || '').trim().toLowerCase() === 'हेरबँड';
+                      const isParijaatItem = isParijaatProduct(item.name);
                       let imageSrc = item.image_url || item.image || '/alankarika-logo.png';
                       return (
                         <div key={index} className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 p-3 border rounded-lg w-full">
@@ -542,6 +544,9 @@ export default function OrdersManagement() {
                               )}
                               {isHairband && item.customName && (
                                 <div className="text-sm text-amber-700">Name: <b>{item.customName}</b></div>
+                              )}
+                              {isParijaatItem && item.selectedColor && (
+                                <div className="text-sm text-amber-700">Color: <b>{item.selectedColor}</b></div>
                               )}
                             </div>
                           </div>

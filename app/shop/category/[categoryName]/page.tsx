@@ -6,6 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { useCart } from '@/components/cart/CartProvider';
+import ColorSelector, { hasColorOptions, isParijaatProduct } from '@/components/ui/ColorSelector';
 import { ShoppingCart } from 'lucide-react';
 
 const supabase = createClient(
@@ -50,6 +51,8 @@ export default function CategoryProductsPage() {
   const ProductCard = ({ product }: { product: any }) => {
     const [size, setSize] = useState('');
     const [customName, setCustomName] = useState('');
+    const [selectedColor, setSelectedColor] = useState('');
+    const [customColor, setCustomColor] = useState('');
     const [error, setError] = useState('');
     let images: string[] = Array.isArray(product.images) ? product.images : [];
     let mainImage = images[0] || product.image_url || '/alankarika-logo.png';
@@ -60,19 +63,29 @@ export default function CategoryProductsPage() {
     let originalPrice = hasDiscount ? product.price / (1 - product.discount / 100) : null;
     const isMangalsutra = (product.category || '').trim().toLowerCase() === 'मंगळसूत्र';
     const isHairband = (product.category || '').trim().toLowerCase() === 'हेरबँड';
+    const isParijaatItem = isParijaatProduct(product.name);
+    const hasColors = hasColorOptions(product);
+
     const handleAdd = () => {
       setError('');
       if (isMangalsutra && !size) {
-        setError('कृपया साईज निवडा (Please select a size)');
+        setError('Please select a size');
         return;
       }
       if (isHairband && !customName.trim()) {
-        setError('कृपया नाव भरा (Please enter a name)');
+        setError('Please enter a name');
+        return;
+      }
+      if (isParijaatItem && !selectedColor && !customColor.trim()) {
+        setError('Please select a color or enter a custom color');
         return;
       }
       const productWithOptions = { ...product };
       if (isMangalsutra) productWithOptions.size = size;
       if (isHairband) productWithOptions.customName = customName.trim();
+      if (isParijaatItem) {
+        productWithOptions.selectedColor = customColor.trim() || selectedColor;
+      }
       handleAddToCart(productWithOptions);
     };
     return (
@@ -150,6 +163,25 @@ export default function CategoryProductsPage() {
               <div className="mb-3">
                 <label className="block text-sm font-medium mb-1">Name</label>
                 <input value={customName} onChange={e => setCustomName(e.target.value)} placeholder="Enter Name" className="w-full border rounded p-2" />
+              </div>
+            )}
+            {isParijaatItem && (
+              <div className="mb-3">
+                <ColorSelector
+                  colors={product.available_colors || []}
+                  selectedColor={selectedColor}
+                  onColorSelect={(color) => {
+                    setSelectedColor(color.value);
+                    setCustomColor(''); // Clear custom color when predefined is selected
+                  }}
+                  size="md"
+                  allowCustomColor={true}
+                  customColorValue={customColor}
+                  onCustomColorChange={(color) => {
+                    setCustomColor(color);
+                    setSelectedColor(''); // Clear predefined color when custom is entered
+                  }}
+                />
               </div>
             )}
             {error && <div className="text-red-600 text-sm mb-2">{error}</div>}

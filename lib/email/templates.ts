@@ -64,6 +64,7 @@ export const getEmailTemplate = (type: string, data: any) => {
                     <p>Price: ₹${item.price.toLocaleString()}</p>
                     ${(item.category || '').trim().toLowerCase() === 'मंगळसूत्र' && item.size ? `<p>Size: <b>${item.size}"</b></p>` : ''}
                     ${(item.category || '').trim().toLowerCase() === 'हेरबँड' && item.customName ? `<p>Name: <b>${item.customName}</b></p>` : ''}
+                    ${item.name?.startsWith('पारिजात') && item.selectedColor ? `<p>Color: <b>${item.selectedColor}</b></p>` : ''}
                   </div>
                 </div>
               `).join('')}
@@ -83,6 +84,11 @@ export const getEmailTemplate = (type: string, data: any) => {
             <div class="footer">
               <p>© 2025 ${companyName}. Where Tradition Meets Elegance.</p>
               <p>📧 alankarikaa@gmail.com | 📞 +91 9167261572</p>
+              <div style="margin-top: 15px; padding-top: 15px; border-top: 1px solid #e5e7eb; text-align: center;">
+                <p style="font-size: 12px; color: #9ca3af; margin: 0;">
+                  Powered by <a href="https://akrixsolutions.in" target="_blank" style="color: #f59e0b; text-decoration: none; font-weight: 500;">Akrix Solutions</a>
+                </p>
+              </div>
             </div>
           </div>
         </body>
@@ -125,6 +131,11 @@ export const getEmailTemplate = (type: string, data: any) => {
             <div class="footer">
               <p>© 2025 ${companyName}. Where Tradition Meets Elegance.</p>
               <p>📧 alankarikaa@gmail.com | 📞 +91 9167261572</p>
+              <div style="margin-top: 15px; padding-top: 15px; border-top: 1px solid #e5e7eb; text-align: center;">
+                <p style="font-size: 12px; color: #9ca3af; margin: 0;">
+                  Powered by <a href="https://akrixsolutions.in" target="_blank" style="color: #f59e0b; text-decoration: none; font-weight: 500;">Akrix Solutions</a>
+                </p>
+              </div>
             </div>
           </div>
         </body>
@@ -169,6 +180,11 @@ export const getEmailTemplate = (type: string, data: any) => {
             <div class="footer">
               <p>© 2025 ${companyName}. Where Tradition Meets Elegance.</p>
               <p>📧 alankarikaa@gmail.com | 📞 +91 9167261572</p>
+              <div style="margin-top: 15px; padding-top: 15px; border-top: 1px solid #e5e7eb; text-align: center;">
+                <p style="font-size: 12px; color: #9ca3af; margin: 0;">
+                  Powered by <a href="https://akrixsolutions.in" target="_blank" style="color: #f59e0b; text-decoration: none; font-weight: 500;">Akrix Solutions</a>
+                </p>
+              </div>
             </div>
           </div>
         </body>
@@ -213,6 +229,11 @@ export const getEmailTemplate = (type: string, data: any) => {
             <div class="footer">
               <p>© 2025 ${companyName}. Where Tradition Meets Elegance.</p>
               <p>📧 alankarikaa@gmail.com | 📞 +91 9167261572</p>
+              <div style="margin-top: 15px; padding-top: 15px; border-top: 1px solid #e5e7eb; text-align: center;">
+                <p style="font-size: 12px; color: #9ca3af; margin: 0;">
+                  Powered by <a href="https://akrixsolutions.in" target="_blank" style="color: #f59e0b; text-decoration: none; font-weight: 500;">Akrix Solutions</a>
+                </p>
+              </div>
             </div>
           </div>
         </body>
@@ -255,6 +276,9 @@ export const getEmailTemplate = (type: string, data: any) => {
                   <h4>${item.name}</h4>
                   <p>Quantity: ${item.quantity}</p>
                   <p>Price: ₹${item.price.toLocaleString()}</p>
+                  ${(item.category || '').trim().toLowerCase() === 'मंगळसूत्र' && item.size ? `<p>Size: <b>${item.size}"</b></p>` : ''}
+                  ${(item.category || '').trim().toLowerCase() === 'हेरबँड' && item.customName ? `<p>Name: <b>${item.customName}</b></p>` : ''}
+                  ${item.name?.startsWith('पारिजात') && item.selectedColor ? `<p>Color: <b>${item.selectedColor}</b></p>` : ''}
                 </div>
               `).join('')}
 
@@ -269,6 +293,11 @@ export const getEmailTemplate = (type: string, data: any) => {
             </div>
             <div class="footer">
               <p>© 2025 ${companyName}. Admin Dashboard.</p>
+              <div style="margin-top: 15px; padding-top: 15px; border-top: 1px solid #e5e7eb; text-align: center;">
+                <p style="font-size: 12px; color: #9ca3af; margin: 0;">
+                  Powered by <a href="https://akrixsolutions.in" target="_blank" style="color: #f59e0b; text-decoration: none; font-weight: 500;">Akrix Solutions</a>
+                </p>
+              </div>
             </div>
           </div>
         </body>
@@ -312,6 +341,11 @@ export const getEmailTemplate = (type: string, data: any) => {
             <div class="footer">
               <p>© 2025 ${companyName}. Where Tradition Meets Elegance.</p>
               <p>📧 alankarikaa@gmail.com | 📞 +91 9167261572</p>
+              <div style="margin-top: 15px; padding-top: 15px; border-top: 1px solid #e5e7eb; text-align: center;">
+                <p style="font-size: 12px; color: #9ca3af; margin: 0;">
+                  Powered by <a href="https://akrixsolutions.in" target="_blank" style="color: #f59e0b; text-decoration: none; font-weight: 500;">Akrix Solutions</a>
+                </p>
+              </div>
             </div>
           </div>
         </body>
@@ -341,6 +375,11 @@ export const getEmailTemplate = (type: string, data: any) => {
             <div class="footer">
               <p>© 2025 ${companyName}. Where Tradition Meets Elegance.</p>
               <p>📧 alankarikaa@gmail.com | 📞 +91 9167261572</p>
+              <div style="margin-top: 15px; padding-top: 15px; border-top: 1px solid #e5e7eb; text-align: center;">
+                <p style="font-size: 12px; color: #9ca3af; margin: 0;">
+                  Powered by <a href="https://akrixsolutions.in" target="_blank" style="color: #f59e0b; text-decoration: none; font-weight: 500;">Akrix Solutions</a>
+                </p>
+              </div>
             </div>
           </div>
         </body>
@@ -370,6 +409,11 @@ export const getEmailTemplate = (type: string, data: any) => {
             <div class="footer">
               <p>© 2025 ${companyName}. Where Tradition Meets Elegance.</p>
               <p>📧 alankarikaa@gmail.com | 📞 +91 9167261572</p>
+              <div style="margin-top: 15px; padding-top: 15px; border-top: 1px solid #e5e7eb; text-align: center;">
+                <p style="font-size: 12px; color: #9ca3af; margin: 0;">
+                  Powered by <a href="https://akrixsolutions.in" target="_blank" style="color: #f59e0b; text-decoration: none; font-weight: 500;">Akrix Solutions</a>
+                </p>
+              </div>
             </div>
           </div>
         </body>
@@ -398,6 +442,11 @@ export const getEmailTemplate = (type: string, data: any) => {
             <div class="footer">
               <p>© 2025 ${companyName}. Where Tradition Meets Elegance.</p>
               <p>📧 alankarikaa@gmail.com | 📞 +91 9167261572</p>
+              <div style="margin-top: 15px; padding-top: 15px; border-top: 1px solid #e5e7eb; text-align: center;">
+                <p style="font-size: 12px; color: #9ca3af; margin: 0;">
+                  Powered by <a href="https://akrixsolutions.in" target="_blank" style="color: #f59e0b; text-decoration: none; font-weight: 500;">Akrix Solutions</a>
+                </p>
+              </div>
             </div>
           </div>
         </body>
@@ -426,6 +475,11 @@ export const getEmailTemplate = (type: string, data: any) => {
             <div class="footer">
               <p>© 2025 ${companyName}. Where Tradition Meets Elegance.</p>
               <p>📧 alankarikaa@gmail.com | 📞 +91 9167261572</p>
+              <div style="margin-top: 15px; padding-top: 15px; border-top: 1px solid #e5e7eb; text-align: center;">
+                <p style="font-size: 12px; color: #9ca3af; margin: 0;">
+                  Powered by <a href="https://akrixsolutions.in" target="_blank" style="color: #f59e0b; text-decoration: none; font-weight: 500;">Akrix Solutions</a>
+                </p>
+              </div>
             </div>
           </div>
         </body>

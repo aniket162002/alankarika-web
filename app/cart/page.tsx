@@ -17,6 +17,7 @@ import { formatNumber, formatCurrency } from '@/lib/utils/formatNumber';
 import type { CartItem } from '@/components/cart/CartProvider';
 import { useUser } from '@/hooks/useUser';
 import { useRouter } from 'next/navigation';
+import { getColorName, isParijaatProduct } from '@/components/ui/ColorSelector';
 import Header from '@/components/ui/Header';
 
 // Sample products data (in real app, this would come from context/state management)
@@ -59,7 +60,8 @@ export default function CartPage() {
   const [showCheckout, setShowCheckout] = useState(false);
   const [couponCode, setCouponCode] = useState('');
   const [appliedCoupon, setAppliedCoupon] = useState<any>(null);
-  
+  const [productsData, setProductsData] = useState<any[]>([]);
+
   // Use cartItems directly from context
   const { cartItems, updateQuantity: contextUpdateQuantity, removeFromCart: contextRemoveFromCart } = useCart();
 
@@ -72,6 +74,30 @@ export default function CartPage() {
       router.push('/login?redirect=/cart');
     }
   }, [user, loading, router]);
+
+  // Fetch product data for color information
+  useEffect(() => {
+    const fetchProductsData = async () => {
+      if (cartItems.length === 0) return;
+
+      const productIds = cartItems.map(item => item.id);
+      try {
+        const response = await fetch('/api/user/products', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ ids: productIds })
+        });
+        const data = await response.json();
+        if (data.success) {
+          setProductsData(data.products);
+        }
+      } catch (error) {
+        console.error('Error fetching products data:', error);
+      }
+    };
+
+    fetchProductsData();
+  }, [cartItems]);
 
   // Remove useEffect that syncs local cartItems
   // useEffect(() => {
@@ -176,6 +202,11 @@ export default function CartPage() {
                         imageSrc = imageSrc.replace(/([^:]\/)\/+/, '$1');
                         const isMangalsutra = (item.category || '').trim().toLowerCase() === 'मंगळसूत्र';
                         const isHairband = (item.category || '').trim().toLowerCase() === 'हेरबँड';
+                        const productData = productsData.find(p => p.id === item.id);
+                        const isParijaatItem = isParijaatProduct(item.name);
+                        const colorName = item.selectedColor && productData?.available_colors
+                          ? getColorName(item.selectedColor, productData.available_colors)
+                          : item.selectedColor;
                         return (
                           <motion.div
                             key={item.id}
@@ -206,6 +237,9 @@ export default function CartPage() {
                                     )}
                                     {isHairband && item.customName && (
                                       <div className="text-sm text-amber-700 mb-1">Name: <b>{item.customName}</b></div>
+                                    )}
+                                    {item.selectedColor && (
+                                      <div className="text-sm text-amber-700 mb-1">Color: <b>{colorName}</b></div>
                                     )}
                                     <div className="flex items-center gap-2">
                                       <span className="text-xl font-bold text-green-600">{formatCurrency(item.price)}</span>

@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
+import { HomeJsonLd } from './JsonLd';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Heart, Star, Search, Menu, X, Phone, Mail, MapPin, MessageCircle, Sparkles, Camera, ChevronLeft, ChevronRight, User as UserIcon, LogOut } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -23,13 +24,15 @@ import { createClient } from '@supabase/supabase-js'
 import { useSupabaseRealtime } from '@/hooks/useSupabaseRealtime';
 import { useUser } from '@/hooks/useUser';
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from '@/components/ui/dropdown-menu';
-import Header from '@/components/ui/Header';  
+import Header from '@/components/ui/Header';
 import FlyToCart from '@/components/ui/FlyToCart';
+import ColorSelector, { hasColorOptions, isParijaatProduct } from '@/components/ui/ColorSelector';
 import Player from 'lottie-react';
 import successLottie from '@/components/lottie/success.json';
 import loadingLottie from '@/components/lottie/loading.json';
 import emptyLottie from '@/components/lottie/empty.json';
 import CountdownTimer from '@/components/ui/CountdownTimer';
+import CustomerFeedback from '@/components/feedback/CustomerFeedback';
 
 // Update Product type to match Supabase schema
 // Fetch product data from Supabase
@@ -271,7 +274,7 @@ const Confetti = () => {
       ))}
     </div>
   );
-};
+}
 
 export default function Home() {
   const [products, setProducts] = useState<Product[]>([]);
@@ -506,6 +509,8 @@ const [loading, setLoading] = useState(true);
   const ProductCard = ({ product, onAddToCart }: { product: Product, onAddToCart: (product: Product, e?: React.MouseEvent, options?: any) => void }) => {
     const [size, setSize] = useState('');
     const [customName, setCustomName] = useState('');
+    const [selectedColor, setSelectedColor] = useState('');
+    const [customColor, setCustomColor] = useState('');
     const [error, setError] = useState('');
     let images: string[] = Array.isArray(product.images) ? product.images : [];
     let mainImage = images[0] || product.image_url || '/alankarika-logo.png';
@@ -514,19 +519,29 @@ const [loading, setLoading] = useState(true);
     hoverImage = hoverImage.replace(/([^:]\/)\/+/g, '$1');
     const isMangalsutra = (product.category || '').trim().toLowerCase() === 'मंगळसूत्र';
     const isHairband = (product.category || '').trim().toLowerCase() === 'हेरबँड';
+    const isParijaatItem = isParijaatProduct(product.name);
+    const hasColors = hasColorOptions(product);
+
     const handleAdd = (e: React.MouseEvent) => {
       setError('');
       if (isMangalsutra && !size) {
-        setError('कृपया साईज निवडा (Please select a size)');
+        setError('Please select a size');
         return;
       }
       if (isHairband && !customName.trim()) {
-        setError('कृपया नाव भरा (Please enter a name)');
+        setError('Please enter a name');
+        return;
+      }
+      if (isParijaatItem && !selectedColor && !customColor.trim()) {
+        setError('Please select a color or enter a custom color');
         return;
       }
       const options: any = {};
       if (isMangalsutra) options.size = size;
       if (isHairband) options.customName = customName.trim();
+      if (isParijaatItem) {
+        options.selectedColor = customColor.trim() || selectedColor;
+      }
       onAddToCart(product, e, options);
     };
     return (
@@ -629,6 +644,25 @@ const [loading, setLoading] = useState(true);
               <div className="mb-3">
                 <Label>Name</Label>
                 <Input value={customName} onChange={e => setCustomName(e.target.value)} placeholder="Enter Name" className="w-full mt-1" />
+              </div>
+            )}
+            {isParijaatItem && (
+              <div className="mb-3">
+                <ColorSelector
+                  colors={product.available_colors || []}
+                  selectedColor={selectedColor}
+                  onColorSelect={(color) => {
+                    setSelectedColor(color.value);
+                    setCustomColor(''); // Clear custom color when predefined is selected
+                  }}
+                  size="md"
+                  allowCustomColor={true}
+                  customColorValue={customColor}
+                  onCustomColorChange={(color) => {
+                    setCustomColor(color);
+                    setSelectedColor(''); // Clear predefined color when custom is entered
+                  }}
+                />
               </div>
             )}
             {error && <div className="text-red-600 text-sm mb-2">{error}</div>}
@@ -754,7 +788,11 @@ const [loading, setLoading] = useState(true);
   }
 
   return (
-    <div className={`relative min-h-screen flex flex-col justify-between ${festiveMode ? 'bg-gradient-to-br from-orange-50 via-amber-50 to-yellow-50 festive-mode' : 'bg-gradient-to-br from-orange-50 to-amber-50'}`}>
+    <div className={`relative min-h-screen flex flex-col justify-between ${
+      festiveMode
+        ? 'bg-gradient-to-br from-orange-50 via-amber-50 to-yellow-50 festive-mode'
+        : 'bg-gradient-to-br from-orange-50 to-amber-50'
+    }`}>
       {/* Countdown Timer (if active) */}
       {countdown && (
         <div className="py-8 animate-fade-in">
@@ -762,85 +800,137 @@ const [loading, setLoading] = useState(true);
         </div>
       )}
       <Header />
-      {/* Hero Section with Dynamic Carousel */}
-      <section className="relative w-full max-w-md mx-auto sm:max-w-full h-56 sm:h-[70vh] md:h-[80vh] flex items-center justify-center overflow-hidden rounded-xl bg-white shadow-lg sm:rounded-lg sm:bg-transparent sm:shadow-none p-2 sm:p-0">
-        <BrandMotif className="absolute left-4 top-4 w-24 h-24 z-0 hidden sm:block" style={{ opacity: 0.18 }} />
-        {/* Parallax & animated background (hidden on mobile for performance) */}
-        <div className="absolute inset-0 z-0 pointer-events-none hidden sm:block">
-          {/* Parallax layers */}
-          <motion.div 
-            className="absolute top-10 left-10 w-32 h-32 bg-gradient-to-r from-amber-400 to-orange-500 rounded-full blur-xl opacity-30"
-            animate={{ scale: [1, 1.2, 1], rotate: [0, 180, 360], opacity: [0.3, 0.6, 0.3] }}
-            transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+      {/* Enhanced Hero Section with Dynamic Carousel */}
+      <section className="relative w-full h-[60vh] sm:h-[75vh] md:h-[85vh] lg:h-[90vh] flex items-center justify-center overflow-hidden bg-gradient-to-br from-amber-50 via-orange-50 to-yellow-50">
+        {/* Enhanced Background Effects */}
+        <div className="absolute inset-0 z-0 pointer-events-none">
+          {/* Geometric patterns */}
+          <div className="absolute inset-0 opacity-10">
+            <div className="absolute top-10 left-10 w-20 h-20 border-2 border-amber-400 rotate-45 animate-pulse"></div>
+            <div className="absolute top-20 right-20 w-16 h-16 border-2 border-orange-400 rounded-full animate-bounce"></div>
+            <div className="absolute bottom-20 left-20 w-12 h-12 bg-gradient-to-r from-amber-400 to-orange-500 rotate-12 animate-spin"></div>
+          </div>
+
+          {/* Enhanced Parallax layers */}
+          <motion.div
+            className="absolute top-10 left-10 w-32 h-32 bg-gradient-to-r from-amber-400 to-orange-500 rounded-full blur-2xl opacity-20"
+            animate={{ scale: [1, 1.3, 1], rotate: [0, 180, 360], opacity: [0.2, 0.4, 0.2] }}
+            transition={{ duration: 12, repeat: Infinity, ease: "easeInOut" }}
           />
-          <motion.div 
-            className="absolute top-32 right-20 w-40 h-40 bg-gradient-to-r from-rose-400 to-pink-500 rounded-full blur-xl opacity-25"
-            animate={{ scale: [1.2, 1, 1.2], rotate: [360, 180, 0], opacity: [0.25, 0.5, 0.25] }}
-            transition={{ duration: 10, repeat: Infinity, ease: "easeInOut", delay: 2 }}
+          <motion.div
+            className="absolute top-32 right-20 w-40 h-40 bg-gradient-to-r from-rose-400 to-pink-500 rounded-full blur-2xl opacity-15"
+            animate={{ scale: [1.2, 1, 1.2], rotate: [360, 180, 0], opacity: [0.15, 0.3, 0.15] }}
+            transition={{ duration: 15, repeat: Infinity, ease: "easeInOut", delay: 3 }}
           />
-          <motion.div 
-            className="absolute bottom-20 left-32 w-28 h-28 bg-gradient-to-r from-emerald-400 to-teal-500 rounded-full blur-xl opacity-30"
-            animate={{ scale: [1, 1.3, 1], rotate: [0, -180, -360], opacity: [0.3, 0.7, 0.3] }}
-            transition={{ duration: 6, repeat: Infinity, ease: "easeInOut", delay: 4 }}
+          <motion.div
+            className="absolute bottom-20 left-32 w-28 h-28 bg-gradient-to-r from-emerald-400 to-teal-500 rounded-full blur-2xl opacity-20"
+            animate={{ scale: [1, 1.4, 1], rotate: [0, -180, -360], opacity: [0.2, 0.5, 0.2] }}
+            transition={{ duration: 10, repeat: Infinity, ease: "easeInOut", delay: 6 }}
           />
-          {/* Sparkling effects */}
-          <SparkleOverlay count={18} />
+
+          {/* Enhanced Sparkling effects */}
+          <SparkleOverlay count={25} />
         </div>
-        {/* Carousel Background */}
-        <AnimatePresence mode="wait">
-          {displayCarouselImages[currentCarouselSlide] && (
-            <motion.img
-              key={displayCarouselImages[currentCarouselSlide].id}
-              src={displayCarouselImages[currentCarouselSlide].image_url}
-              alt={displayCarouselImages[currentCarouselSlide].title}
-              className="w-full h-48 object-contain rounded-lg sm:h-full sm:object-cover sm:rounded-lg select-none shadow-2xl"
-              initial={{ opacity: 0, scale: 1.1 }}
-              animate={{ opacity: 1, scale: 1 + Math.abs(dragDelta) / 1000 }}
-              exit={{ opacity: 0, scale: 0.9 }}
-              transition={{ duration: 0.7, ease: 'easeInOut' }}
-              style={{ x: dragDelta * 0.2 }}
-              draggable={false}
-              onTouchStart={handleDragStart}
-              onTouchMove={handleDragMove}
-              onTouchEnd={handleDragEnd}
-              onMouseDown={handleDragStart}
-              onMouseMove={dragStartX !== null ? handleDragMove : undefined}
-              onMouseUp={handleDragEnd}
-              onMouseLeave={handleDragEnd}
-            />
-          )}
-        </AnimatePresence>
-        {/* Carousel Overlay Content */}
-        <div className="absolute inset-0 flex flex-col items-center justify-center z-10 text-center">
-          <motion.h1
-            className="text-4xl sm:text-5xl md:text-6xl font-bold text-white drop-shadow-lg font-playfair mb-4 tracking-wide"
-            initial={{ opacity: 0, y: 40 }}
+        {/* Enhanced Carousel Background */}
+        <div className="absolute inset-0 z-5">
+          <AnimatePresence mode="wait">
+            {displayCarouselImages[currentCarouselSlide] && (
+              <motion.div
+                key={displayCarouselImages[currentCarouselSlide].id}
+                className="relative w-full h-full"
+                initial={{ opacity: 0, scale: 1.1 }}
+                animate={{ opacity: 1, scale: 1 + Math.abs(dragDelta) / 1000 }}
+                exit={{ opacity: 0, scale: 0.9 }}
+                transition={{ duration: 0.8, ease: 'easeInOut' }}
+                style={{ x: dragDelta * 0.2 }}
+              >
+                <img
+                  src={displayCarouselImages[currentCarouselSlide].image_url}
+                  alt={displayCarouselImages[currentCarouselSlide].title}
+                  className="w-full h-full object-cover select-none"
+                  draggable={false}
+                  onTouchStart={handleDragStart}
+                  onTouchMove={handleDragMove}
+                  onTouchEnd={handleDragEnd}
+                  onMouseDown={handleDragStart}
+                  onMouseMove={dragStartX !== null ? handleDragMove : undefined}
+                  onMouseUp={handleDragEnd}
+                  onMouseLeave={handleDragEnd}
+                />
+                {/* Gradient overlay for better text readability */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent"></div>
+                <div className="absolute inset-0 bg-gradient-to-r from-black/30 via-transparent to-black/30"></div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
+        {/* Enhanced Carousel Overlay Content */}
+        <div className="absolute inset-0 flex flex-col items-center justify-center z-20 text-center px-4 sm:px-6 lg:px-8">
+          <motion.div
+            className="max-w-4xl mx-auto"
+            initial={{ opacity: 0, y: 50 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1 }}
           >
-            {/* Only show title if it's not just a number */}
-            {(() => {
-              const title = displayCarouselImages[currentCarouselSlide]?.title;
-              // Hide if title is only a number (integer or float)
-              if (typeof title === 'string' && title.trim().match(/^\d+(\.\d+)?$/)) {
-                return null;
-              }
-              return title;
-            })()}
-          </motion.h1>
-          <motion.p
-            className="text-lg sm:text-2xl md:text-3xl text-white/90 mb-8 max-w-2xl mx-auto drop-shadow-md"
-            initial={{ opacity: 0, y: 40 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1.2, delay: 0.2 }}
-          >
-            {displayCarouselImages[currentCarouselSlide]?.subtitle}
-          </motion.p>
-          {/* Removed the Explore/Shop Now button here */}
+            {/* Brand Badge */}
+            <motion.div
+              className="inline-flex items-center gap-2 bg-white/20 backdrop-blur-md rounded-full px-4 py-2 mb-6 border border-white/30"
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.8, delay: 0.3 }}
+            >
+              <Sparkles className="w-4 h-4 text-amber-300" />
+              <span className="text-white text-sm font-medium">Premium Jewelry Collection</span>
+            </motion.div>
+
+            <motion.h1
+              className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold text-white drop-shadow-2xl font-playfair mb-6 tracking-wide leading-tight"
+              initial={{ opacity: 0, y: 40 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 1, delay: 0.2 }}
+            >
+              {/* Only show title if it's not just a number */}
+              {(() => {
+                const title = displayCarouselImages[currentCarouselSlide]?.title;
+                // Hide if title is only a number (integer or float)
+                if (typeof title === 'string' && title.trim().match(/^\d+(\.\d+)?$/)) {
+                  return (
+                    <span className="bg-gradient-to-r from-amber-300 via-orange-300 to-yellow-300 bg-clip-text text-transparent">
+                    </span>
+                  );
+                }
+                return (
+                  <span className="bg-gradient-to-r from-amber-300 via-orange-300 to-yellow-300 bg-clip-text text-transparent">
+                    {title}
+                  </span>
+                );
+              })()}
+            </motion.h1>
+
+            <motion.p
+              className="text-lg sm:text-xl md:text-2xl lg:text-3xl text-white/90 mb-8 max-w-3xl mx-auto drop-shadow-lg leading-relaxed"
+              initial={{ opacity: 0, y: 40 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 1.2, delay: 0.4 }}
+            >
+              {displayCarouselImages[currentCarouselSlide]?.subtitle || ""}
+            </motion.p>
+
+            {/* CTA Buttons */}
+            <motion.div
+              className="flex flex-col sm:flex-row gap-4 justify-center items-center"
+              initial={{ opacity: 0, y: 40 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 1.2, delay: 0.6 }}
+            >
+              
+             
+            </motion.div>
+          </motion.div>
         </div>
-        {/* Carousel Navigation & Drag/Swipe */}
+        {/* Enhanced Carousel Navigation & Drag/Swipe */}
         <div
-          className="absolute inset-0 z-20 cursor-grab active:cursor-grabbing"
+          className="absolute inset-0 z-30 cursor-grab active:cursor-grabbing"
           onMouseDown={handleDragStart}
           onMouseMove={dragStartX !== null ? handleDragMove : undefined}
           onMouseUp={handleDragEnd}
@@ -849,35 +939,114 @@ const [loading, setLoading] = useState(true);
           onTouchMove={handleDragMove}
           onTouchEnd={handleDragEnd}
         >
-          {/* Hide arrows on mobile, show on sm+ */}
+          {/* Enhanced Navigation Arrows */}
           <button
             onClick={prevCarouselSlide}
-            className="hidden sm:flex absolute left-4 top-1/2 transform -translate-y-1/2 bg-white/20 hover:bg-white/30 text-white rounded-full p-3 shadow-lg transition-all duration-200 backdrop-blur-sm"
+            className="hidden lg:flex absolute left-6 top-1/2 transform -translate-y-1/2 bg-white/25 hover:bg-white/40 text-white rounded-full p-4 shadow-2xl transition-all duration-300 backdrop-blur-md border border-white/20 hover:scale-110"
           >
             <ChevronLeft className="w-6 h-6" />
           </button>
           <button
             onClick={nextCarouselSlide}
-            className="hidden sm:flex absolute right-4 top-1/2 transform -translate-y-1/2 bg-white/20 hover:bg-white/30 text-white rounded-full p-3 shadow-lg transition-all duration-200 backdrop-blur-sm"
+            className="hidden lg:flex absolute right-6 top-1/2 transform -translate-y-1/2 bg-white/25 hover:bg-white/40 text-white rounded-full p-4 shadow-2xl transition-all duration-300 backdrop-blur-md border border-white/20 hover:scale-110"
           >
             <ChevronRight className="w-6 h-6" />
           </button>
-          {/* Carousel Indicators - always visible, smaller on mobile */}
-          <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex gap-2">
+
+          {/* Enhanced Carousel Indicators */}
+          <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2 flex gap-3 bg-black/20 backdrop-blur-md rounded-full px-4 py-2">
             {displayCarouselImages.map((_, index) => (
               <button
                 key={index}
                 onClick={() => setCurrentCarouselSlide(index)}
-                className={`w-2 h-2 sm:w-3 sm:h-3 rounded-full transition-all duration-200 ${
-                  index === currentCarouselSlide 
-                    ? 'bg-white scale-125' 
-                    : 'bg-white/50 hover:bg-white/75'
+                className={`transition-all duration-300 ${
+                  index === currentCarouselSlide
+                    ? 'w-8 h-3 bg-white rounded-full shadow-lg'
+                    : 'w-3 h-3 bg-white/60 hover:bg-white/80 rounded-full hover:scale-110'
                 }`}
               />
             ))}
           </div>
+
+          {/* Mobile swipe indicator */}
+          <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 lg:hidden">
+            <div className="flex items-center gap-2 bg-black/20 backdrop-blur-md rounded-full px-3 py-1">
+              <div className="w-6 h-1 bg-white/60 rounded-full"></div>
+              <span className="text-white/80 text-xs">Swipe</span>
+              <div className="w-6 h-1 bg-white/60 rounded-full"></div>
+            </div>
+          </div>
         </div>
       </section>
+
+      {/* New Featured Highlights Section */}
+      <section id="featured-section" className="py-16 bg-gradient-to-b from-white to-amber-50/30 relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-br from-amber-50/20 to-orange-50/20 opacity-50"></div>
+
+        <div className="container mx-auto px-4 relative z-10">
+          <motion.div
+            className="text-center mb-16"
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            viewport={{ once: true }}
+          >
+            <div className="inline-flex items-center gap-2 bg-amber-100 text-amber-800 px-4 py-2 rounded-full text-sm font-medium mb-4">
+              <Star className="w-4 h-4" />
+              Featured Collection
+            </div>
+            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-6 font-playfair">
+              Why Choose <span className="text-amber-600">Alankarika</span>
+            </h2>
+            <p className="text-lg text-gray-600 max-w-2xl mx-auto leading-relaxed">
+              Experience the perfect blend of traditional craftsmanship and modern elegance
+            </p>
+          </motion.div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-16">
+            {[
+              {
+                icon: <Sparkles className="w-8 h-8 text-amber-500" />,
+                title: "Premium Quality",
+                description: "Handcrafted with finest materials and attention to detail"
+              },
+              {
+                icon: <Heart className="w-8 h-8 text-red-500" />,
+                title: "Traditional Design",
+                description: "Authentic Indian jewelry with cultural significance"
+              },
+              {
+                icon: <Star className="w-8 h-8 text-yellow-500" />,
+                title: "Customer Satisfaction",
+                description: "Trusted by thousands of happy customers worldwide"
+              },
+              {
+                icon: <Camera className="w-8 h-8 text-blue-500" />,
+                title: "Custom Orders",
+                description: "Personalized jewelry designed just for you"
+              }
+            ].map((feature, index) => (
+              <motion.div
+                key={index}
+                className="text-center group"
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: index * 0.1 }}
+                viewport={{ once: true }}
+              >
+                <div className="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 group-hover:scale-105 border border-gray-100">
+                  <div className="bg-gradient-to-br from-amber-50 to-orange-50 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300">
+                    {feature.icon}
+                  </div>
+                  <h3 className="text-xl font-semibold text-gray-900 mb-2">{feature.title}</h3>
+                  <p className="text-gray-600 text-sm leading-relaxed">{feature.description}</p>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       <TrustBadges />
       <WavyDivider color="#fbbf24" />
 
@@ -935,45 +1104,136 @@ const [loading, setLoading] = useState(true);
       </section>
       <WavyDivider color="#f43f5e" flip />
 
-      {/* Main Content */}
-      <div className="container mx-auto px-2 sm:px-4 py-8">
-        {/* Product Grid Section - Mobile Friendly */}
-        <div className="flex flex-col gap-2 mb-6 sm:mb-8 lg:hidden">
-          <div className="flex w-full justify-start mb-2">
-            <Sheet open={showFilterSidebar} onOpenChange={setShowFilterSidebar}>
-              <SheetTrigger asChild>
-                <Button variant="outline" className="btn-animated" onClick={() => setShowFilterSidebar(true)}>
-                Filters
-              </Button>
-              </SheetTrigger>
-              <SheetContent side="left" className="w-80">
-                <DynamicFilterSidebar isOpen={showFilterSidebar} onClose={() => setShowFilterSidebar(false)} />
-              </SheetContent>
-            </Sheet>
-            </div>
-          <h2 className="luxury-heading text-center w-full">Our Collection</h2>
-        </div>
-        {/* Desktop Heading */}
-        <div className="hidden lg:flex items-center justify-between mb-8">
-          <h2 className="luxury-heading">Our Collection</h2>
-        </div>
-        {/* Product Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-8 w-full">
-              {filteredProducts.map((product) => (
-                <ProductCard key={product.id} product={product} onAddToCart={handleAddToCart} />
-              ))}
-            </div>
+      {/* Enhanced Main Products Section */}
+      <section id="products-section" className="py-16 bg-gradient-to-b from-white to-gray-50 relative">
+        <div className="absolute inset-0 bg-gradient-to-br from-gray-50/30 to-amber-50/20 opacity-50"></div>
 
-            {filteredProducts.length === 0 && (
-              <div className="flex flex-col items-center justify-center py-12">
+        <div className="container mx-auto px-4 relative z-10">
+          {/* Enhanced Section Header */}
+          <motion.div
+            className="text-center mb-16"
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            viewport={{ once: true }}
+          >
+            <div className="inline-flex items-center gap-2 bg-amber-100 text-amber-800 px-4 py-2 rounded-full text-sm font-medium mb-4">
+              <Sparkles className="w-4 h-4" />
+              Handcrafted Collection
+            </div>
+            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-6 font-playfair">
+              Our Exquisite <span className="text-amber-600">Collection</span>
+            </h2>
+            <p className="text-lg text-gray-600 max-w-2xl mx-auto leading-relaxed mb-8">
+              Discover our carefully curated selection of traditional and contemporary jewelry pieces
+            </p>
+          </motion.div>
+
+          {/* Mobile Filter Button */}
+          <div className="flex flex-col gap-4 mb-8 lg:hidden">
+            <div className="flex justify-center">
+              <Sheet open={showFilterSidebar} onOpenChange={setShowFilterSidebar}>
+                <SheetTrigger asChild>
+                  <Button
+                    variant="outline"
+                    className="bg-white shadow-lg border-amber-200 text-amber-700 hover:bg-amber-50 px-6 py-3 rounded-full font-medium"
+                    onClick={() => setShowFilterSidebar(true)}
+                  >
+                    <Search className="w-4 h-4 mr-2" />
+                    Filters & Search
+                  </Button>
+                </SheetTrigger>
+                <SheetContent side="left" className="w-80">
+                  <DynamicFilterSidebar isOpen={showFilterSidebar} onClose={() => setShowFilterSidebar(false)} />
+                </SheetContent>
+              </Sheet>
+            </div>
+          </div>
+
+          {/* Desktop Filter Summary */}
+          <div className="hidden lg:flex items-center justify-between mb-8 bg-white rounded-2xl p-6 shadow-lg border border-gray-100">
+            <div className="flex items-center gap-4">
+              <span className="text-gray-600 font-medium">Showing {filteredProducts.length} products</span>
+              {selectedCategory !== "All" && (
+                <Badge variant="secondary" className="bg-amber-100 text-amber-800">
+                  {selectedCategory}
+                </Badge>
+              )}
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="text-sm text-gray-500">Sort by:</span>
+              <Select defaultValue="featured">
+                <SelectTrigger className="w-40">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="featured">Featured</SelectItem>
+                  <SelectItem value="price-low">Price: Low to High</SelectItem>
+                  <SelectItem value="price-high">Price: High to Low</SelectItem>
+                  <SelectItem value="newest">Newest First</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+          {/* Enhanced Product Grid */}
+          <motion.div
+            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-6 lg:gap-8"
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            transition={{ duration: 0.6 }}
+            viewport={{ once: true }}
+          >
+            {filteredProducts.map((product, index) => (
+              <motion.div
+                key={product.id}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: index * 0.05 }}
+                viewport={{ once: true }}
+              >
+                <ProductCard product={product} onAddToCart={handleAddToCart} />
+              </motion.div>
+            ))}
+          </motion.div>
+
+          {/* Enhanced Empty State */}
+          {filteredProducts.length === 0 && (
+            <motion.div
+              className="flex flex-col items-center justify-center py-20"
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.6 }}
+            >
+              <div className="bg-gradient-to-br from-amber-50 to-orange-50 rounded-full p-8 mb-6">
                 <Player autoplay loop animationData={emptyLottie} style={{ height: 120, width: 120 }} />
-                <p className="mt-4 text-lg text-gray-500">No products found matching your criteria.</p>
               </div>
-            )}
-      </div>
+              <h3 className="text-2xl font-semibold text-gray-900 mb-2">No Products Found</h3>
+              <p className="text-lg text-gray-500 mb-6 text-center max-w-md">
+                We couldn't find any products matching your criteria. Try adjusting your filters.
+              </p>
+              <Button
+                onClick={() => {
+                  setSelectedCategory("All");
+                  setSelectedMaterial("All");
+                  setSelectedOccasion("All");
+                  setSearchTerm("");
+                  setPriceRange([0, 100000]);
+                }}
+                className="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white px-6 py-3 rounded-full font-medium"
+              >
+                Clear All Filters
+              </Button>
+            </motion.div>
+          )}
+        </div>
+      </section>
+
       <WavyDivider color="#fbbf24" />
 
-      {/* Customer Reviews Section */}
+      {/* Customer Feedback Section */}
+      <CustomerFeedback />
+
+      {/* Style Quiz Section */}
       <section className="py-16 bg-gradient-to-br from-amber-50 to-orange-100">
         <div className="container mx-auto px-2 sm:px-4 flex flex-col md:flex-row items-center gap-12">
           <div className="flex-1 text-center md:text-left">
@@ -1072,8 +1332,22 @@ const [loading, setLoading] = useState(true);
             {/* Newsletter section removed */}
                 </div>
           <Separator className="my-8 bg-gray-800" />
-          <div className="text-center text-gray-400">
+          <div className="text-center text-gray-400 space-y-3">
             <p>&copy; 2025 अलंकारिका. All rights reserved.</p>
+            <div className="flex items-center justify-center gap-2 text-sm">
+              <span>Powered by</span>
+              <a
+                href="https://akrixsolutions.in"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1 text-amber-400 hover:text-amber-300 transition-colors duration-200 font-medium"
+              >
+                <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+                </svg>
+                Akrix Solutions
+              </a>
+            </div>
           </div>
         </div>
       </footer>

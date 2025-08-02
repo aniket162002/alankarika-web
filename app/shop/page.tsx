@@ -19,6 +19,7 @@ import { formatNumber, formatCurrency } from '@/lib/utils/formatNumber';
 import { supabase } from '@/lib/supabase';
 import Header from '@/components/ui/Header';
 import FlyToCart from '@/components/ui/FlyToCart';
+import ColorSelector, { hasColorOptions, isParijaatProduct } from '@/components/ui/ColorSelector';
 import Player from 'lottie-react';
 import successLottie from '@/components/lottie/success.json';
 import loadingLottie from '@/components/lottie/loading.json';
@@ -182,6 +183,8 @@ export default function ShopPage() {
   const ProductCard = ({ product, onAddToCart }: { product: any, onAddToCart: (product: any, e?: React.MouseEvent, options?: any) => void }) => {
     const [size, setSize] = useState('');
     const [customName, setCustomName] = useState('');
+    const [selectedColor, setSelectedColor] = useState('');
+    const [customColor, setCustomColor] = useState('');
     const [error, setError] = useState('');
     let images: string[] = Array.isArray(product.images) ? product.images : [];
     let mainImage = images[0] || product.image_url || '/alankarika-logo.png';
@@ -192,19 +195,29 @@ export default function ShopPage() {
     let originalPrice = hasDiscount ? product.price / (1 - product.discount / 100) : null;
     const isMangalsutra = (product.category || '').trim().toLowerCase() === 'मंगळसूत्र';
     const isHairband = (product.category || '').trim().toLowerCase() === 'हेरबँड';
+    const isParijaatItem = isParijaatProduct(product.name);
+    const hasColors = hasColorOptions(product);
+
     const handleAdd = (e: React.MouseEvent) => {
       setError('');
       if (isMangalsutra && !size) {
-        setError('कृपया साईज निवडा (Please select a size)');
+        setError('Please select a size');
         return;
       }
       if (isHairband && !customName.trim()) {
-        setError('कृपया नाव भरा (Please enter a name)');
+        setError('Please enter a name');
+        return;
+      }
+      if (isParijaatItem && !selectedColor && !customColor.trim()) {
+        setError('Please select a color or enter a custom color');
         return;
       }
       const options: any = {};
       if (isMangalsutra) options.size = size;
       if (isHairband) options.customName = customName.trim();
+      if (isParijaatItem) {
+        options.selectedColor = customColor.trim() || selectedColor;
+      }
       onAddToCart(product, e, options);
     };
     return (
@@ -302,6 +315,25 @@ export default function ShopPage() {
                 <Input value={customName} onChange={e => setCustomName(e.target.value)} placeholder="Enter Name" className="w-full mt-1" />
               </div>
             )}
+            {isParijaatItem && (
+              <div className="mb-3">
+                <ColorSelector
+                  colors={product.available_colors || []}
+                  selectedColor={selectedColor}
+                  onColorSelect={(color) => {
+                    setSelectedColor(color.value);
+                    setCustomColor(''); // Clear custom color when predefined is selected
+                  }}
+                  size="md"
+                  allowCustomColor={true}
+                  customColorValue={customColor}
+                  onCustomColorChange={(color) => {
+                    setCustomColor(color);
+                    setSelectedColor(''); // Clear predefined color when custom is entered
+                  }}
+                />
+              </div>
+            )}
             {error && <div className="text-red-600 text-sm mb-2">{error}</div>}
             <Button 
               className="w-full bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-700 hover:to-orange-700"
@@ -339,9 +371,9 @@ export default function ShopPage() {
         <div className="flex items-center gap-4 mb-8">
           <Button asChild variant="outline">
             <Link href="/">Back to Home</Link>
-          </Button>
+                      </Button>
           <h1 className="text-3xl font-bold text-amber-700">Shop by Category</h1>
-        </div>
+                      </div>
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
           {categories.map(category => {
             const categoryProduct = products.find(p => p.category === category && p.image_url);
@@ -354,7 +386,7 @@ export default function ShopPage() {
                     ) : (
                       <span className="text-3xl text-amber-400 font-bold">{category[0]}</span>
                     )}
-                  </div>
+                </div>
                   <div className="text-lg font-bold text-amber-700 group-hover:text-orange-600 mb-1">{category}</div>
                   <div className="text-sm text-gray-500">{products.filter(p => p.category === category).length} products</div>
                 </div>

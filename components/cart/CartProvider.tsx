@@ -16,6 +16,7 @@ export interface CartItem {
   description?: string;
   size?: string; // For मंगळसूत्र
   customName?: string; // For हेरबँड
+  selectedColor?: string; // For पारिजात products
 }
 
 interface CartContextType {
@@ -61,10 +62,20 @@ export function CartProvider({ children }: { children: ReactNode }) {
       return;
     }
     setCartItems(prev => {
-      const existingItem = prev.find(item => item.id === product.id);
+      // For products with variations (size, customName, selectedColor), treat them as separate items
+      const hasVariations = product.size || product.customName || product.selectedColor;
+      const existingItem = hasVariations
+        ? prev.find(item =>
+            item.id === product.id &&
+            item.size === product.size &&
+            item.customName === product.customName &&
+            item.selectedColor === product.selectedColor
+          )
+        : prev.find(item => item.id === product.id);
+
       if (existingItem) {
         const updated = prev.map(item =>
-          item.id === product.id
+          item === existingItem
             ? { ...item, quantity: item.quantity + 1 }
             : item
         );
@@ -82,6 +93,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
           description: product.description,
           size: product.size, // Add size if present
           customName: product.customName, // Add customName if present
+          selectedColor: product.selectedColor, // Add selectedColor if present
         };
         const updated = [...prev, newItem];
         return updated;

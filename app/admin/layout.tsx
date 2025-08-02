@@ -3,20 +3,21 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
-import { 
-  LayoutDashboard, 
-  Package, 
-  Users, 
-  ShoppingCart, 
-  Truck, 
-  Image as ImageIcon, 
-  Settings, 
+import {
+  LayoutDashboard,
+  Package,
+  Users,
+  ShoppingCart,
+  Truck,
+  Image as ImageIcon,
+  Settings,
   LogOut,
   Menu,
   X,
   Bell,
   Search,
-  DollarSign
+  DollarSign,
+  MessageSquare
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -33,6 +34,7 @@ const navigation = [
   { name: 'Carousel', href: '/admin/carousel', icon: ImageIcon },
   { name: 'Orders', href: '/admin/orders', icon: ShoppingCart },
   { name: 'Payments', href: '/admin/payments', icon: DollarSign },
+  { name: 'Feedback', href: '/admin/feedback', icon: MessageSquare },
   { name: 'Shipping', href: '/admin/shipping', icon: Truck },
   { name: 'Users', href: '/admin/users', icon: Users },
   { name: 'Settings', href: '/admin/settings', icon: Settings },
@@ -162,6 +164,23 @@ useEffect(() => {
             {children}
           </div>
         </main>
+
+        {/* Admin Footer */}
+        <footer className="border-t border-gray-200 bg-white py-4">
+          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+            <div className="flex items-center justify-center text-sm text-gray-500">
+              <span>Powered by</span>
+              <a
+                href="https://akrixsolutions.in"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="ml-1 text-amber-600 hover:text-amber-700 transition-colors duration-200 font-medium"
+              >
+                Akrix Solutions
+              </a>
+            </div>
+          </div>
+        </footer>
       </div>
     </div>
   );

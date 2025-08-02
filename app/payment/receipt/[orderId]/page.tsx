@@ -336,6 +336,11 @@ export default function PaymentReceiptPage() {
           <div style={{ textAlign: 'center', marginTop: 24, color: '#ff9800', fontWeight: 700, fontSize: 18, letterSpacing: 1 }}>
             Thank you for shopping with Alankaarika!<br />For queries, contact us on WhatsApp.
           </div>
+          <div style={{ textAlign: 'center', marginTop: 20, paddingTop: 15, borderTop: '1px solid #e5e7eb' }}>
+            <div style={{ fontSize: 12, color: '#9ca3af', margin: 0 }}>
+              Powered by <span style={{ color: '#f59e0b', fontWeight: 500 }}>Akrix Solutions</span>
+            </div>
+          </div>
         </div>
       </div>
       <div className="flex flex-col md:flex-row gap-4 justify-center items-center">
