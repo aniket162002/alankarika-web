@@ -197,6 +197,17 @@ export function isParijaatProduct(productName: string): boolean {
   return productName?.startsWith('पारिजात');
 }
 
+// Get predefined colors for पारिजात products
+export function getParijaatColors(): ColorOption[] {
+  return [
+    { hex: "#1e3a8a", name: "Dark Blue", value: "dark_blue" },
+    { hex: "#000000", name: "Black", value: "black" },
+    { hex: "#dc2626", name: "Red", value: "red" },
+    { hex: "#ea580c", name: "Orange", value: "orange" },
+    { hex: "#be185d", name: "Dark Pink", value: "dark_pink" }
+  ];
+}
+
 // Helper function to get color name from color value
 export function getColorName(colorValue: string, availableColors: ColorOption[]): string {
   const color = availableColors?.find(c => c.value === colorValue);

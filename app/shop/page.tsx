@@ -184,7 +184,6 @@ export default function ShopPage() {
     const [size, setSize] = useState('');
     const [customName, setCustomName] = useState('');
     const [selectedColor, setSelectedColor] = useState('');
-    const [customColor, setCustomColor] = useState('');
     const [error, setError] = useState('');
     let images: string[] = Array.isArray(product.images) ? product.images : [];
     let mainImage = images[0] || product.image_url || '/alankarika-logo.png';
@@ -208,15 +207,15 @@ export default function ShopPage() {
         setError('Please enter a name');
         return;
       }
-      if (isParijaatItem && !selectedColor && !customColor.trim()) {
-        setError('Please select a color or enter a custom color');
+      if (isParijaatItem && !selectedColor) {
+        setError('Please select a color');
         return;
       }
       const options: any = {};
       if (isMangalsutra) options.size = size;
       if (isHairband) options.customName = customName.trim();
       if (isParijaatItem) {
-        options.selectedColor = customColor.trim() || selectedColor;
+        options.selectedColor = selectedColor;
       }
       onAddToCart(product, e, options);
     };
@@ -322,15 +321,9 @@ export default function ShopPage() {
                   selectedColor={selectedColor}
                   onColorSelect={(color) => {
                     setSelectedColor(color.value);
-                    setCustomColor(''); // Clear custom color when predefined is selected
                   }}
                   size="md"
-                  allowCustomColor={true}
-                  customColorValue={customColor}
-                  onCustomColorChange={(color) => {
-                    setCustomColor(color);
-                    setSelectedColor(''); // Clear predefined color when custom is entered
-                  }}
+                  allowCustomColor={false}
                 />
               </div>
             )}

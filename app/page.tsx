@@ -656,12 +656,7 @@ const [loading, setLoading] = useState(true);
                     setCustomColor(''); // Clear custom color when predefined is selected
                   }}
                   size="md"
-                  allowCustomColor={true}
-                  customColorValue={customColor}
-                  onCustomColorChange={(color) => {
-                    setCustomColor(color);
-                    setSelectedColor(''); // Clear predefined color when custom is entered
-                  }}
+                  allowCustomColor={false}
                 />
               </div>
             )}
@@ -801,7 +796,7 @@ const [loading, setLoading] = useState(true);
       )}
       <Header />
       {/* Enhanced Hero Section with Dynamic Carousel */}
-      <section className="relative w-full h-[60vh] sm:h-[75vh] md:h-[85vh] lg:h-[90vh] flex items-center justify-center overflow-hidden bg-gradient-to-br from-amber-50 via-orange-50 to-yellow-50">
+      <section className="relative w-full h-[50vh] sm:h-[60vh] md:h-[70vh] lg:h-[80vh] flex items-center justify-center overflow-hidden bg-gradient-to-br from-amber-50 via-orange-50 to-yellow-50">
         {/* Enhanced Background Effects */}
         <div className="absolute inset-0 z-0 pointer-events-none">
           {/* Geometric patterns */}
@@ -847,7 +842,7 @@ const [loading, setLoading] = useState(true);
                 <img
                   src={displayCarouselImages[currentCarouselSlide].image_url}
                   alt={displayCarouselImages[currentCarouselSlide].title}
-                  className="w-full h-full object-cover select-none"
+                  className="w-full h-full object-contain sm:object-cover select-none bg-gradient-to-br from-amber-50 to-orange-50"
                   draggable={false}
                   onTouchStart={handleDragStart}
                   onTouchMove={handleDragMove}
@@ -859,7 +854,7 @@ const [loading, setLoading] = useState(true);
                 />
                 {/* Gradient overlay for better text readability */}
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent"></div>
-                <div className="absolute inset-0 bg-gradient-to-r from-black/30 via-transparent to-black/30"></div>
+                <div className  ="absolute inset-0 bg-gradient-to-r from-black/30 via-transparent to-black/30"></div>
               </motion.div>
             )}
           </AnimatePresence>
@@ -873,15 +868,15 @@ const [loading, setLoading] = useState(true);
             transition={{ duration: 1 }}
           >
             {/* Brand Badge */}
-            <motion.div
+            {/* <motion.div
               className="inline-flex items-center gap-2 bg-white/20 backdrop-blur-md rounded-full px-4 py-2 mb-6 border border-white/30"
               initial={{ opacity: 0, scale: 0.8 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.8, delay: 0.3 }}
             >
               <Sparkles className="w-4 h-4 text-amber-300" />
-              <span className="text-white text-sm font-medium">Premium Jewelry Collection</span>
-            </motion.div>
+              {/* <span className="text-white text-sm font-medium">Premium Jewelry Collection</span> */}
+            {/* </motion.div> */} 
 
             <motion.h1
               className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold text-white drop-shadow-2xl font-playfair mb-6 tracking-wide leading-tight"
@@ -954,7 +949,7 @@ const [loading, setLoading] = useState(true);
           </button>
 
           {/* Enhanced Carousel Indicators */}
-          <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2 flex gap-3 bg-black/20 backdrop-blur-md rounded-full px-4 py-2">
+          {/* <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2 flex gap-3 bg-black/20 backdrop-blur-md rounded-full px-4 py-2">
             {displayCarouselImages.map((_, index) => (
               <button
                 key={index}
@@ -966,16 +961,16 @@ const [loading, setLoading] = useState(true);
                 }`}
               />
             ))}
-          </div>
+          </div> */}
 
           {/* Mobile swipe indicator */}
-          <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 lg:hidden">
+          {/* <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 lg:hidden">
             <div className="flex items-center gap-2 bg-black/20 backdrop-blur-md rounded-full px-3 py-1">
               <div className="w-6 h-1 bg-white/60 rounded-full"></div>
               <span className="text-white/80 text-xs">Swipe</span>
               <div className="w-6 h-1 bg-white/60 rounded-full"></div>
             </div>
-          </div>
+          </div> */}
         </div>
       </section>
 

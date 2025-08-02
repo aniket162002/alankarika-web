@@ -52,7 +52,6 @@ export default function CategoryProductsPage() {
     const [size, setSize] = useState('');
     const [customName, setCustomName] = useState('');
     const [selectedColor, setSelectedColor] = useState('');
-    const [customColor, setCustomColor] = useState('');
     const [error, setError] = useState('');
     let images: string[] = Array.isArray(product.images) ? product.images : [];
     let mainImage = images[0] || product.image_url || '/alankarika-logo.png';
@@ -76,15 +75,15 @@ export default function CategoryProductsPage() {
         setError('Please enter a name');
         return;
       }
-      if (isParijaatItem && !selectedColor && !customColor.trim()) {
-        setError('Please select a color or enter a custom color');
+      if (isParijaatItem && !selectedColor) {
+        setError('Please select a color');
         return;
       }
       const productWithOptions = { ...product };
       if (isMangalsutra) productWithOptions.size = size;
       if (isHairband) productWithOptions.customName = customName.trim();
       if (isParijaatItem) {
-        productWithOptions.selectedColor = customColor.trim() || selectedColor;
+        productWithOptions.selectedColor = selectedColor;
       }
       handleAddToCart(productWithOptions);
     };
@@ -172,15 +171,9 @@ export default function CategoryProductsPage() {
                   selectedColor={selectedColor}
                   onColorSelect={(color) => {
                     setSelectedColor(color.value);
-                    setCustomColor(''); // Clear custom color when predefined is selected
                   }}
                   size="md"
-                  allowCustomColor={true}
-                  customColorValue={customColor}
-                  onCustomColorChange={(color) => {
-                    setCustomColor(color);
-                    setSelectedColor(''); // Clear predefined color when custom is entered
-                  }}
+                  allowCustomColor={false}
                 />
               </div>
             )}
