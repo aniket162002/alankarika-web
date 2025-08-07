@@ -37,6 +37,7 @@ const navigation = [
   { name: 'Feedback', href: '/admin/feedback', icon: MessageSquare },
   { name: 'Shipping', href: '/admin/shipping', icon: Truck },
   { name: 'Users', href: '/admin/users', icon: Users },
+  { name: 'Database Details', href: '/admin/database-details', icon: Settings },
   { name: 'Settings', href: '/admin/settings', icon: Settings },
 ];
 
