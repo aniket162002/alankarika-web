@@ -558,7 +558,7 @@ const [loading, setLoading] = useState(true);
                 alt={product.name}
                 width={400}
                 height={256}
-                className="w-full h-40 object-contain rounded-lg sm:h-64 sm:object-cover sm:rounded-lg transition-transform duration-500 group-hover:scale-110 cursor-pointer"
+                className="w-full h-40 sm:h-64 md:h-80 object-contain rounded-lg sm:rounded-lg transition-transform duration-500 group-hover:scale-110 cursor-pointer"
                 onClick={() => setOpenImageUrl(mainImage)}
                 onError={(e) => { (e.target as HTMLImageElement).src = '/alankarika-logo.png'; }}
                 style={{ opacity: 1, transition: 'opacity 0.4s' }}
@@ -569,7 +569,8 @@ const [loading, setLoading] = useState(true);
                   alt={product.name + ' alternate'}
                   width={400}
                   height={256}
-                  className="hidden sm:block w-full h-64 object-cover rounded-lg transition-transform duration-500 group-hover:scale-110 absolute top-0 left-0 z-20 opacity-0 group-hover:opacity-100"
+ 
+                  className="hidden sm:block w-full h-64 md:h-80 object-contain rounded-lg transition-transform duration-500 group-hover:scale-110 absolute top-0 left-0 z-20 opacity-0 group-hover:opacity-100"
                   onError={(e) => { (e.target as HTMLImageElement).src = '/alankarika-logo.png'; }}
                   style={{ transition: 'opacity 0.4s' }}
                 />

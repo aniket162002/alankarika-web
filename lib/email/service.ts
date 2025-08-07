@@ -1,11 +1,14 @@
-import { transporter, adminEmail, companyEmail } from './config';
+import { transporter, adminEmail, companyEmail, verifyEmailConfig } from './config';
 import { getEmailTemplate } from './templates';
 import { createClient } from '@supabase/supabase-js';
+
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 );
+
+
 
 export interface EmailData {
   type: string;
@@ -17,8 +20,14 @@ export interface EmailData {
 
 export const sendEmail = async (emailData: EmailData) => {
   try {
+    // Verify SMTP connection before sending
+    const smtpOk = await verifyEmailConfig();
+    if (!smtpOk) {
+      console.error('SMTP connection failed. Please check your SMTP credentials and network.');
+      throw new Error('SMTP connection failed. Please check your SMTP credentials and network.');
+    }
+
     const htmlContent = getEmailTemplate(emailData.type, emailData.data);
-    
     const mailOptions = {
       from: `"${emailData.data.companyName || 'अलंकारिका'}" <${companyEmail}>`,
       to: emailData.recipient,
@@ -27,7 +36,6 @@ export const sendEmail = async (emailData: EmailData) => {
     };
 
     const result = await transporter.sendMail(mailOptions);
-    
     // Log notification to database
     await supabase.from('notifications').insert({
       type: emailData.type,
@@ -42,7 +50,7 @@ export const sendEmail = async (emailData: EmailData) => {
 
     return { success: true, messageId: result.messageId };
   } catch (error) {
-    
+    console.error('Email send error:', error);
     // Log failed notification to database
     await supabase.from('notifications').insert({
       type: emailData.type,
@@ -56,9 +64,10 @@ export const sendEmail = async (emailData: EmailData) => {
 
     return { success: false, error: (error as Error).message };
   }
-};
+}
 
-// Specific email functions
+
+
 export const sendOrderConfirmation = async (orderData: any) => {
   try {
     // Compose email data
@@ -79,11 +88,6 @@ export const sendOrderConfirmation = async (orderData: any) => {
       },
     };
     const result = await sendEmail(emailData);
-    // Also send admin notification
-    await sendAdminOrderNotification({
-      ...orderData,
-      baseUrl: process.env.NEXT_PUBLIC_BASE_URL || 'https://alankarika-web.vercel.app',
-    });
     if (result && result.success) {
       return { success: true };
     } else {
@@ -100,28 +104,35 @@ export const sendOrderConfirmation = async (orderData: any) => {
     }
     return { success: false, error: errorMessage };
   }
-};
+}
+
 
 export const sendOrderUpdate = async (orderData: any, status: string) => {
-  const emailType = status === 'confirmed' ? 'order_confirmed' :
-                   status === 'shipped' ? 'order_shipped' :
-                   status === 'delivered' ? 'order_delivered' : 'order_update';
-  
-  const subjects = {
-    order_confirmed: 'Order Confirmed & In Production',
-    order_shipped: 'Order Shipped - Tracking Details',
-    order_delivered: 'Order Delivered Successfully',
-    order_update: 'Order Status Update'
-  };
-
+  let emailType = 'order_update';
+  let subject = 'Order Status Update';
+  if (status === 'confirmed') {
+    emailType = 'order_confirmed';
+    subject = 'Order Confirmed & In Production';
+  } else if (status === 'shipped') {
+    emailType = 'order_shipped';
+    subject = 'Order Shipped - Tracking Details';
+  } else if (status === 'delivered') {
+    emailType = 'order_delivered';
+    subject = 'Order Delivered Successfully';
+  } else if (status === 'pending') {
+    emailType = 'order_payment_pending';
+    subject = 'Payment Pending Approval';
+  }
   return sendEmail({
     type: emailType,
     recipient: orderData.customerEmail,
     recipientName: orderData.customerName,
-    subject: `${subjects[emailType]} - ${orderData.orderId} | अलंकारिका`,
+    subject: `${subject} - ${orderData.orderId} | अलंकारिका`,
     data: orderData
   });
-};
+}
+
+
 
 export const sendAdminOrderNotification = async (orderData: any) => {
   return sendEmail({
@@ -131,7 +142,7 @@ export const sendAdminOrderNotification = async (orderData: any) => {
     subject: `New Order Alert - ${orderData.orderId} | अलंकारिका Admin`,
     data: orderData
   });
-};
+}
 
 export const sendProductAddedNotification = async (productData: any, subscriberEmails: string[]) => {
   const promises = subscriberEmails.map(email => 
@@ -142,9 +153,9 @@ export const sendProductAddedNotification = async (productData: any, subscriberE
       data: productData
     })
   );
-
   return Promise.allSettled(promises);
-};
+}
+
 
 export const sendShippingUpdate = async (shippingData: any) => {
   return sendEmail({
@@ -154,4 +165,4 @@ export const sendShippingUpdate = async (shippingData: any) => {
     subject: `Shipping Update - ${shippingData.orderId} | अलंकारिका`,
     data: shippingData
   });
-};
+}
