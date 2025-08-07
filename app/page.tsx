@@ -797,7 +797,7 @@ const [loading, setLoading] = useState(true);
       )}
       <Header />
       {/* Enhanced Hero Section with Dynamic Carousel */}
-      <section className="relative w-full h-[50vh] sm:h-[60vh] md:h-[70vh] lg:h-[80vh] flex items-center justify-center overflow-hidden bg-gradient-to-br from-amber-50 via-orange-50 to-yellow-50">
+      <section className="relative w-full h-[34vh] sm:h-[60vh] md:h-[70vh] lg:h-[80vh] flex items-center justify-center overflow-hidden bg-white sm:bg-gradient-to-br sm:from-amber-50 sm:via-orange-50 sm:to-yellow-50">
         {/* Enhanced Background Effects */}
         <div className="absolute inset-0 z-0 pointer-events-none">
           {/* Geometric patterns */}
@@ -843,7 +843,8 @@ const [loading, setLoading] = useState(true);
                 <img
                   src={displayCarouselImages[currentCarouselSlide].image_url}
                   alt={displayCarouselImages[currentCarouselSlide].title}
-                  className="w-full h-full object-contain sm:object-cover select-none bg-gradient-to-br from-amber-50 to-orange-50"
+                  className="w-full h-full max-h-[220px] sm:max-h-full object-contain sm:object-cover rounded-xl shadow-lg select-none bg-white mx-auto"
+                  style={{ objectPosition: 'center' }}
                   draggable={false}
                   onTouchStart={handleDragStart}
                   onTouchMove={handleDragMove}
