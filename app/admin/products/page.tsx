@@ -54,6 +54,7 @@ interface FormData {
   discount: string;
   imageFile: File | null;
   imageUrl: string;
+  sendEmail?: boolean;
 }
 
 type ProductFormProps = {
@@ -148,6 +149,18 @@ const ProductForm = ({ formData, setFormData, handleSubmit, imagePreview, fileIn
         )}
       </div>
     </div>
+    {/* Send Email Announcement - only show for Add New Product */}
+    {!selectedProduct && (
+      <div className="flex items-center gap-2 mt-2">
+        <input
+          type="checkbox"
+          id="sendEmail"
+          checked={formData.sendEmail || false}
+          onChange={e => setFormData((prev: any) => ({ ...prev, sendEmail: e.target.checked }))}
+        />
+        <Label htmlFor="sendEmail">Send Email Announcement to All Users</Label>
+      </div>
+    )}
     <div className="flex justify-end gap-2">
       <Button type="button" variant="outline" onClick={() => setIsProductDialogOpen(false)}>
         Cancel
@@ -284,23 +297,41 @@ export default function ProductsManagement() {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ id: selectedProduct.id, ...productData }),
         });
+        const result = await response.json();
+        if (!result.success) {
+          alert('API error: ' + result.error);
+          return;
+        }
+        setIsProductDialogOpen(false);
+        setSelectedProduct(null);
+        resetForm();
+        await refetchProducts(); // Refetch after update
+        alert('Product saved successfully!');
       } else {
         response = await fetch('/api/admin/products', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(productData),
         });
+        const result = await response.json();
+        if (!result.success) {
+          alert('API error: ' + result.error);
+          return;
+        }
+        // Send email announcement if checked
+        if (formData.sendEmail) {
+          await fetch('/api/email/new-product-announcement', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ ...productData }),
+          });
+        }
+        setIsProductDialogOpen(false);
+        setSelectedProduct(null);
+        resetForm();
+        await refetchProducts(); // Refetch after create
+        alert('Product saved successfully!');
       }
-      const result = await response.json();
-      if (!result.success) {
-        alert('API error: ' + result.error);
-        return;
-      }
-      setIsProductDialogOpen(false);
-      setSelectedProduct(null);
-      resetForm();
-      await refetchProducts(); // Refetch after create
-      alert('Product saved successfully!');
     } catch (error: any) {
       console.error('Error saving product:', error);
       alert('Error saving product: ' + (error?.message || JSON.stringify(error)));
@@ -317,6 +348,7 @@ export default function ProductsManagement() {
       discount: '',
       imageFile: null,
       imageUrl: '',
+      sendEmail: false,
     });
     setImagePreview('');
   };

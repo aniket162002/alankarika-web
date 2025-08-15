@@ -11,7 +11,6 @@ const NAV_LINKS = [
   { name: 'Home', href: '/' },
   { name: 'About', href: '/about' },
   { name: 'Shop', href: '/shop' },
-  { name: 'Reviews', href: '/reviews' },
   { name: 'Contact', href: '/contact' },
 ];
 const AUTH_LINKS = [
@@ -49,8 +48,8 @@ export default function Header() {
 
   return (
     <header
-      className={`sticky top-0 z-[9999] w-full bg-white shadow-md transition-shadow duration-300 ${isScrolled ? 'shadow-lg' : ''} overflow-x-hidden`}
-      style={{ WebkitOverflowScrolling: 'touch' }}
+      className={`fixed top-0 left-0 z-[9999] w-full bg-white shadow-md transition-shadow duration-300 ${isScrolled ? 'shadow-lg' : ''}`}
+      style={{ position: 'fixed', top: 0, left: 0, width: '100%' }}
     >
       <div className="w-full max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between min-h-[80px] flex-nowrap">
         {/* Logo and Brand */}
@@ -93,9 +92,24 @@ export default function Header() {
               </Badge>
             )}
           </Link>
-          <Link href={user ? "/profile" : "/login"} className="group">
-            <UserIcon className="w-7 h-7 text-gray-700 group-hover:text-amber-600 transition-colors" />
-          </Link>
+            {/* Profile Dropdown */}
+            <div className="relative group">
+              <button className="group" aria-label="Profile">
+                <UserIcon className="w-7 h-7 text-gray-700 group-hover:text-amber-600 transition-colors" />
+              </button>
+              {/* Dropdown menu on hover */}
+              {user && (
+                <div className="absolute right-0 mt-2 w-48 bg-white border border-orange-100 rounded-lg shadow-lg z-50 opacity-0 group-hover:opacity-100 pointer-events-auto transition-opacity duration-200">
+                  <Link href="/profile" className="block px-4 py-2 text-gray-800 hover:bg-amber-50">My Profile</Link>
+                  <Link href="/orders" className="block px-4 py-2 text-gray-800 hover:bg-amber-50">Order History</Link>
+                  <Link href="/shipping-tracking" className="block px-4 py-2 text-gray-800 hover:bg-amber-50">Shipping Tracking</Link>
+                </div>
+              )}
+              {!user && (
+                <Link href="/login" className="absolute right-0 mt-2 w-48 block px-4 py-2 text-gray-800 bg-white border border-orange-100 rounded-lg shadow-lg z-50 hover:bg-amber-50">Login</Link>
+              )}
+            </div>
+            {/* Remove direct profile link in mobile, add dropdown links below */}
         </div>
 
         {/* Mobile Hamburger */}
@@ -137,9 +151,16 @@ export default function Header() {
                   </Badge>
                 )}
               </Link>
-              <Link href={user ? "/profile" : "/login"} className="group">
-                <UserIcon className="w-7 h-7 text-gray-700 group-hover:text-amber-600 transition-colors" />
-              </Link>
+                {user && (
+                  <>
+                    <Link href="/profile" className="block px-4 py-2 text-gray-800 hover:bg-amber-50">My Profile</Link>
+                    <Link href="/orders" className="block px-4 py-2 text-gray-800 hover:bg-amber-50">Order History</Link>
+                    <Link href="/shipping-tracking" className="block px-4 py-2 text-gray-800 hover:bg-amber-50">Shipping Tracking</Link>
+                  </>
+                )}
+                {!user && (
+                  <Link href="/login" className="block px-4 py-2 text-gray-800 hover:bg-amber-50">Login</Link>
+                )}
             </div>
           </nav>
         </div>
