@@ -650,7 +650,7 @@ const [loading, setLoading] = useState(true);
             {isParijaatItem && (
               <div className="mb-3">
                 <ColorSelector
-                  colors={product.available_colors || []}
+                  colors={require('@/components/ui/ColorSelector').getParijaatColors()}
                   selectedColor={selectedColor}
                   onColorSelect={(color) => {
                     setSelectedColor(color.value);

@@ -62,6 +62,8 @@ export default function ColorSelector({
     }
   };
 
+  // If too many colors, make scrollable row
+  const isScrollable = colors && colors.length > 6;
   return (
     <div className={cn('flex flex-col gap-3', className)}>
       <div className="text-sm font-medium text-gray-700">
@@ -70,7 +72,8 @@ export default function ColorSelector({
 
       {/* Predefined Colors */}
       {colors && colors.length > 0 && (
-        <div className="flex flex-wrap gap-2">
+        <div className={cn(isScrollable ? "flex gap-2 overflow-x-auto py-1 scrollbar-thin scrollbar-thumb-gray-300" : "flex flex-wrap gap-2")}
+             style={isScrollable ? { maxWidth: '100%' } : undefined}>
           {colors.map((color) => (
             <motion.button
               key={color.value}
@@ -204,7 +207,10 @@ export function getParijaatColors(): ColorOption[] {
     { hex: "#000000", name: "Black", value: "black" },
     { hex: "#dc2626", name: "Red", value: "red" },
     { hex: "#ea580c", name: "Orange", value: "orange" },
-    { hex: "#be185d", name: "Dark Pink", value: "dark_pink" }
+    { hex: "#be185d", name: "Dark Pink", value: "dark_pink" },
+    { hex: "#facc15", name: "Yellow", value: "yellow" },
+    { hex: "#22c55e", name: "Green", value: "green" },
+    { hex: "#a21caf", name: "Purple", value: "purple" }
   ];
 }
 

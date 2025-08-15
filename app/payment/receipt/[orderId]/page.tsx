@@ -21,7 +21,8 @@ const supabase = createClient(
 );
 
 export default function PaymentReceiptPage() {
-  const { orderId } = useParams();
+  const params = useParams();
+  const orderId = params?.orderId as string;
   const [orderData, setOrderData] = useState<any | null>(null);
   const [loading, setLoading] = useState(true);
   const pdfRef = useRef<HTMLDivElement>(null);

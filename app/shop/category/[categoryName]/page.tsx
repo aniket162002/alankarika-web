@@ -15,7 +15,8 @@ const supabase = createClient(
 );
 
 export default function CategoryProductsPage() {
-  const { categoryName } = useParams();
+  const params = useParams();
+  const categoryName = params?.categoryName as string;
   const { addToCart } = useCart();
   const [products, setProducts] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -53,11 +54,13 @@ export default function CategoryProductsPage() {
     const [customName, setCustomName] = useState('');
     const [selectedColor, setSelectedColor] = useState('');
     const [error, setError] = useState('');
-    let images: string[] = Array.isArray(product.images) ? product.images : [];
-    let mainImage = images[0] || product.image_url || '/alankarika-logo.png';
-    let hoverImage = images[1] || mainImage;
-    mainImage = mainImage.replace(/([^:]\/)\/+/g, '$1');
-    hoverImage = hoverImage.replace(/([^:]\/)\/+/g, '$1');
+  let images: string[] = Array.isArray(product.images) ? product.images : [];
+  let mainImage = images[0] || product.image_url || '/alankarika-logo.png';
+  let hoverImage = images[1] || mainImage;
+  mainImage = mainImage.replace(/([^:]\/)\/+/g, '$1');
+  hoverImage = hoverImage.replace(/([^:]\/)\/+/g, '$1');
+  // Image modal state
+  const [openImageUrl, setOpenImageUrl] = useState<string | null>(null);
     const hasDiscount = typeof product.discount === 'number' && !isNaN(product.discount) && product.discount > 0;
     let originalPrice = hasDiscount ? product.price / (1 - product.discount / 100) : null;
     const isMangalsutra = (product.category || '').trim().toLowerCase() === 'मंगळसूत्र';
@@ -98,9 +101,17 @@ export default function CategoryProductsPage() {
                 width={400}
                 height={256}
                 className="w-full h-40 object-contain rounded-lg sm:h-64 sm:object-cover sm:rounded-lg transition-transform duration-500 group-hover:scale-110 cursor-pointer"
+                onClick={() => setOpenImageUrl(mainImage)}
                 onError={(e) => { (e.target as HTMLImageElement).src = '/alankarika-logo.png'; }}
                 style={{ opacity: 1, transition: 'opacity 0.4s' }}
               />
+          {/* Image Modal */}
+          {openImageUrl && (
+            <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-70" onClick={() => setOpenImageUrl(null)}>
+              <img src={openImageUrl} alt="Product Full" className="max-w-full max-h-full rounded-lg shadow-2xl" />
+              <button className="absolute top-6 right-8 text-white text-3xl font-bold" onClick={() => setOpenImageUrl(null)}>&times;</button>
+            </div>
+          )}
               {/* Show hover image on hover if available (desktop only) */}
               {hoverImage !== mainImage && (
                 <img
@@ -167,7 +178,7 @@ export default function CategoryProductsPage() {
             {isParijaatItem && (
               <div className="mb-3">
                 <ColorSelector
-                  colors={product.available_colors || []}
+                  colors={require('@/components/ui/ColorSelector').getParijaatColors()}
                   selectedColor={selectedColor}
                   onColorSelect={(color) => {
                     setSelectedColor(color.value);
@@ -208,7 +219,7 @@ export default function CategoryProductsPage() {
         ) : products.length === 0 ? (
           <div className="text-center py-12 text-lg text-gray-500">No products found in this category.</div>
         ) : (
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
             {products.map(product => (
               <ProductCard key={product.id} product={product} />
             ))}

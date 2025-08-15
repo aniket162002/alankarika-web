@@ -39,7 +39,7 @@ export default function PaymentQRPage() {
   // Parse checkout data from query
   let checkoutData: { formData: CheckoutFormData; cartItems: any[]; total: number } = { formData: { name: '', email: '', phone: '', address: '', city: '', state: '', pincode: '' }, cartItems: [], total: 0 };
   try {
-    if (searchParams.get('data')) {
+    if (searchParams?.get('data')) {
       checkoutData = JSON.parse(decodeURIComponent(searchParams.get('data')!));
     }
   } catch {}

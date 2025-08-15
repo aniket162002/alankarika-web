@@ -74,7 +74,23 @@ export default function AdminDatabaseDetails() {
                     (<b>{usage.dbUsed != null && usage.dbTotal ? (100 * usage.dbUsed/usage.dbTotal).toFixed(1) : '0.0'}%</b> filled, <b>{usage.dbUsed != null && usage.dbTotal != null ? ((usage.dbTotal-usage.dbUsed)/1024/1024).toFixed(2) : '0.00'} MB</b> remaining)
                   </span>
                 </div>
-                <Progress value={usage.dbUsed != null && usage.dbTotal ? Math.round((usage.dbUsed/usage.dbTotal)*100) : 0} color={usage.dbUsed/usage.dbTotal > 0.8 ? 'red' : usage.dbUsed/usage.dbTotal > 0.6 ? 'yellow' : 'green'} />
+                <Progress
+                  max={100}
+                  value={
+                    usage.dbUsed != null && usage.dbTotal && usage.dbTotal > 0
+                      ? Math.round((usage.dbUsed / usage.dbTotal) * 100)
+                      : 0
+                  }
+                  className={
+                    usage.dbUsed != null && usage.dbTotal && usage.dbTotal > 0
+                      ? usage.dbUsed / usage.dbTotal > 0.8
+                        ? 'bg-red-500'
+                        : usage.dbUsed / usage.dbTotal > 0.6
+                        ? 'bg-yellow-400'
+                        : 'bg-green-500'
+                      : 'bg-green-500'
+                  }
+                />
               </div>
               <div>
                 <div className="mb-1 flex justify-between text-sm">
@@ -85,7 +101,23 @@ export default function AdminDatabaseDetails() {
                     (<b>{usage.storageUsed != null && usage.storageTotal ? (100 * usage.storageUsed/usage.storageTotal).toFixed(1) : '0.0'}%</b> filled, <b>{usage.storageUsed != null && usage.storageTotal != null ? ((usage.storageTotal-usage.storageUsed)/1024/1024).toFixed(2) : '0.00'} MB</b> remaining)
                   </span>
                 </div>
-                <Progress value={usage.storageUsed != null && usage.storageTotal ? Math.round((usage.storageUsed/usage.storageTotal)*100) : 0} color={usage.storageUsed/usage.storageTotal > 0.8 ? 'red' : usage.storageUsed/usage.storageTotal > 0.6 ? 'yellow' : 'green'} />
+                <Progress
+                  max={100}
+                  value={
+                    usage.storageUsed != null && usage.storageTotal && usage.storageTotal > 0
+                      ? Math.round((usage.storageUsed / usage.storageTotal) * 100)
+                      : 0
+                  }
+                  className={
+                    usage.storageUsed != null && usage.storageTotal && usage.storageTotal > 0
+                      ? usage.storageUsed / usage.storageTotal > 0.8
+                        ? 'bg-red-500'
+                        : usage.storageUsed / usage.storageTotal > 0.6
+                        ? 'bg-yellow-400'
+                        : 'bg-green-500'
+                      : 'bg-green-500'
+                  }
+                />
               </div>
             </div>
           )}

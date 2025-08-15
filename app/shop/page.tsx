@@ -317,7 +317,7 @@ export default function ShopPage() {
             {isParijaatItem && (
               <div className="mb-3">
                 <ColorSelector
-                  colors={product.available_colors || []}
+                  colors={require('@/components/ui/ColorSelector').getParijaatColors()}
                   selectedColor={selectedColor}
                   onColorSelect={(color) => {
                     setSelectedColor(color.value);
@@ -367,7 +367,7 @@ export default function ShopPage() {
                       </Button>
           <h1 className="text-3xl font-bold text-amber-700">Shop by Category</h1>
                       </div>
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
           {categories.map(category => {
             const categoryProduct = products.find(p => p.category === category && p.image_url);
             return (

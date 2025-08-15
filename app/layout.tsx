@@ -1,22 +1,17 @@
+import React from 'react';
 import './globals.css';
 import type { Metadata } from 'next';
 import { Playfair_Display } from 'next/font/google';
 import { Providers } from './providers';
 import localFont from 'next/font/local';
-import dynamic from 'next/dynamic';
 import { Toaster } from '@/components/ui/sonner';
 import GoogleAnalytics from './GoogleAnalytics';
-
-const FloatingChat = dynamic(() => import('./components/ui/FloatingChat'), { ssr: false });
-
+import FloatingChatClient from './components/ui/FloatingChatClient';
 import { inter, playfair } from './fonts';
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://alankarika.com'),
-  title: {
-    default: 'अलंकारिका - Premium Traditional Indian Jewelry Store | Where Tradition Meets Elegance',
-    template: '%s | अलंकारिका'
-  },
+  title: 'अलंकारिका - Premium Traditional Indian Jewelry Store',
   description: 'Discover exquisite handcrafted traditional Indian jewelry at अलंकारिका. Shop our premium collection of Mangalsutras, Kundan, Meenakari, Gold, and Silver jewelry. Best quality guaranteed with authentic Indian designs.',
   keywords: ['अलंकारिका', 'traditional jewelry', 'indian jewelry', 'mangalsutra', 'kundan jewelry', 'meenakari', 'gold jewelry', 'silver jewelry', 'bridal jewelry', 'festive jewelry', 'handcrafted jewelry'],
   authors: [{ name: 'अलंकारिका' }],
@@ -80,7 +75,7 @@ export default function RootLayout({
         <Providers>
           {children}
           <Toaster />
-          <FloatingChat />
+          <FloatingChatClient />
         </Providers>
       </body>
     </html>
