@@ -73,7 +73,9 @@ export default function RootLayout({
       <body className="font-sans">
         <GoogleAnalytics />
         <Providers>
-          {children}
+          <main className="mt-[80px]">
+            {children}
+          </main>
           <Toaster />
           <FloatingChatClient />
         </Providers>

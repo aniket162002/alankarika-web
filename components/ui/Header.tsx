@@ -92,24 +92,22 @@ export default function Header() {
               </Badge>
             )}
           </Link>
-            {/* Profile Dropdown */}
-            <div className="relative group">
-              <button className="group" aria-label="Profile">
-                <UserIcon className="w-7 h-7 text-gray-700 group-hover:text-amber-600 transition-colors" />
-              </button>
-              {/* Dropdown menu on hover */}
-              {user && (
-                <div className="absolute right-0 mt-2 w-48 bg-white border border-orange-100 rounded-lg shadow-lg z-50 opacity-0 group-hover:opacity-100 pointer-events-auto transition-opacity duration-200">
-                  <Link href="/profile" className="block px-4 py-2 text-gray-800 hover:bg-amber-50">My Profile</Link>
-                  <Link href="/orders" className="block px-4 py-2 text-gray-800 hover:bg-amber-50">Order History</Link>
-                  <Link href="/shipping-tracking" className="block px-4 py-2 text-gray-800 hover:bg-amber-50">Shipping Tracking</Link>
+              <div className="relative group">
+                <button className="group" aria-label="Profile">
+                  <UserIcon className="w-7 h-7 text-gray-700 group-hover:text-amber-600 transition-colors" />
+                </button>
+                <div className="absolute right-0 mt-2 w-48 bg-white border border-orange-100 rounded-lg shadow-lg z-50 opacity-0 group-hover:opacity-100 pointer-events-none group-hover:pointer-events-auto transition-opacity duration-200">
+                  {user ? (
+                    <>
+                      <Link href="/profile" className="block px-4 py-2 text-gray-800 hover:bg-amber-50">My Profile</Link>
+                      <Link href="/orders" className="block px-4 py-2 text-gray-800 hover:bg-amber-50">Order History</Link>
+                      <Link href="/shipping-tracking" className="block px-4 py-2 text-gray-800 hover:bg-amber-50">Shipping Tracking</Link>
+                    </>
+                  ) : (
+                    <Link href="/login" className="block px-4 py-2 text-gray-800 hover:bg-amber-50">Login</Link>
+                  )}
                 </div>
-              )}
-              {!user && (
-                
-                
-              )}
-            </div>
+              </div>
             {/* Remove direct profile link in mobile, add dropdown links below */}
         </div>
 
@@ -152,15 +150,16 @@ export default function Header() {
                   </Badge>
                 )}
               </Link>
-                {user && (
-                  <>
-                    <Link href="/profile" className="block px-4 py-2 text-gray-800 hover:bg-amber-50">My Profile</Link>
-                    <Link href="/orders" className="block px-4 py-2 text-gray-800 hover:bg-amber-50">Order History</Link>
-                    <Link href="/shipping-tracking" className="block px-4 py-2 text-gray-800 hover:bg-amber-50">Shipping Tracking</Link>
-                  </>
-                )}
-                {!user && (
-                )}
+              {/* Profile links for mobile */}
+              {user ? (
+                <>
+                  <Link href="/profile" className="block px-4 py-2 text-gray-800 hover:bg-amber-50">My Profile</Link>
+                  <Link href="/orders" className="block px-4 py-2 text-gray-800 hover:bg-amber-50">Order History</Link>
+                  <Link href="/shipping-tracking" className="block px-4 py-2 text-gray-800 hover:bg-amber-50">Shipping Tracking</Link>
+                </>
+              ) : (
+                <Link href="/login" className="block px-4 py-2 text-gray-800 hover:bg-amber-50">Login</Link>
+              )}
             </div>
           </nav>
         </div>
