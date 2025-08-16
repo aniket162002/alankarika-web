@@ -106,7 +106,8 @@ export default function Header() {
                 </div>
               )}
               {!user && (
-                <Link href="/login" className="absolute right-0 mt-2 w-48 block px-4 py-2 text-gray-800 bg-white border border-orange-100 rounded-lg shadow-lg z-50 hover:bg-amber-50"></Link>
+                
+                
               )}
             </div>
             {/* Remove direct profile link in mobile, add dropdown links below */}
@@ -159,7 +160,6 @@ export default function Header() {
                   </>
                 )}
                 {!user && (
-                  <Link href="/login" className="block px-4 py-2 text-gray-800 hover:bg-amber-50"></Link>
                 )}
             </div>
           </nav>
