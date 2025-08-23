@@ -157,6 +157,19 @@ export const sendProductAddedNotification = async (productData: any, subscriberE
 }
 
 
+export const sendTrackingNotification = async (orderData: any) => {
+  return sendEmail({
+    type: 'order_tracking_added',
+    recipient: orderData.customerEmail,
+    recipientName: orderData.customerName,
+    subject: `📦 Track Your Order - ${orderData.orderId} | अलंकारिका`,
+    data: {
+      ...orderData,
+      trackingUrl: orderData.trackingUrl || orderData.tracking_url
+    }
+  });
+}
+
 export const sendShippingUpdate = async (shippingData: any) => {
   return sendEmail({
     type: 'order_shipped',

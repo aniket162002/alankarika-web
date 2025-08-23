@@ -6,6 +6,7 @@ import { Star, Quote, ChevronLeft, ChevronRight, Heart } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import ImageModal from '@/components/ui/ImageModal';
 import { createClient } from '@supabase/supabase-js';
 
 const supabase = createClient(
@@ -39,6 +40,8 @@ export default function CustomerFeedback({
   const [currentIndex, setCurrentIndex] = useState(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [imageModalOpen, setImageModalOpen] = useState(false);
+  const [selectedImage, setSelectedImage] = useState({ url: '', title: '', alt: '' });
 
   // Fetch feedback data
   useEffect(() => {
@@ -96,6 +99,20 @@ export default function CustomerFeedback({
 
     return () => clearInterval(interval);
   }, [feedbacks.length]);
+
+  const openImageModal = (imageUrl: string, customerName: string) => {
+    setSelectedImage({
+      url: imageUrl,
+      title: `${customerName}'s Feedback Photo`,
+      alt: `Customer feedback photo from ${customerName}`
+    });
+    setImageModalOpen(true);
+  };
+
+  const closeImageModal = () => {
+    setImageModalOpen(false);
+    setSelectedImage({ url: '', title: '', alt: '' });
+  };
 
   const nextFeedback = () => {
     setCurrentIndex((prev) => (prev + 1) % feedbacks.length);
@@ -185,12 +202,21 @@ export default function CustomerFeedback({
                       {/* Customer Avatar/Image */}
                       <div className="flex-shrink-0 relative">
                         {currentFeedback.image_url ? (
-                          <div className="w-24 h-24 md:w-28 md:h-28 rounded-full overflow-hidden shadow-xl ring-4 ring-amber-200">
+                          <div className="w-24 h-24 md:w-28 md:h-28 rounded-full overflow-hidden shadow-xl ring-4 ring-amber-200 cursor-pointer hover:ring-amber-300 transition-all duration-200 group relative">
                             <img
                               src={currentFeedback.image_url}
                               alt={`${currentFeedback.customer_name}'s feedback`}
-                              className="w-full h-full object-cover"
+                              className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-200"
+                              onClick={() => openImageModal(currentFeedback.image_url!, currentFeedback.customer_name)}
                             />
+                            {/* Hover overlay */}
+                            <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex items-center justify-center">
+                              <div className="bg-white/90 rounded-full p-2">
+                                <svg className="w-4 h-4 text-gray-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7" />
+                                </svg>
+                              </div>
+                            </div>
                           </div>
                         ) : (
                           <div className="w-24 h-24 md:w-28 md:h-28 rounded-full bg-gradient-to-br from-amber-400 via-orange-500 to-red-500 flex items-center justify-center text-white text-2xl md:text-3xl font-bold shadow-xl ring-4 ring-amber-200">
@@ -299,6 +325,15 @@ export default function CustomerFeedback({
           </div>
         </div>
       </div>
+
+      {/* Image Modal */}
+      <ImageModal
+        isOpen={imageModalOpen}
+        onClose={closeImageModal}
+        imageUrl={selectedImage.url}
+        title={selectedImage.title}
+        alt={selectedImage.alt}
+      />
     </section>
   );
 }

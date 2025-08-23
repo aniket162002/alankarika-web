@@ -56,6 +56,7 @@ interface Order {
   status: 'pending' | 'confirmed' | 'processing' | 'shipped' | 'delivered' | 'cancelled';
   notes?: string;
   estimated_delivery?: string;
+  tracking_url?: string;
   created_at: string;
   updated_at: string;
   payment_utr?: string;
@@ -88,6 +89,7 @@ export default function OrdersManagement() {
   const [orderStatus, setOrderStatus] = useState('');
   const [orderNotes, setOrderNotes] = useState('');
   const [estimatedDelivery, setEstimatedDelivery] = useState('');
+  const [trackingUrl, setTrackingUrl] = useState('');
   const [loading, setLoading] = useState(false);
 
   // Real-time orders data
@@ -143,6 +145,10 @@ export default function OrdersManagement() {
         updateData.estimated_delivery = estimatedDelivery;
       }
 
+      if (trackingUrl) {
+        updateData.tracking_url = trackingUrl;
+      }
+
       const response = await fetch('/api/admin/orders', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
@@ -169,6 +175,23 @@ export default function OrdersManagement() {
         }),
       });
 
+      // Send tracking email if tracking URL was added
+      if (trackingUrl && trackingUrl !== selectedOrder.tracking_url) {
+        await fetch('/api/admin/orders/send-tracking-email', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            orderId: selectedOrder.id,
+            customerName: selectedOrder.customer_name,
+            customerEmail: selectedOrder.customer_email,
+            trackingUrl: trackingUrl,
+            estimatedDelivery: estimatedDelivery,
+            totalAmount: selectedOrder.total_amount,
+            items: selectedOrder.items
+          }),
+        });
+      }
+
       // Create order tracking entry
       await supabase.from('order_tracking').insert({
         order_id: selectedOrder.id,
@@ -193,6 +216,7 @@ export default function OrdersManagement() {
     setOrderStatus(order.status);
     setOrderNotes(order.notes || '');
     setEstimatedDelivery(order.estimated_delivery || '');
+    setTrackingUrl(order.tracking_url || '');
     setIsDialogOpen(true);
   };
 
@@ -201,6 +225,7 @@ export default function OrdersManagement() {
     setOrderStatus('');
     setOrderNotes('');
     setEstimatedDelivery('');
+    setTrackingUrl('');
   };
 
   const getStatusColor = (status: string) => {
@@ -592,6 +617,18 @@ export default function OrdersManagement() {
                       value={estimatedDelivery}
                       onChange={(e) => setEstimatedDelivery(e.target.value)}
                     />
+                  </div>
+
+                  <div>
+                    <Label htmlFor="tracking_url">Tracking Link</Label>
+                    <Input
+                      id="tracking_url"
+                      type="url"
+                      value={trackingUrl}
+                      onChange={(e) => setTrackingUrl(e.target.value)}
+                      placeholder="https://track.example.com/tracking/ABC123"
+                    />
+                    <p className="text-xs text-gray-500 mt-1">Enter the complete tracking URL for the customer</p>
                   </div>
 
                   <div>

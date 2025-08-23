@@ -102,6 +102,22 @@ export default function OrdersPage() {
                       <span className="font-semibold text-gray-900">Notes:</span>
                       <span className="text-gray-700">{order.notes || 'N/A'}</span>
                     </div>
+                    {order.tracking_url && (
+                      <div className="flex flex-wrap gap-2 items-center mb-2">
+                        <span className="font-semibold text-gray-900">Track Order:</span>
+                        <a 
+                          href={order.tracking_url} 
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                          className="bg-gradient-to-r from-blue-500 to-blue-600 text-white font-bold px-4 py-2 rounded-lg hover:from-blue-600 hover:to-blue-700 transition-all duration-200 flex items-center gap-2"
+                        >
+                          <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                          </svg>
+                          Track Package
+                        </a>
+                      </div>
+                    )}
                     <div className="flex gap-4 mt-4">
                       <button className="bg-gradient-to-r from-amber-400 to-orange-500 text-white font-bold shadow px-4 py-2 rounded-lg">
                         <Link href={`/payment/receipt/${order.id}`}>View Receipt</Link>
