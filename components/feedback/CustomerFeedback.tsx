@@ -6,7 +6,7 @@ import { Star, Quote, ChevronLeft, ChevronRight, Heart } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import ImageModal from '@/components/ui/ImageModal';
+
 import { createClient } from '@supabase/supabase-js';
 
 const supabase = createClient(
@@ -18,7 +18,7 @@ interface Feedback {
   id: string;
   customer_name: string;
   rating: number;
-  feedback_text: string;
+  feedback_text: string;  
   product_name?: string;
   image_url?: string;
   is_featured: boolean;
@@ -40,8 +40,7 @@ export default function CustomerFeedback({
   const [currentIndex, setCurrentIndex] = useState(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [imageModalOpen, setImageModalOpen] = useState(false);
-  const [selectedImage, setSelectedImage] = useState({ url: '', title: '', alt: '' });
+  const [openImageUrl, setOpenImageUrl] = useState<string | null>(null);
 
   // Fetch feedback data
   useEffect(() => {
@@ -100,19 +99,17 @@ export default function CustomerFeedback({
     return () => clearInterval(interval);
   }, [feedbacks.length]);
 
-  const openImageModal = (imageUrl: string, customerName: string) => {
-    setSelectedImage({
-      url: imageUrl,
-      title: `${customerName}'s Feedback Photo`,
-      alt: `Customer feedback photo from ${customerName}`
-    });
-    setImageModalOpen(true);
-  };
+  // Modal close handler
+  useEffect(() => {
+    if (!openImageUrl) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setOpenImageUrl(null);
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [openImageUrl]);
 
-  const closeImageModal = () => {
-    setImageModalOpen(false);
-    setSelectedImage({ url: '', title: '', alt: '' });
-  };
+
 
   const nextFeedback = () => {
     setCurrentIndex((prev) => (prev + 1) % feedbacks.length);
@@ -207,7 +204,7 @@ export default function CustomerFeedback({
                               src={currentFeedback.image_url}
                               alt={`${currentFeedback.customer_name}'s feedback`}
                               className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-200"
-                              onClick={() => openImageModal(currentFeedback.image_url!, currentFeedback.customer_name)}
+                              onClick={() => setOpenImageUrl(currentFeedback.image_url!)}
                             />
                             {/* Hover overlay */}
                             <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex items-center justify-center">
@@ -327,13 +324,26 @@ export default function CustomerFeedback({
       </div>
 
       {/* Image Modal */}
-      <ImageModal
-        isOpen={imageModalOpen}
-        onClose={closeImageModal}
-        imageUrl={selectedImage.url}
-        title={selectedImage.title}
-        alt={selectedImage.alt}
-      />
+      {openImageUrl && (
+        <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/70 backdrop-blur-sm" onClick={() => setOpenImageUrl(null)}>
+          <div className="relative max-w-full max-h-full p-2" onClick={e => e.stopPropagation()}>
+            <button
+              className="absolute top-2 right-2 bg-white/80 hover:bg-white rounded-full p-2 shadow-lg z-10"
+              onClick={() => setOpenImageUrl(null)}
+              aria-label="Close image"
+            >
+              <svg className="w-6 h-6 text-gray-800" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+            <img
+              src={openImageUrl}
+              alt="Customer feedback full image"
+              className="max-w-[90vw] max-h-[80vh] rounded-lg shadow-xl object-contain bg-white"
+            />
+          </div>
+        </div>
+      )}
     </section>
   );
 }

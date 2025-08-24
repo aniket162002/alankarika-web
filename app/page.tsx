@@ -208,155 +208,6 @@ const BrandMotif = ({ className = "", style = {} }) => (
   </svg>
 );
 
-// Add a TrustBadges component with enhanced free delivery banner
-const TrustBadges = () => (
-  <section className="py-16 bg-gradient-to-br from-emerald-50 via-teal-50 to-green-50 relative overflow-hidden">
-    {/* Background decorative elements */}
-    <div className="absolute inset-0">
-      <div className="absolute -top-20 -right-20 w-60 h-60 bg-gradient-to-br from-emerald-200/20 to-teal-200/20 rounded-full blur-3xl"></div>
-      <div className="absolute -bottom-20 -left-20 w-60 h-60 bg-gradient-to-br from-green-200/20 to-emerald-200/20 rounded-full blur-3xl"></div>
-    </div>
-    
-    <div className="container mx-auto px-4 relative z-10">
-      {/* Prominent Free Delivery Banner */}
-      <motion.div 
-        className="text-center mb-12"
-        initial={{ opacity: 0, y: 30 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8 }}
-        viewport={{ once: true }}
-      >
-        <div className="inline-flex items-center gap-3 bg-gradient-to-r from-emerald-500 to-teal-500 text-white px-8 py-4 rounded-full text-lg font-bold shadow-2xl hover:shadow-3xl transition-all duration-300 mb-6 animate-pulse">
-          <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
-          </svg>
-          <span className="text-xl">🎉 FREE DELIVERY ACROSS INDIA! 🎉</span>
-          <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
-          </svg>
-        </div>
-        <h2 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent mb-4">
-          Why Choose Alankarika?
-        </h2>
-        <p className="text-lg text-gray-600 max-w-2xl mx-auto leading-relaxed">
-          Experience premium jewelry shopping with unmatched quality and service
-        </p>
-      </motion.div>
-
-      {/* Enhanced Trust Badges Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-        {/* Free Delivery - Most Prominent */}
-        <motion.div 
-          className="flex flex-col items-center group"
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0 }}
-          viewport={{ once: true }}
-        >
-          <div className="relative">
-            <div className="bg-gradient-to-br from-emerald-400 to-teal-500 w-20 h-20 rounded-2xl flex items-center justify-center shadow-2xl group-hover:scale-110 transition-all duration-300 relative overflow-hidden">
-              <div className="absolute inset-0 bg-gradient-to-br from-white/20 to-transparent"></div>
-              <svg className="w-10 h-10 text-white relative z-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
-              </svg>
-              {/* Sparkle effect */}
-              <div className="absolute -top-2 -right-2 w-4 h-4 bg-yellow-300 rounded-full animate-ping"></div>
-            </div>
-          </div>
-          <h3 className="mt-4 text-xl font-bold text-gray-900 text-center">FREE Delivery</h3>
-          <p className="mt-2 text-sm text-gray-600 text-center leading-relaxed">No shipping charges anywhere in India. Shop worry-free!</p>
-          <div className="mt-2 bg-emerald-100 text-emerald-700 px-3 py-1 rounded-full text-xs font-semibold">
-            ✨ Always FREE ✨
-          </div>
-        </motion.div>
-
-        {/* 100% Authentic */}
-        <motion.div 
-          className="flex flex-col items-center group"
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.1 }}
-          viewport={{ once: true }}
-        >
-          <div className="bg-gradient-to-br from-amber-400 to-orange-500 w-20 h-20 rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-all duration-300 relative overflow-hidden">
-            <div className="absolute inset-0 bg-gradient-to-br from-white/20 to-transparent"></div>
-            <svg className="w-10 h-10 text-white relative z-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-          </div>
-          <h3 className="mt-4 text-lg font-bold text-gray-900 text-center">100% Authentic</h3>
-          <p className="mt-2 text-sm text-gray-600 text-center leading-relaxed">Genuine traditional jewelry with quality guarantee</p>
-        </motion.div>
-
-        {/* Luxury Packaging */}
-        <motion.div 
-          className="flex flex-col items-center group"
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.2 }}
-          viewport={{ once: true }}
-        >
-          <div className="bg-gradient-to-br from-purple-400 to-pink-500 w-20 h-20 rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-all duration-300 relative overflow-hidden">
-            <div className="absolute inset-0 bg-gradient-to-br from-white/20 to-transparent"></div>
-            <svg className="w-10 h-10 text-white relative z-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v13m0-13V6a2 2 0 112 2h-2zm0 0V5.5A2.5 2.5 0 109.5 8H12zm-7 4h14M5 12a2 2 0 110-4h14a2 2 0 110 4M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7" />
-            </svg>
-          </div>
-          <h3 className="mt-4 text-lg font-bold text-gray-900 text-center">Luxury Packaging</h3>
-          <p className="mt-2 text-sm text-gray-600 text-center leading-relaxed">Beautiful gift boxes perfect for special occasions</p>
-        </motion.div>
-
-        {/* Secure Payments */}
-        <motion.div 
-          className="flex flex-col items-center group"
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.3 }}
-          viewport={{ once: true }}
-        >
-          <div className="bg-gradient-to-br from-blue-400 to-indigo-500 w-20 h-20 rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-all duration-300 relative overflow-hidden">
-            <div className="absolute inset-0 bg-gradient-to-br from-white/20 to-transparent"></div>
-            <svg className="w-10 h-10 text-white relative z-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-            </svg>
-          </div>
-          <h3 className="mt-4 text-lg font-bold text-gray-900 text-center">Secure Payments</h3>
-          <p className="mt-2 text-sm text-gray-600 text-center leading-relaxed">Multiple payment options with bank-level security</p>
-        </motion.div>
-      </div>
-
-      {/* Additional Free Delivery Call-to-Action */}
-      <motion.div 
-        className="mt-16 text-center"
-        initial={{ opacity: 0, scale: 0.9 }}
-        whileInView={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 0.6, delay: 0.4 }}
-        viewport={{ once: true }}
-      >
-        <div className="inline-flex flex-col sm:flex-row items-center gap-4 bg-white/80 backdrop-blur-sm border-2 border-emerald-200 rounded-2xl px-8 py-6 shadow-xl">
-          <div className="flex items-center gap-3">
-            <div className="w-12 h-12 bg-gradient-to-br from-emerald-400 to-teal-500 rounded-full flex items-center justify-center">
-              <svg className="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-              </svg>
-            </div>
-            <div className="text-left">
-              <div className="text-lg font-bold text-gray-900">Free Delivery Promise</div>
-              <div className="text-sm text-gray-600">On all orders across India • No minimum order value</div>
-            </div>
-          </div>
-          <div className="flex items-center gap-2 bg-gradient-to-r from-emerald-500 to-teal-500 text-white px-6 py-3 rounded-full font-semibold shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer group">
-            <span>Shop Now</span>
-            <svg className="w-5 h-5 group-hover:translate-x-1 transition-transform duration-200" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-            </svg>
-          </div>
-        </div>
-      </motion.div>
-    </div>
-  </section>
-);
-
 // Add a Confetti component for festive mode
 const Confetti = () => {
   const [confetti, setConfetti] = useState<any[]>([]);
@@ -1143,9 +994,13 @@ const [loading, setLoading] = useState(true);
                 description: "Authentic Indian jewelry with cultural significance"
               },
               {
-                icon: <Star className="w-8 h-8 text-yellow-500" />,
-                title: "Customer Satisfaction",
-                description: "Trusted by thousands of happy customers worldwide"
+                icon: (
+                  <svg className="w-8 h-8 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+                  </svg>
+                ),
+                title: "FREE Delivery",
+                description: "No shipping charges anywhere in India. Shop worry-free!"
               },
               {
                 icon: <Camera className="w-8 h-8 text-blue-500" />,
@@ -1174,7 +1029,6 @@ const [loading, setLoading] = useState(true);
         </div>
       </section>
 
-      <TrustBadges />
       <WavyDivider color="#fbbf24" />
 
 
