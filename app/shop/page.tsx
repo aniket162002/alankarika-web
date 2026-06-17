@@ -68,10 +68,13 @@ export default function ShopPage() {
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
-      // Fetch products
-      let query = supabase.from('products').select('*').eq('in_stock', true);
+      // Fetch products (show all products, including those with in_stock not explicitly set)
+      let query = supabase.from('products').select('*');
       const { data: prodData, error: prodError } = await query;
-      if (!prodError) setProducts(prodData || []);
+      if (prodError) {
+        console.error('Error fetching products:', prodError);
+      }
+      setProducts(prodData || []);
       setLoading(false);
     };
     fetchData();
@@ -367,7 +370,13 @@ export default function ShopPage() {
                       </Button>
           <h1 className="text-3xl font-bold text-amber-700">Shop by Category</h1>
                       </div>
-  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+  {categories.length === 0 ? (
+          <div className="flex flex-col items-center justify-center py-16">
+            <Player autoplay loop animationData={emptyLottie} style={{ height: 150, width: 150 }} />
+            <p className="mt-4 text-lg text-gray-500">No products found. Please check back later!</p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
           {categories.map(category => {
             const categoryProduct = products.find(p => p.category === category && p.image_url);
             return (
@@ -387,6 +396,7 @@ export default function ShopPage() {
             );
           })}
         </div>
+        )}
       </div>
     </div>
   );

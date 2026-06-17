@@ -87,11 +87,10 @@ const fetchProducts = async () => {
   const { data, error } = await supabase
     .from('products')
     .select('*')
-    .eq('in_stock', true)
     .order('name', { ascending: true });
 
   if (error) console.error('Error fetching products:', error);
-  return data as Product[];
+  return (data as Product[]) || [];
 };
 
 
